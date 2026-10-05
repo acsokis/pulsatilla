@@ -34,6 +34,13 @@ permissive; it does not reserve exclusive monetization rights. Copyright is attr
 Gábor Kocsis. Paid hosted services, support and bespoke work can be offered separately with
 their own accurate descriptions and applicable terms.
 
+The supplied original `netw_tool_v05.zip` has no license notice. Its creator is credited
+as Göldner Iván, based on the supplied attribution, in [ORIGIN.md](ORIGIN.md).
+Pulsatilla's existing MIT notice does not grant permission for somebody else's original
+work or establish that it may be relicensed. The original ZIP is not redistributed here;
+its reuse permission remains to be documented. GitHub explains the
+[default copyright position when no license is supplied](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository).
+
 The exact MIT text is preserved in `LICENSE` and embedded in the app. It includes warranty
 and liability clauses. It does not create a universal exemption from responsibility.
 For example, [German BGB § 309 no. 7](https://www.gesetze-im-internet.de/bgb/__309.html)

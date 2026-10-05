@@ -28,6 +28,7 @@ public partial class MainWindow
         LicenseViewer.Document = AboutContent.CreateDocument("# MIT License\n\n" + AboutContent.LicenseText);
         ServicesViewer.Document = AboutContent.CreateDocument(AboutContent.Services);
         PrivacyViewer.Document = AboutContent.CreateDocument(AboutContent.Privacy);
+        OriginViewer.Document = AboutContent.CreateDocument(AboutContent.Origin);
         OnPresentationThemeChanged(null, EventArgs.Empty);
         _presentationReady = true;
         ThroughputRangeBox.SelectedIndex = 0;

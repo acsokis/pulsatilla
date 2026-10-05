@@ -579,10 +579,16 @@
                                 <TextBlock Text="PULSATILLA" Foreground="{DynamicResource Theme_F1F8F2}" FontSize="25" FontWeight="Bold" />
                                 <TextBlock x:Name="ProductTaglineText" Text="Network clarity. Security insight." Foreground="{DynamicResource Theme_91A69A}" Margin="0,5,0,0" />
                                 <TextBlock x:Name="AboutVersionText" Foreground="{DynamicResource Theme_91A69A}" Margin="0,5,0,12" />
-                                <TextBlock Text="Created and developed by" Foreground="{DynamicResource Theme_829488}" />
+                                <TextBlock Text="Pulsatilla development &amp; product direction" Foreground="{DynamicResource Theme_829488}" />
                                 <TextBlock x:Name="CreatorNameText" Foreground="{DynamicResource Theme_F0F5F1}" FontSize="22" FontWeight="SemiBold" Margin="0,4,0,4" />
                                 <TextBlock Text="{x:Static local:ProductInfo.Company}" Foreground="{DynamicResource Theme_CEDFD3}" Margin="0,0,0,4" />
                                 <TextBlock x:Name="CreatorLocationText" Foreground="{DynamicResource Theme_CEDFD3}" />
+                                <TextBlock Text="Original home project: netw_tool_v05" Foreground="{DynamicResource Theme_829488}" Margin="0,12,0,3" />
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock x:Name="OriginCreatorText" Text="Göldner Iván · Hungary" Foreground="{DynamicResource Theme_F0F5F1}" FontSize="15" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                    <Button x:Name="OriginFacebookButton" Content="Facebook" Style="{StaticResource ActionButton}" Margin="12,0,0,0"
+                                            Tag="{x:Static local:AboutContent.OriginalCreatorFacebook}" ToolTip="{x:Static local:AboutContent.OriginalCreatorFacebook}" Click="CreatorLinkButton_Click" />
+                                </StackPanel>
                             </StackPanel>
                             <StackPanel Grid.Column="1" VerticalAlignment="Center" MaxWidth="400">
                                 <TextBlock Text="Connect with the creator" Foreground="{DynamicResource Theme_E6F2E8}" FontSize="15" FontWeight="SemiBold" Margin="0,0,0,10" />
@@ -604,6 +610,7 @@
                     <Border Grid.Row="2" Style="{StaticResource PanelBorder}" Padding="0">
                         <TabControl x:Name="AboutDocumentsTabs" Margin="12" Background="Transparent" BorderThickness="0">
                             <TabItem Header="README" Background="{DynamicResource Theme_101B13}" Foreground="{DynamicResource Theme_D8E4DA}"><FlowDocumentScrollViewer x:Name="ReadmeViewer" VerticalScrollBarVisibility="Auto" Background="Transparent" BorderThickness="0" /></TabItem>
+                            <TabItem Header="Origin story" Background="{DynamicResource Theme_101B13}" Foreground="{DynamicResource Theme_D8E4DA}"><FlowDocumentScrollViewer x:Name="OriginViewer" VerticalScrollBarVisibility="Auto" Background="Transparent" BorderThickness="0" /></TabItem>
                             <TabItem Header="License" Background="{DynamicResource Theme_101B13}" Foreground="{DynamicResource Theme_D8E4DA}"><FlowDocumentScrollViewer x:Name="LicenseViewer" VerticalScrollBarVisibility="Auto" Background="Transparent" BorderThickness="0" /></TabItem>
                             <TabItem Header="Services" Background="{DynamicResource Theme_101B13}" Foreground="{DynamicResource Theme_D8E4DA}"><FlowDocumentScrollViewer x:Name="ServicesViewer" VerticalScrollBarVisibility="Auto" Background="Transparent" BorderThickness="0" /></TabItem>
                             <TabItem Header="Privacy" Background="{DynamicResource Theme_101B13}" Foreground="{DynamicResource Theme_D8E4DA}"><FlowDocumentScrollViewer x:Name="PrivacyViewer" VerticalScrollBarVisibility="Auto" Background="Transparent" BorderThickness="0" /></TabItem>

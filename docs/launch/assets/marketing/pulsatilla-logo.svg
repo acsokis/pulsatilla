@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="320" viewBox="0 0 1280 320" role="img" aria-labelledby="title desc">
+  <title id="title">Pulsatilla — Gabor Web</title>
+  <desc id="desc">Violet flower, amber center and green network nodes beside the Pulsatilla wordmark.</desc>
+  <rect width="1280" height="320" rx="24" fill="#080e0d"/>
+  <g transform="translate(155 156)">
+    <g fill="#b28af5" stroke="#d9c5ff" stroke-width="2">
+      <path id="petal" d="M0 0C-57-31-64-102 0-120C64-102 57-31 0 0Z"/>
+      <use href="#petal" transform="rotate(60)"/><use href="#petal" transform="rotate(120)"/>
+      <use href="#petal" transform="rotate(180)"/><use href="#petal" transform="rotate(240)"/><use href="#petal" transform="rotate(300)"/>
+    </g>
+    <circle r="28" fill="#ffcc71"/>
+    <g stroke="#162a1e" stroke-width="3"><path d="M-18 0H18M0-18V18M-13-13L13 13M-13 13L13-13"/></g>
+    <g fill="#90e0a9"><circle cx="-18" r="5"/><circle cx="18" r="5"/><circle cy="-18" r="5"/><circle cy="18" r="5"/></g>
+  </g>
+  <text x="320" y="144" font-family="Segoe UI,Arial,sans-serif" font-size="87" font-weight="700" letter-spacing="8" fill="#f2f6f3">PULSATILLA</text>
+  <text x="324" y="198" font-family="Segoe UI,Arial,sans-serif" font-size="30" fill="#c5d7ca">Network clarity. Security insight.</text>
+  <text x="324" y="251" font-family="Segoe UI,Arial,sans-serif" font-size="23" letter-spacing="4" fill="#90e0a9">GABOR WEB</text>
+</svg>

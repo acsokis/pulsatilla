@@ -1,4 +1,4 @@
-# Pulsatilla Community 1.0.0
+# Pulsatilla Community 1.0.1
 
 **Network clarity. Security insight.**
 
@@ -8,10 +8,13 @@ An early Windows x64 release by **Gábor Kocsis / Gabor Web**, under the MIT lic
 - Security review indicators and expandable IP/software source details.
 - Explicit Windows Firewall application rules and local pasted/imported email review.
 - Dark, Light and Windows themes, optimized Matrix background and embedded creator/docs.
+- Offline About origin story, with the source comparison and timing/attribution limits.
+- Copy-ready English/German posts and longer articles, a local HTML publication page,
+  brand banner, reusable PNG/SVG logo and six synthetic interface screenshots.
 
 ## Run
 
-Download `pulsatilla-1.0.0-win-x64.zip`, verify it using the supplied SHA-256 checksums,
+Download `pulsatilla-1.0.1-win-x64.zip`, verify it using the supplied SHA-256 checksums,
 extract it and run `Pulsatilla.exe`. Install **.NET 8 Windows Desktop Runtime x64** first.
 The EXE is unsigned. Packet capture and confirmed firewall changes require Administrator
 rights; the adapter Dashboard does not.
@@ -27,6 +30,9 @@ The MIT Community core remains available without payment; support does not buy a
 See the [README](https://github.com/acsokis/pulsatilla#readme),
 [privacy notes](https://github.com/acsokis/pulsatilla/blob/main/docs/PRIVACY.md) and
 [English/German publication kit](https://github.com/acsokis/pulsatilla/tree/main/docs/launch).
+
+For sharing, extract `pulsatilla-publication-kit-1.0.1.zip` and open `share.html` in a browser.
+Copy a post/article, download a PNG and attach it in LinkedIn or Facebook.
 
 Validation: Release build completed with zero warnings/errors, synthetic protection,
 presentation and localization checks passed. No live firewall changes or provider requests

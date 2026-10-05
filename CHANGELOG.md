@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.1 — 2026-10-05
+
+- Added an offline About / Origin story and visible credit to Göldner Iván for the original personal Python project.
+- Distinguished Gábor Kocsis / Gabor Web's Pulsatilla product direction and C#/WPF redevelopment from the original contribution.
+- Documented the inspected archive's file dates, comparison, attribution/permission limits and engineering-effort estimates.
+- Updated public credit wording, screenshots and portable-package documentation.
+- Added a copy-ready English/German HTML publication page, posts/articles and reusable logo; the brand banner appears on GitHub.
+
 ## 1.0.0 — 2026-10-05
 
 - Rebranded the application, project, executable and documentation as Pulsatilla.

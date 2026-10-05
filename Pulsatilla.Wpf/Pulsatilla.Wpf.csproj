@@ -8,7 +8,7 @@
     <UseWPF>true</UseWPF>
     <AssemblyName>Pulsatilla</AssemblyName>
     <RootNamespace>Pulsatilla.Wpf</RootNamespace>
-    <Version>1.0.0</Version>
+    <Version>1.0.1</Version>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <Product>Pulsatilla</Product>
     <Title>Pulsatilla</Title>
@@ -26,6 +26,7 @@
     <EmbeddedResource Include="../LICENSE" LogicalName="Pulsatilla.Wpf.LICENSE" />
     <EmbeddedResource Include="../docs/MONETIZATION.md" LogicalName="Pulsatilla.Wpf.Services.md" />
     <EmbeddedResource Include="../docs/PRIVACY.md" LogicalName="Pulsatilla.Wpf.Privacy.md" />
+    <EmbeddedResource Include="../docs/ORIGIN.md" LogicalName="Pulsatilla.Wpf.Origin.md" />
     <None Remove="Resources\Locales\*.json" />
     <EmbeddedResource Include="Resources\Locales\*.json"
                       LogicalName="Pulsatilla.Wpf.Resources.Locales.%(Filename)%(Extension)" />
