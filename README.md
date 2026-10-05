@@ -8,6 +8,8 @@
 
 Network monitoring, security awareness and local exposure review in one Windows desktop app.
 Pulsatilla's C#/WPF application is developed by **Gábor Kocsis / Gabor Web**, based in Germany.
+Development started on **5 October 2026 at 13:55 CEST (Germany / Europe/Berlin)**,
+as supplied by Gábor Kocsis.
 The [origin story](docs/ORIGIN.md) records the personal-project starting point and contributor roles.
 The Community application's current license is [MIT](LICENSE).
 Optional paid services are a separate [integration roadmap](docs/MONETIZATION.md), not active subscriptions.
@@ -50,7 +52,7 @@ To share the project, open [the copy-and-paste publication page](docs/launch/sha
 locally after downloading the repository. It includes English/German LinkedIn and Facebook
 posts, longer articles, copy buttons and downloadable images. On GitHub, use the
 [plain-text post files](docs/launch/README.md#ready-to-copy-posts).
-The complete [publication ZIP](https://github.com/acsokis/pulsatilla/releases/download/v1.0.1/pulsatilla-publication-kit-1.0.1.zip)
+The complete [publication ZIP](https://github.com/acsokis/pulsatilla/releases/download/v1.0.2/pulsatilla-publication-kit-1.0.2.zip)
 contains all texts and images with the local copy page.
 
 ## Features

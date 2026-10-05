@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.2 — 2026-10-05
+
+- Recorded the developer-supplied Pulsatilla start: 2026-10-05, 13:55 CEST (Europe/Berlin).
+- Added the start to About, origin documentation, README and English/German marketing copy.
+- Distinguished 5:40:05 elapsed to the first public Git import from active work and hypothetical reconstruction estimates.
+- Updated the share page with direct downloads, PayPal support and a bilingual service overview.
+
 ## 1.0.1 — 2026-10-05
 
 - Added an offline About / Origin story and visible credit to Göldner Iván for the original personal Python project.

@@ -1,5 +1,7 @@
 Was macht dein Windows-PC eigentlich im Netzwerk?
 
+Das Pulsatilla-Projekt habe ich am 5. Oktober 2026 um 13:55 Uhr MESZ in Deutschland begonnen.
+
 Ich habe Pulsatilla entwickelt, um das sichtbar zu machen: Live-Download und -Upload, Anwendungstraffic, Netzwerkereignisse und lokale E-Mail-Prüfung in einer Desktop-App.
 
 Das Dashboard liest die Zähler deines ausgewählten Netzwerkadapters. Die Paketerfassung mit Administratorrechten ergänzt IPv4-Traffic und die Zuordnung zu lokalen Anwendungen. Du kannst E-Mails einfügen oder importieren und verdächtige Formulierungen und Links lokal prüfen. Dein Postfach wird nicht automatisch gelesen. Anwendungssperren über die Windows-Firewall werden erst nach Bestätigung eingerichtet.

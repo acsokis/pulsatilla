@@ -97,7 +97,7 @@ internal static class Program
         Text("EmailResultText", result.Summary + "\n\n" + string.Join("\n\n", result.Findings.Select(finding => "• " + finding)));
         var creator = AboutContent.Creator;
         Text("CreatorNameText", creator.Name); Text("CreatorLocationText", creator.Location);
-        Text("AboutVersionText", "Pulsatilla " + (typeof(ProductInfo).Assembly.GetName().Version?.ToString(3) ?? "1.0.1") + " · Community · MIT");
+        Text("AboutVersionText", "Pulsatilla " + (typeof(ProductInfo).Assembly.GetName().Version?.ToString(3) ?? "1.0.2") + " · Community · MIT");
         Find<FlowDocumentScrollViewer>("ReadmeViewer").Document = AboutContent.CreateReadmeDocument();
         Find<FlowDocumentScrollViewer>("LicenseViewer").Document = AboutContent.CreateDocument("# MIT License\n\n" + AboutContent.LicenseText);
         Find<FlowDocumentScrollViewer>("ServicesViewer").Document = AboutContent.CreateDocument(AboutContent.Services);

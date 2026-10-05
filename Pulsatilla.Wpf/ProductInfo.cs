@@ -9,4 +9,6 @@ public static class ProductInfo
     public const string Edition = "Community";
     public const string License = "MIT";
     public const string SupportUrl = "https://paypal.me/gaborcarter";
+    public const string DevelopmentStartedAt = "2026-10-05T13:55:00+02:00";
+    public const string DevelopmentStartedDisplay = "Development started: 5 October 2026, 13:55 CEST (Germany)";
 }

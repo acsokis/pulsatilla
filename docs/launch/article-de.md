@@ -1,5 +1,7 @@
 # Pulsatilla: Netzwerkaktivität verstehen und ein Open-Source-Geschäft aufbauen
 
+Das Pulsatilla-Projekt habe ich am 5. Oktober 2026 um 13:55 Uhr MESZ (Deutschland / Europe/Berlin) begonnen.
+
 Ich entwickle Pulsatilla, eine Windows-Desktop-Anwendung, mit der sich Netzwerkaktivität verstehen und lokale Sicherheitshinweise prüfen lassen. Mein Name ist Gábor Kocsis; ich lebe in Deutschland und arbeite unter dem Namen Gabor Web. Pulsatilla verbindet Verkehrsdiagramme, Programmaktivität, Netzwerkdiagnose und lokale E-Mail-Prüfung in einer Oberfläche. Die Community-Anwendung ist als frühe Version mit öffentlich zugänglichem Quellcode auf GitHub verfügbar.
 
 Das Dashboard beginnt beim ausgewählten Netzwerkadapter. Windows-Bytezähler liefern die aktuellen Download- und Upload-Raten, dargestellt in Bernstein und Violett. Zeitpunkte lassen sich untersuchen, Ansichten über eine, fünf oder fünfzehn Minuten auswählen und die sichtbare Zeitachse anhalten. Dazu kommen Angaben zum beobachteten Datenvolumen. Diese Ansicht benötigt weder Administratorrechte noch eine Paketerfassung und bietet einen einfachen Einstieg in die Analyse einer Verbindung.

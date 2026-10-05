@@ -3,6 +3,8 @@
 Pulsatilla is a Windows network-monitoring and local security-review application by
 **Gábor Kocsis**, based in Germany, under the **Gabor Web** company name.
 The Community core is MIT-licensed and requires no account, payment or activation.
+Pulsatilla development began on **5 October 2026 at 13:55 CEST (Germany / Europe/Berlin)**,
+as supplied by Gábor Kocsis.
 Optional paid services are a development direction. There is no active checkout,
 subscription, external exposure provider or published service price.
 
