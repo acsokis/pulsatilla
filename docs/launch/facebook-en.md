@@ -12,4 +12,7 @@ I’m Gábor Kocsis, based in Germany. If you would like to test the app or disc
 
 Project: https://github.com/acsokis/pulsatilla
 
+Voluntary development support: https://paypal.me/gaborcarter
+The MIT core stays available without payment; support does not buy a service.
+
 #Pulsatilla #OpenSource #Windows #NetworkMonitoring

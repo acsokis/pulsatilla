@@ -1,0 +1,20 @@
+# Marketing image generation
+
+Generated with the built-in image_gen tool on 2026-10-05. Files in assets/marketing are AI-generated concept illustrations, not application screenshots. All text was visually checked. The discarded first German draft contained an invented device UI; the final edit removes that object. Only the corrected file is published.
+
+## pulsatilla-launch-en.png
+
+Use case: ads-marketing. Create a polished landscape 16:9 launch banner for the Windows desktop network tool Pulsatilla by Gabor Web. Deep charcoal and forest-green backdrop matching a dark Windows network app. Elegant physical 3D glass ribbons of amber download traffic and purple upload traffic weave through a restrained network-node field; a delicate abstract violet pulsatilla flower made of luminous fine filaments connects the organic identity to the data flow. Beautiful editorial lighting, premium clean composition, crisp large white typography, generous margins, readable on mobile. Exact text only: 'PULSATILLA', 'Network clarity. Security insight.', 'MIT Community core', 'Gabor Web'. No dashboard mockup, no fabricated UI or numbers. No VPN, dark-web, antivirus, attack prevention or security guarantee claims. No competitor logos. Artwork represents a brand concept, not measured traffic. No watermark. High quality final PNG.
+
+## pulsatilla-services-roadmap-en.png
+
+Use case: ads-marketing. Create a polished square 1:1 marketing card for Pulsatilla by Gabor Web, aimed at developers and small business IT exploring an open-source network monitor with paid services roadmap. Charcoal-black background with subtle forest-green grid and physical 3D amber and purple flowing strands. Central elegant abstract violet pulsatilla flower of luminous fine filaments. Premium product-launch design, restrained, very readable large type, generous margins, modern Swiss typography. Exact text, verbatim: 'PULSATILLA', 'Open source. Room to grow.', 'MIT Community core', 'Service roadmap: setup • support • integrations', 'Planned services', 'Gabor Web'. Visually group roadmap below existing MIT core; make Planned services readable. No prices, no checkout, no invented proof points, no future services represented as live, no growth or income guarantees, no cybersecurity guarantees, no competitor names, no simulated application UI, no watermark. Final publication image.
+
+## pulsatilla-services-roadmap-de.png
+
+Use case: ads-marketing. Create a final polished landscape 16:9 German marketing banner for the open-source Windows network tool Pulsatilla by Gabor Web. Charcoal and forest-green background; beautiful abstract violet pulsatilla flower made of fine luminous fiber filaments, amber and purple physical glass ribbons weaving through a restrained network-node grid, premium editorial 3D lighting. White and pale-green clean Swiss typography, mobile-readable type, generous breathing room. Exact German text only, spell precisely: 'PULSATILLA', 'Netzwerkaktivität verstehen.', 'MIT-Community-Kern', 'Geplante Leistungen', 'Einrichtung • Support • Integrationen', 'Gabor Web'. Make Geplante Leistungen clearly label the service list, rather than implying currently available subscriptions. Flower to right and copy to left. No price, checkout, active service claims, revenue forecast, VPN/dark-web/antivirus guarantee, fabricated software UI, competitor brand, watermark. Brand concept illustration, not a measured traffic screenshot. Match a modern dark desktop app with amber downloads and violet uploads.
+
+## German final edit
+
+Edit target: the supplied German Pulsatilla marketing banner. Change only the lower-right area: completely remove the phone-shaped display and all its invented chart UI/icons. Replace that object with a continuation of the existing amber and violet flowing light ribbons and dark forest-green network-node background. Preserve the flower, overall palette, lighting, all existing German words, brand name, copy placement, typography and Gabor Web credit exactly unchanged. No screens, phones, computers, software UI, numbers or additional words anywhere. This is a brand concept illustration, not an app screenshot.
+

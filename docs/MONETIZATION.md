@@ -4,6 +4,14 @@ Pulsatilla Community is MIT-licensed. The network dashboard, application rules,
 local security indicators, email review and imported exposure reports remain available
 without payment, an account or activation. There is no checkout or subscription in this release.
 
+## Voluntary development support — available link
+
+[PayPal.Me / gaborcarter](https://paypal.me/gaborcarter) is the creator-provided public support
+link. GitHub's Sponsor button, the README and the app's About panel expose this same link.
+The supporter chooses the amount on PayPal. Pulsatilla does not handle payment information,
+store a payment status, unlock features or promise a service in exchange. PayPal handles
+its own payment flow and policies. No tax-deductibility or charitable status is claimed.
+
 ## Separate paid services — planned
 
 - Assisted setup, network diagnostics, training and support supplied by the creator.
@@ -28,7 +36,7 @@ access, encrypted transport, request limits and auditable consent. The open-sour
 client must never contain a payment-provider secret, a provider master key or a fake activation check.
 Account access must be enforced by the service, since clients can be modified under MIT.
 
-## Before taking payments
+## Before selling services
 
 - Implement and test the actual service and its customer support process.
 - Publish accurate coverage, limitations, prices, billing periods and cancellation details.

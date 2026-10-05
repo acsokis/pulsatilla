@@ -592,6 +592,11 @@
                                     <Button x:Name="FacebookButton" Content="Facebook" Style="{StaticResource ActionButton}" Click="CreatorLinkButton_Click" Margin="0,0,8,8" />
                                     <Button x:Name="GithubButton" Content="GitHub" Style="{StaticResource ActionButton}" Click="CreatorLinkButton_Click" Margin="0,0,0,8" />
                                 </WrapPanel>
+                                <Button x:Name="SupportButton" Content="Support via PayPal" Style="{StaticResource ActionButton}"
+                                        Tag="{x:Static local:ProductInfo.SupportUrl}" ToolTip="{x:Static local:ProductInfo.SupportUrl}"
+                                        Click="CreatorLinkButton_Click" HorizontalAlignment="Left" Margin="0,4,0,6" />
+                                <TextBlock Text="Voluntary support. The MIT Community core remains available without payment."
+                                           Foreground="{DynamicResource Theme_91A69A}" TextWrapping="Wrap" Margin="0,0,0,6" />
                                 <TextBlock Text="Technology: .NET &amp; WPF by Microsoft. Optional integrations: Nmap and Ollama." Foreground="{DynamicResource Theme_91A69A}" TextWrapping="Wrap" Margin="0,6,0,0" />
                             </StackPanel>
                         </Grid>

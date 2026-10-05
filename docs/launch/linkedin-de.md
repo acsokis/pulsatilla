@@ -16,6 +16,8 @@ Diese kostenpflichtigen Leistungen sind geplant; Preise, Leistungsbedingungen un
 Ich bin Gábor Kocsis und lebe in Deutschland. Ich freue mich über Feedback und Gespräche mit Windows-Nutzern, IT-Beratern und kleinen Teams, die Interesse an einem Pilotprojekt für Einrichtung oder Support sowie an Integrationen haben.
 
 Zum Projekt: https://github.com/acsokis/pulsatilla
+Entwicklung freiwillig unterstützen: https://paypal.me/gaborcarter
+Die Unterstützung schaltet keine Funktionen frei und kauft keine Leistung; der MIT-Community-Kern bleibt ohne Zahlung verfügbar.
 Interesse an einem Gespräch? Schreib mir hier.
 
 #Pulsatilla #OpenSource #Windows #NetzwerkMonitoring #Softwareentwicklung

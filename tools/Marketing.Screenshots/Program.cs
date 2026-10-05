@@ -1,0 +1,128 @@
+using System.IO;
+using System.Text.RegularExpressions;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Markup;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Threading;
+using Pulsatilla.Wpf;
+
+// Render the real application XAML with synthetic data and all operation handlers removed.
+// This process does not start MainWindow/App, capture packets, read a profile or change a firewall.
+internal static class Program
+{
+    private const int Width = 1500, Height = 900;
+    [STAThread]
+    private static void Main()
+    {
+        var root = Directory.GetCurrentDirectory();
+        var xamlPath = Path.Combine(root, "Pulsatilla.Wpf", "MainWindow.xaml");
+        if (!File.Exists(xamlPath)) throw new InvalidOperationException("Run from the Pulsatilla repository root.");
+        var output = Path.Combine(root, "docs", "launch", "assets", "screenshots");
+        Directory.CreateDirectory(output);
+        var app = new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
+        foreach (var resource in new[] { "ThemeColors", "DarkControls" })
+            app.Resources.MergedDictionaries.Add(new ResourceDictionary
+            { Source = new Uri($"/Pulsatilla;component/Resources/{resource}.xaml", UriKind.Relative) });
+        ThemeService.Apply(ThemeMode.Dark);
+        var xaml = File.ReadAllText(xamlPath);
+        xaml = Regex.Replace(xaml, "x:Class=\"[^\"]+\"", "")
+            .Replace("clr-namespace:Pulsatilla.Wpf", "clr-namespace:Pulsatilla.Wpf;assembly=Pulsatilla");
+        xaml = Regex.Replace(xaml, @"\s(?:Click|Checked|Unchecked|TextChanged|SelectionChanged|TreeViewItem\.Expanded)=""[^""]+""", "");
+        var window = (Window)XamlReader.Parse(xaml);
+        window.WindowStyle = WindowStyle.None; window.ShowInTaskbar = false; window.ShowActivated = false;
+        window.Left = -20000; window.Top = -20000; window.Width = Width; window.Height = Height;
+        T Find<T>(string name) where T : class => (T)window.FindName(name);
+        void Text(string name, string value) => Find<TextBlock>(name).Text = value;
+        LocalizationService.SetLanguage("en", persist: false); LocalizationService.Apply(window);
+        Text("MonitorStatus", "DEMO DATA · no live capture");
+        Text("LastUpdateLabel", "Demo · simulated traffic / example.test addresses");
+        Text("SelectedAdapterLabel", "Demo Ethernet · simulated adapter throughput");
+        Text("DownloadRate", "2.7 MiB/s"); Text("UploadRate", "860 KiB/s"); Text("AdapterStatus", "Up · demo");
+        Text("Ipv4Value", "192.0.2.10 (example)"); Text("GatewayValue", "192.0.2.1 (example)");
+        Text("MacValue", "02:00:00:00:00:10 (synthetic)"); Text("LinkSpeedValue", "1 Gbit/s · demo"); Text("WifiInfoValue", "Ethernet · demo adapter");
+        Text("DashboardCpuValue", "8% · demo"); Text("DashboardMemoryValue", "34% · demo");
+        Text("DashboardConnectionsValue", "3 demo flows"); Text("DashboardPacketsValue", "Simulated packet observations");
+        Find<ListBox>("AdapterList").Items.Add("Demo Ethernet\n192.0.2.10\nExample adapter · no system inventory");
+        Find<ListBox>("AdapterList").Foreground = ThemeService.Brush("E6F2E8");
+        Find<ListBox>("AdapterList").SelectedIndex = 0;
+        Find<ComboBox>("LanguageSelector").ItemsSource = LocalizationService.Languages;
+        Find<ComboBox>("LanguageSelector").SelectedValue = "en";
+        Find<ComboBox>("ThemeSelector").ItemsSource = new[] { new { Name = "Dark", Mode = ThemeMode.Dark }, new { Name = "Light", Mode = ThemeMode.Light } };
+        Find<ComboBox>("ThemeSelector").SelectedValue = ThemeMode.Dark;
+        var chart = Find<VisualTrafficChart>("ThroughputChart");
+        var system = Find<NetworkChart>("SystemActivityChart");
+        system.MinimumScale = 100;
+        var start = DateTime.UtcNow.AddSeconds(-59.5);
+        for (var index = 0; index < 120; index++)
+        {
+            chart.AddSample(300_000 + 2_500_000 * Math.Pow(Math.Max(0, Math.Sin(index * .11)), 5),
+                80_000 + 800_000 * Math.Pow(Math.Max(0, Math.Cos(index * .15)), 5), start.AddMilliseconds(index * 500));
+            system.AddSample(8 + 3 * Math.Sin(index * .12), 34 + Math.Sin(index * .07));
+        }
+        Text("ThroughputSummaryText", chart.Summary + " · simulated sample timeline");
+        var rows = new[]
+        {
+            new LiveTrafficRow("Demo Browser", @"C:\Demo\browser.exe", "203.0.113.20", "TCP") { Trust = ApplicationTrust.Trusted },
+            new LiveTrafficRow("Demo Sync", @"C:\Demo\sync.exe", "198.51.100.8", "TCP"),
+            new LiveTrafficRow("Demo Updater", @"C:\Demo\updater.exe", "203.0.113.30", "UDP")
+        };
+        for (var index = 0; index < rows.Length; index++) { rows[index].AddPacket(85_000 * (index + 1), true); rows[index].AddPacket(2_250_000 / (index + 1), false); }
+        Find<DataGrid>("LiveTrafficGrid").ItemsSource = rows;
+        Text("LiveTrafficStatus", "DEMO DATA · synthetic per-app flows; no packet capture is running.");
+        var tracker = new TrafficSourceTracker();
+        for (var index = 0; index < 72; index++)
+        {
+            var row = rows[index % rows.Length];
+            tracker.Observe(new(row.Host, "192.0.2.10", row.Protocol, 1400 + index * 10, 443, 40000, "", null, []), "192.0.2.10", row.Application, row.ExecutablePath);
+        }
+        var ipRows = tracker.TopIps(); var appRows = tracker.TopApplications();
+        Find<TreeView>("TopIpSourcesTree").ItemsSource = ipRows.Select(row => { var node = new TrafficSourceNode(row.Key) { IsExpanded = row == ipRows[0] }; node.Update(row, ipRows[0].Packets, "Example remote host"); return node; }).ToArray();
+        Find<TreeView>("TopSoftwareSourcesTree").ItemsSource = appRows.Select(row => { var node = new TrafficSourceNode(row.Key) { IsExpanded = row == appRows[0] }; node.Update(row, appRows[0].Bytes, byBytes: true); return node; }).ToArray();
+        Find<ListBox>("EventsList").ItemsSource = new[] { "DEMO · new local application: Demo Browser", "DEMO · possible scan-like pattern — review signal", "DEMO · repeated RDP connection pattern — verify independently", "DEMO · routine DNS rotation is quiet by default", "DEMO · all addresses shown are reserved examples" };
+        Text("SecurityStatusLabel", "Demo · synthetic observations"); Text("PacketCountLabel", "72 demo observations");
+        Text("PacketSummaryLabel", "Synthetic sample: TCP / UDP · 3 local demo applications");
+        Find<TextBox>("HexInspector").Text = "DEMO: no live packet payload or personal traffic is displayed.";
+        var message = new EmailMessage("billing@example.test", "reply@different.example.test", "demo@example.test", "Urgent: verify your account", "Please send your password and verification code immediately. https://example.test/verify");
+        Find<TextBox>("EmailFromInput").Text = message.From; Find<TextBox>("EmailReplyInput").Text = message.ReplyTo;
+        Find<TextBox>("EmailRecipientsInput").Text = message.Recipients; Find<TextBox>("EmailSubjectInput").Text = message.Subject;
+        Find<TextBox>("EmailBodyInput").Text = message.Body;
+        var result = EmailSafetyService.Analyze(message);
+        Text("EmailImportDetailsText", "DEMO MESSAGE · synthetic example.test content");
+        Text("EmailResultText", result.Summary + "\n\n" + string.Join("\n\n", result.Findings.Select(finding => "• " + finding)));
+        var creator = AboutContent.Creator;
+        Text("CreatorNameText", creator.Name); Text("CreatorLocationText", creator.Location);
+        Text("AboutVersionText", "Pulsatilla 1.0.0 · Community · MIT");
+        Find<FlowDocumentScrollViewer>("ReadmeViewer").Document = AboutContent.CreateReadmeDocument();
+        Find<FlowDocumentScrollViewer>("LicenseViewer").Document = AboutContent.CreateDocument("# MIT License\n\n" + AboutContent.LicenseText);
+        Find<FlowDocumentScrollViewer>("ServicesViewer").Document = AboutContent.CreateDocument(AboutContent.Services);
+        Find<FlowDocumentScrollViewer>("PrivacyViewer").Document = AboutContent.CreateDocument(AboutContent.Privacy);
+        var tabs = Find<TabControl>("MainTabs");
+        void Save(string name, int tabIndex)
+        {
+            tabs.SelectedIndex = tabIndex; window.UpdateLayout();
+            window.Dispatcher.Invoke(() => { }, DispatcherPriority.ApplicationIdle);
+            var bitmap = new RenderTargetBitmap(Width, Height, 96, 96, PixelFormats.Pbgra32); bitmap.Render(window);
+            var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
+            using var stream = File.Create(Path.Combine(output, name)); encoder.Save(stream);
+            Console.WriteLine("Saved " + name);
+        }
+        try
+        {
+            window.Show();
+            Save("dashboard-dark-en.png", 0); Save("live-traffic-dark-en.png", 1); Save("security-sources-dark-en.png", 6);
+            Find<TabControl>("ProtectionTabs").SelectedIndex = 2; Save("email-review-dark-en.png", 8); Save("about-dark-en.png", 9);
+            ThemeService.Apply(ThemeMode.Light); Find<ComboBox>("ThemeSelector").SelectedValue = ThemeMode.Light;
+            Save("dashboard-light-en.png", 0);
+            ThemeService.Apply(ThemeMode.Dark); Find<ComboBox>("ThemeSelector").SelectedValue = ThemeMode.Dark;
+            LocalizationService.SetLanguage("de", persist: false); LocalizationService.Apply(window);
+            Find<ComboBox>("LanguageSelector").SelectedValue = "de";
+            Text("MonitorStatus", "DEMODATEN · keine Live-Erfassung");
+            Text("LastUpdateLabel", "Demo · simulierte Daten / Beispieldaten");
+            Save("dashboard-dark-de.png", 0);
+        }
+        finally { window.Close(); app.Shutdown(); }
+    }
+}

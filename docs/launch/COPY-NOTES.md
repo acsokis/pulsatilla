@@ -6,9 +6,8 @@ by this copy preparation task.
 
 ## Links to verify before publication
 
-- Target repository: `https://github.com/acsokis/pulsatilla`. The repository had not been
-  verified public when this copy was prepared. The publishing workflow must confirm it is
-  public and accessible before using the posts. This URL appears in all four posts,
+- Public repository: `https://github.com/acsokis/pulsatilla`. Source publication and public
+  accessibility were verified on 2026-10-05. This URL appears in all four posts,
   `commercial-overview.md` and the JSON-LD example in `seo-geo.md`.
 - Creator contact: `https://www.linkedin.com/in/gabor-web/`. Provided by the creator;
   used in the commercial overview and JSON-LD author details. No unprovided email,
@@ -37,6 +36,12 @@ actual running session, describe it accurately and inspect device names, IPs, pa
 before publication. Label any generated visual “Illustration” / “Illustration”.
 
 ## Commercial status
+
+Voluntary development support is linked at `https://paypal.me/gaborcarter`, as provided
+by the creator. This is the public PayPal.Me handle, not the private PayPal profile-management
+URL. The application does not process payments. Support does not unlock features or buy a
+service; no charitable status or tax deductibility is claimed. The PayPal recipient/payment
+flow was not independently tested and no financial transaction was performed.
 
 The posts invite feedback and pilot discussions; they do not open sales or claim a service is
 operating. Update the text only when the actual service, pricing, terms and data handling exist.

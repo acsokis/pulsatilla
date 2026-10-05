@@ -25,6 +25,8 @@ traffic. Expanding a source IP can request a reverse-DNS label through the syste
 Public-IP GeoIP lookup explicitly contacts ipapi.co; private addresses are excluded from that request.
 Optional local explanations contact Ollama on `127.0.0.1:11434`; otherwise offline rules are used.
 Social/documentation links open the default browser when clicked; those sites apply their own policies.
+The voluntary PayPal support link also opens only on a click. Payment/account information
+is handled by PayPal; Pulsatilla receives no payment status and stores no payment details.
 
 ## Removing data
 

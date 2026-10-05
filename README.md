@@ -2,13 +2,45 @@
 
 **Network clarity. Security insight.**
 
-[Source on GitHub](https://github.com/acsokis/pulsatilla) · [Windows downloads](https://github.com/acsokis/pulsatilla/releases) · [English / German launch materials](docs/launch)
+[Source on GitHub](https://github.com/acsokis/pulsatilla) · [Windows downloads](https://github.com/acsokis/pulsatilla/releases) · [Support via PayPal](https://paypal.me/gaborcarter) · [English / German launch materials](docs/launch)
 
 Network monitoring, security awareness and local exposure review in one Windows desktop app.
 Created by **Gábor Kocsis**, based in Germany. The Community application is [MIT-licensed](LICENSE).
 Optional paid services are a separate [integration roadmap](docs/MONETIZATION.md), not active subscriptions.
 
 Windows network monitor and scanner built with C# and WPF on .NET 8. Targets Windows 10 and Windows 11 x64. No third-party packages are required.
+
+## Support development
+
+If Pulsatilla helps you, you can support its development voluntarily through
+[PayPal.Me / gaborcarter](https://paypal.me/gaborcarter). You choose the amount on PayPal.
+Support does not unlock features, buy a license or create a support contract; the MIT
+Community application remains available without payment or activation.
+The app opens the link only when clicked and does not process or store payment information.
+
+For potential setup, diagnostics, training or integration work, contact
+[Gábor Kocsis / Gabor Web on LinkedIn](https://www.linkedin.com/in/gabor-web/).
+These separate services are planned; no subscription or service price is published yet.
+
+## Download
+
+Download the Windows x64 ZIP from [GitHub Releases](https://github.com/acsokis/pulsatilla/releases),
+extract it and run `Pulsatilla.exe`. The compact package requires the **.NET 8 Windows Desktop
+Runtime x64**. Community 1.0.0 is an early release; the executable is currently unsigned.
+Use monitoring normally, and restart as Administrator only for packet capture or confirmed
+application firewall actions. Security findings are indicators to review, not attack proof.
+
+## Screenshots
+
+The following is the real WPF interface rendered with **synthetic demo data**. No personal
+traffic, device inventory, mailbox content or user profile is included.
+
+![Pulsatilla Dashboard with simulated amber download and purple upload rates](docs/launch/assets/screenshots/dashboard-dark-en.png)
+
+See the [screenshot gallery and English/German publication kit](docs/launch/README.md)
+for live traffic, IP/software sources, local email review, Light mode and a German dashboard.
+The kit also includes separately labeled AI-generated marketing illustrations, social posts,
+SEO/GEO copy and a [commercial overview](docs/launch/commercial-overview.md).
 
 ## Features
 

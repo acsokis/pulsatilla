@@ -80,6 +80,8 @@ internal static class ExtendedChecks
         var window = (Window)XamlReader.Parse(xaml);
         window.WindowStyle = WindowStyle.None; window.ShowInTaskbar = false; window.ShowActivated = false; window.Left = -20000; window.Top = -20000; window.Width = 1500; window.Height = 900;
         var tabs = (TabControl)window.FindName("MainTabs");
+        Assert((string)((Button)window.FindName("SupportButton")).Tag == ProductInfo.SupportUrl &&
+            ProductInfo.SupportUrl == "https://paypal.me/gaborcarter", "Voluntary support link is incorrect");
         ((TextBlock)window.FindName("CreatorNameText")).Text = profile.Name;
         ((TextBlock)window.FindName("CreatorLocationText")).Text = profile.Location;
         ((FlowDocumentScrollViewer)window.FindName("ReadmeViewer")).Document = AboutContent.CreateReadmeDocument();

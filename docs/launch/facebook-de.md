@@ -12,4 +12,7 @@ Ich bin Gábor Kocsis und lebe in Deutschland. Du möchtest die App ausprobieren
 
 Projekt: https://github.com/acsokis/pulsatilla
 
+Freiwillige Unterstützung der Entwicklung: https://paypal.me/gaborcarter
+Der MIT-Kern bleibt ohne Zahlung verfügbar; Unterstützung ist kein Kauf einer Leistung.
+
 #Pulsatilla #OpenSource #Windows #NetzwerkMonitoring

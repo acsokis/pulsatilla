@@ -16,6 +16,8 @@ These paid services are planned; pricing, service terms and subscriptions are no
 I’m Gábor Kocsis, based in Germany. I’m looking for feedback and conversations with Windows users, IT consultants and small teams interested in a setup/support pilot or integration work.
 
 Explore the project: https://github.com/acsokis/pulsatilla
+Support development voluntarily: https://paypal.me/gaborcarter
+Support does not unlock features or buy a service; the MIT Community core stays available without payment.
 Interested in discussing a pilot? Message me here.
 
 #Pulsatilla #OpenSource #Windows #NetworkMonitoring #SoftwareDevelopment

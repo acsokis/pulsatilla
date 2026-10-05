@@ -8,4 +8,5 @@ public static class ProductInfo
     public const string Description = "Network monitoring, security awareness and local exposure review.";
     public const string Edition = "Community";
     public const string License = "MIT";
+    public const string SupportUrl = "https://paypal.me/gaborcarter";
 }
