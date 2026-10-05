@@ -50,6 +50,8 @@ To share the project, open [the copy-and-paste publication page](docs/launch/sha
 locally after downloading the repository. It includes English/German LinkedIn and Facebook
 posts, longer articles, copy buttons and downloadable images. On GitHub, use the
 [plain-text post files](docs/launch/README.md#ready-to-copy-posts).
+The complete [publication ZIP](https://github.com/acsokis/pulsatilla/releases/download/v1.0.1/pulsatilla-publication-kit-1.0.1.zip)
+contains all texts and images with the local copy page.
 
 ## Features
 

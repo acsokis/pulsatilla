@@ -21,7 +21,17 @@ try {
     New-Item -ItemType Directory -Path $outputPath | Out-Null
     Copy-Item -Path 'docs/launch/*' -Destination $outputPath -Recurse
     Copy-Item -LiteralPath 'LICENSE' -Destination $outputPath
-    Compress-Archive -LiteralPath $outputPath -DestinationPath $zipPath
+    Add-Type -AssemblyName System.IO.Compression
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    $archive = [IO.Compression.ZipFile]::Open($zipPath, [IO.Compression.ZipArchiveMode]::Create)
+    try {
+        $folderName = [IO.Path]::GetFileName($outputPath)
+        foreach ($file in Get-ChildItem -LiteralPath $outputPath -Recurse -File | Sort-Object FullName) {
+            $relativeName = $file.FullName.Substring($outputPath.Length + 1).Replace('\', '/')
+            [IO.Compression.ZipFileExtensions]::CreateEntryFromFile($archive, $file.FullName,
+                ($folderName + '/' + $relativeName), [IO.Compression.CompressionLevel]::Optimal) | Out-Null
+        }
+    } finally { $archive.Dispose() }
     $hash = (Get-FileHash -LiteralPath $zipPath -Algorithm SHA256).Hash.ToLowerInvariant()
     [IO.File]::WriteAllText(($zipPath + '.sha256'), ($hash + '  ' + [IO.Path]::GetFileName($zipPath) + "`n"), [Text.UTF8Encoding]::new($false))
     Write-Output "Publication kit: $zipPath"

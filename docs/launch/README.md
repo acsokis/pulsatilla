@@ -3,6 +3,8 @@
 English and German launch materials by Gabor Web / Gábor Kocsis, prepared on 2026-10-05.
 The source project is public at [acsokis/pulsatilla](https://github.com/acsokis/pulsatilla).
 Download the Community application from [GitHub Releases](https://github.com/acsokis/pulsatilla/releases).
+Get the complete [share-ready publication ZIP](https://github.com/acsokis/pulsatilla/releases/download/v1.0.1/pulsatilla-publication-kit-1.0.1.zip),
+extract it and open `share.html` for the copy buttons and image downloads.
 
 ## Ready-to-copy posts
 
