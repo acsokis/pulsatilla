@@ -1,0 +1,22 @@
+name: Bug report
+description: Report a reproducible Pulsatilla issue using synthetic data.
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Pulsatilla and Windows versions
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps and expected behavior
+      description: Exclude personal logs, email bodies, captured traffic and credentials.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior and sanitized error
+    validations:
+      required: true

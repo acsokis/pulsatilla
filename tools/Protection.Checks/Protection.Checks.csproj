@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType><TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../Pulsatilla.Wpf/ProductInfo.cs" Link="ProductInfo.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/AppStorage.cs" Link="AppStorage.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/ExposureProvider.cs" Link="ExposureProvider.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/WindowsFirewallRuleService.cs" Link="WindowsFirewallRuleService.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/ThemeService.cs" Link="ThemeService.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/AboutContent.cs" Link="AboutContent.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/TrafficSourceTracker.cs" Link="TrafficSourceTracker.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/VisualTrafficChart.cs" Link="VisualTrafficChart.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/SecurityEventPolicy.cs" Link="SecurityEventPolicy.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/EmailAddressRules.cs" Link="EmailAddressRules.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/LocalEmailParser.cs" Link="LocalEmailParser.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/LocalExposureService.cs" Link="LocalExposureService.cs" />
+    <EmbeddedResource Include="../../Pulsatilla.Wpf/Resources/theme-palette.json" LogicalName="Pulsatilla.Wpf.ThemePalette.json" />
+    <EmbeddedResource Include="../../Pulsatilla.Wpf/Resources/CreatorProfile.json" LogicalName="Pulsatilla.Wpf.CreatorProfile.json" />
+    <EmbeddedResource Include="../../README.md" LogicalName="Pulsatilla.Wpf.README.md" />
+    <EmbeddedResource Include="../../LICENSE" LogicalName="Pulsatilla.Wpf.LICENSE" />
+    <EmbeddedResource Include="../../docs/MONETIZATION.md" LogicalName="Pulsatilla.Wpf.Services.md" />
+    <EmbeddedResource Include="../../docs/PRIVACY.md" LogicalName="Pulsatilla.Wpf.Privacy.md" />
+    <Compile Include="../../Pulsatilla.Wpf/MatrixRain.cs" Link="MatrixRain.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/PacketCaptureService.cs" Link="PacketCaptureService.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/BoundedPacketQueue.cs" Link="BoundedPacketQueue.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/NetworkThreatMonitor.cs" Link="NetworkThreatMonitor.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/ProtectionSettingsStore.cs" Link="ProtectionSettingsStore.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/EmailSafetyService.cs" Link="EmailSafetyService.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/LocalizationService.cs" Link="LocalizationService.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/NetworkChart.cs" Link="NetworkChart.cs" />
+    <EmbeddedResource Include="../../Pulsatilla.Wpf/Resources/Locales/*.json" LogicalName="Pulsatilla.Wpf.Resources.Locales.%(Filename)%(Extension)" />
+  </ItemGroup>
+</Project>

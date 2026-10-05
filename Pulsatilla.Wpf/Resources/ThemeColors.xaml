@@ -1,0 +1,132 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Color x:Key="ThemeColor_101711">#101711</Color>
+    <SolidColorBrush x:Key="Theme_101711" Color="{DynamicResource ThemeColor_101711}" />
+    <Color x:Key="ThemeColor_112318">#112318</Color>
+    <SolidColorBrush x:Key="Theme_112318" Color="{DynamicResource ThemeColor_112318}" />
+    <Color x:Key="ThemeColor_203728">#203728</Color>
+    <SolidColorBrush x:Key="Theme_203728" Color="{DynamicResource ThemeColor_203728}" />
+    <Color x:Key="ThemeColor_477853">#477853</Color>
+    <SolidColorBrush x:Key="Theme_477853" Color="{DynamicResource ThemeColor_477853}" />
+    <Color x:Key="ThemeColor_829488">#829488</Color>
+    <SolidColorBrush x:Key="Theme_829488" Color="{DynamicResource ThemeColor_829488}" />
+    <Color x:Key="ThemeColor_050807">#050807</Color>
+    <SolidColorBrush x:Key="Theme_050807" Color="{DynamicResource ThemeColor_050807}" />
+    <Color x:Key="ThemeColor_07100B">#07100B</Color>
+    <SolidColorBrush x:Key="Theme_07100B" Color="{DynamicResource ThemeColor_07100B}" />
+    <Color x:Key="ThemeColor_09100B">#09100B</Color>
+    <SolidColorBrush x:Key="Theme_09100B" Color="{DynamicResource ThemeColor_09100B}" />
+    <Color x:Key="ThemeColor_0C1810">#0C1810</Color>
+    <SolidColorBrush x:Key="Theme_0C1810" Color="{DynamicResource ThemeColor_0C1810}" />
+    <Color x:Key="ThemeColor_101B13">#101B13</Color>
+    <SolidColorBrush x:Key="Theme_101B13" Color="{DynamicResource ThemeColor_101B13}" />
+    <Color x:Key="ThemeColor_14241A">#14241A</Color>
+    <SolidColorBrush x:Key="Theme_14241A" Color="{DynamicResource ThemeColor_14241A}" />
+    <Color x:Key="ThemeColor_162D1F">#162D1F</Color>
+    <SolidColorBrush x:Key="Theme_162D1F" Color="{DynamicResource ThemeColor_162D1F}" />
+    <Color x:Key="ThemeColor_200E12">#200E12</Color>
+    <SolidColorBrush x:Key="Theme_200E12" Color="{DynamicResource ThemeColor_200E12}" />
+    <Color x:Key="ThemeColor_254C35">#254C35</Color>
+    <SolidColorBrush x:Key="Theme_254C35" Color="{DynamicResource ThemeColor_254C35}" />
+    <Color x:Key="ThemeColor_2D0F14">#2D0F14</Color>
+    <SolidColorBrush x:Key="Theme_2D0F14" Color="{DynamicResource ThemeColor_2D0F14}" />
+    <Color x:Key="ThemeColor_305C42">#305C42</Color>
+    <SolidColorBrush x:Key="Theme_305C42" Color="{DynamicResource ThemeColor_305C42}" />
+    <Color x:Key="ThemeColor_31513B">#31513B</Color>
+    <SolidColorBrush x:Key="Theme_31513B" Color="{DynamicResource ThemeColor_31513B}" />
+    <Color x:Key="ThemeColor_384C3D">#384C3D</Color>
+    <SolidColorBrush x:Key="Theme_384C3D" Color="{DynamicResource ThemeColor_384C3D}" />
+    <Color x:Key="ThemeColor_49131B">#49131B</Color>
+    <SolidColorBrush x:Key="Theme_49131B" Color="{DynamicResource ThemeColor_49131B}" />
+    <Color x:Key="ThemeColor_60816A">#60816A</Color>
+    <SolidColorBrush x:Key="Theme_60816A" Color="{DynamicResource ThemeColor_60816A}" />
+    <Color x:Key="ThemeColor_69D8D3">#69D8D3</Color>
+    <SolidColorBrush x:Key="Theme_69D8D3" Color="{DynamicResource ThemeColor_69D8D3}" />
+    <Color x:Key="ThemeColor_71E486">#71E486</Color>
+    <SolidColorBrush x:Key="Theme_71E486" Color="{DynamicResource ThemeColor_71E486}" />
+    <Color x:Key="ThemeColor_75DE88">#75DE88</Color>
+    <SolidColorBrush x:Key="Theme_75DE88" Color="{DynamicResource ThemeColor_75DE88}" />
+    <Color x:Key="ThemeColor_79313A">#79313A</Color>
+    <SolidColorBrush x:Key="Theme_79313A" Color="{DynamicResource ThemeColor_79313A}" />
+    <Color x:Key="ThemeColor_82C796">#82C796</Color>
+    <SolidColorBrush x:Key="Theme_82C796" Color="{DynamicResource ThemeColor_82C796}" />
+    <Color x:Key="ThemeColor_83E89A">#83E89A</Color>
+    <SolidColorBrush x:Key="Theme_83E89A" Color="{DynamicResource ThemeColor_83E89A}" />
+    <Color x:Key="ThemeColor_881C28">#881C28</Color>
+    <SolidColorBrush x:Key="Theme_881C28" Color="{DynamicResource ThemeColor_881C28}" />
+    <Color x:Key="ThemeColor_89E7AC">#89E7AC</Color>
+    <SolidColorBrush x:Key="Theme_89E7AC" Color="{DynamicResource ThemeColor_89E7AC}" />
+    <Color x:Key="ThemeColor_8EA495">#8EA495</Color>
+    <SolidColorBrush x:Key="Theme_8EA495" Color="{DynamicResource ThemeColor_8EA495}" />
+    <Color x:Key="ThemeColor_91A69A">#91A69A</Color>
+    <SolidColorBrush x:Key="Theme_91A69A" Color="{DynamicResource ThemeColor_91A69A}" />
+    <Color x:Key="ThemeColor_98E9AE">#98E9AE</Color>
+    <SolidColorBrush x:Key="Theme_98E9AE" Color="{DynamicResource ThemeColor_98E9AE}" />
+    <Color x:Key="ThemeColor_9AA99F">#9AA99F</Color>
+    <SolidColorBrush x:Key="Theme_9AA99F" Color="{DynamicResource ThemeColor_9AA99F}" />
+    <Color x:Key="ThemeColor_A0B0A5">#A0B0A5</Color>
+    <SolidColorBrush x:Key="Theme_A0B0A5" Color="{DynamicResource ThemeColor_A0B0A5}" />
+    <Color x:Key="ThemeColor_A8B9AC">#A8B9AC</Color>
+    <SolidColorBrush x:Key="Theme_A8B9AC" Color="{DynamicResource ThemeColor_A8B9AC}" />
+    <Color x:Key="ThemeColor_AFC5B7">#AFC5B7</Color>
+    <SolidColorBrush x:Key="Theme_AFC5B7" Color="{DynamicResource ThemeColor_AFC5B7}" />
+    <Color x:Key="ThemeColor_B5D9BA">#B5D9BA</Color>
+    <SolidColorBrush x:Key="Theme_B5D9BA" Color="{DynamicResource ThemeColor_B5D9BA}" />
+    <Color x:Key="ThemeColor_B8D2BE">#B8D2BE</Color>
+    <SolidColorBrush x:Key="Theme_B8D2BE" Color="{DynamicResource ThemeColor_B8D2BE}" />
+    <Color x:Key="ThemeColor_C2A7AA">#C2A7AA</Color>
+    <SolidColorBrush x:Key="Theme_C2A7AA" Color="{DynamicResource ThemeColor_C2A7AA}" />
+    <Color x:Key="ThemeColor_C2CEC5">#C2CEC5</Color>
+    <SolidColorBrush x:Key="Theme_C2CEC5" Color="{DynamicResource ThemeColor_C2CEC5}" />
+    <Color x:Key="ThemeColor_C3F1CF">#C3F1CF</Color>
+    <SolidColorBrush x:Key="Theme_C3F1CF" Color="{DynamicResource ThemeColor_C3F1CF}" />
+    <Color x:Key="ThemeColor_C8DDCF">#C8DDCF</Color>
+    <SolidColorBrush x:Key="Theme_C8DDCF" Color="{DynamicResource ThemeColor_C8DDCF}" />
+    <Color x:Key="ThemeColor_CDDCD2">#CDDCD2</Color>
+    <SolidColorBrush x:Key="Theme_CDDCD2" Color="{DynamicResource ThemeColor_CDDCD2}" />
+    <Color x:Key="ThemeColor_CEDFD3">#CEDFD3</Color>
+    <SolidColorBrush x:Key="Theme_CEDFD3" Color="{DynamicResource ThemeColor_CEDFD3}" />
+    <Color x:Key="ThemeColor_D6E2D8">#D6E2D8</Color>
+    <SolidColorBrush x:Key="Theme_D6E2D8" Color="{DynamicResource ThemeColor_D6E2D8}" />
+    <Color x:Key="ThemeColor_D8E4DA">#D8E4DA</Color>
+    <SolidColorBrush x:Key="Theme_D8E4DA" Color="{DynamicResource ThemeColor_D8E4DA}" />
+    <Color x:Key="ThemeColor_D8FFE0">#D8FFE0</Color>
+    <SolidColorBrush x:Key="Theme_D8FFE0" Color="{DynamicResource ThemeColor_D8FFE0}" />
+    <Color x:Key="ThemeColor_DDB15B">#DDB15B</Color>
+    <SolidColorBrush x:Key="Theme_DDB15B" Color="{DynamicResource ThemeColor_DDB15B}" />
+    <Color x:Key="ThemeColor_E2EBE4">#E2EBE4</Color>
+    <SolidColorBrush x:Key="Theme_E2EBE4" Color="{DynamicResource ThemeColor_E2EBE4}" />
+    <Color x:Key="ThemeColor_E2F3E7">#E2F3E7</Color>
+    <SolidColorBrush x:Key="Theme_E2F3E7" Color="{DynamicResource ThemeColor_E2F3E7}" />
+    <Color x:Key="ThemeColor_E5C16A">#E5C16A</Color>
+    <SolidColorBrush x:Key="Theme_E5C16A" Color="{DynamicResource ThemeColor_E5C16A}" />
+    <Color x:Key="ThemeColor_E6F2E8">#E6F2E8</Color>
+    <SolidColorBrush x:Key="Theme_E6F2E8" Color="{DynamicResource ThemeColor_E6F2E8}" />
+    <Color x:Key="ThemeColor_EBF8EF">#EBF8EF</Color>
+    <SolidColorBrush x:Key="Theme_EBF8EF" Color="{DynamicResource ThemeColor_EBF8EF}" />
+    <Color x:Key="ThemeColor_ED0A100D">#ED0A100D</Color>
+    <SolidColorBrush x:Key="Theme_ED0A100D" Color="{DynamicResource ThemeColor_ED0A100D}" />
+    <Color x:Key="ThemeColor_F0F5F1">#F0F5F1</Color>
+    <SolidColorBrush x:Key="Theme_F0F5F1" Color="{DynamicResource ThemeColor_F0F5F1}" />
+    <Color x:Key="ThemeColor_F1F8F2">#F1F8F2</Color>
+    <SolidColorBrush x:Key="Theme_F1F8F2" Color="{DynamicResource ThemeColor_F1F8F2}" />
+    <Color x:Key="ThemeColor_FF3A4A">#FF3A4A</Color>
+    <SolidColorBrush x:Key="Theme_FF3A4A" Color="{DynamicResource ThemeColor_FF3A4A}" />
+    <Color x:Key="ThemeColor_FF4658">#FF4658</Color>
+    <SolidColorBrush x:Key="Theme_FF4658" Color="{DynamicResource ThemeColor_FF4658}" />
+    <Color x:Key="ThemeColor_FF707C">#FF707C</Color>
+    <SolidColorBrush x:Key="Theme_FF707C" Color="{DynamicResource ThemeColor_FF707C}" />
+    <Color x:Key="ThemeColor_FF7784">#FF7784</Color>
+    <SolidColorBrush x:Key="Theme_FF7784" Color="{DynamicResource ThemeColor_FF7784}" />
+    <Color x:Key="ThemeColor_FF969E">#FF969E</Color>
+    <SolidColorBrush x:Key="Theme_FF969E" Color="{DynamicResource ThemeColor_FF969E}" />
+    <Color x:Key="ThemeColor_FFD26F">#FFD26F</Color>
+    <SolidColorBrush x:Key="Theme_FFD26F" Color="{DynamicResource ThemeColor_FFD26F}" />
+    <Color x:Key="ThemeColor_FFE0E2">#FFE0E2</Color>
+    <SolidColorBrush x:Key="Theme_FFE0E2" Color="{DynamicResource ThemeColor_FFE0E2}" />
+    <Color x:Key="ThemeColor_FFFFFF">#FFFFFF</Color>
+    <SolidColorBrush x:Key="Theme_FFFFFF" Color="{DynamicResource ThemeColor_FFFFFF}" />
+    <Color x:Key="ThemeColor_F6BE52">#F6BE52</Color>
+    <SolidColorBrush x:Key="Theme_F6BE52" Color="{DynamicResource ThemeColor_F6BE52}" />
+    <Color x:Key="ThemeColor_AC91FA">#AC91FA</Color>
+    <SolidColorBrush x:Key="Theme_AC91FA" Color="{DynamicResource ThemeColor_AC91FA}" />
+</ResourceDictionary>

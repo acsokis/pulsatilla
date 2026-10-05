@@ -1,0 +1,34 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>Pulsatilla</AssemblyName>
+    <RootNamespace>Pulsatilla.Wpf</RootNamespace>
+    <Version>1.0.0</Version>
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
+    <Product>Pulsatilla</Product>
+    <Title>Pulsatilla</Title>
+    <Description>Network clarity. Security insight. Network monitoring, security awareness and local exposure review.</Description>
+    <Authors>Gábor Kocsis</Authors>
+    <Company>Gabor Web</Company>
+    <Copyright>Copyright © 2026 Gábor Kocsis</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Resources/theme-palette.json" LogicalName="Pulsatilla.Wpf.ThemePalette.json" />
+    <EmbeddedResource Include="../README.md" LogicalName="Pulsatilla.Wpf.README.md" />
+    <EmbeddedResource Include="Resources/CreatorProfile.json" LogicalName="Pulsatilla.Wpf.CreatorProfile.json" />
+    <EmbeddedResource Include="../LICENSE" LogicalName="Pulsatilla.Wpf.LICENSE" />
+    <EmbeddedResource Include="../docs/MONETIZATION.md" LogicalName="Pulsatilla.Wpf.Services.md" />
+    <EmbeddedResource Include="../docs/PRIVACY.md" LogicalName="Pulsatilla.Wpf.Privacy.md" />
+    <None Remove="Resources\Locales\*.json" />
+    <EmbeddedResource Include="Resources\Locales\*.json"
+                      LogicalName="Pulsatilla.Wpf.Resources.Locales.%(Filename)%(Extension)" />
+  </ItemGroup>
+
+</Project>

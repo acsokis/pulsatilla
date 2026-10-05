@@ -1,0 +1,617 @@
+<Window x:Class="Pulsatilla.Wpf.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:Pulsatilla.Wpf"
+        Title="{DynamicResource Loc_B3CF963023EA}" Height="900" Width="1500"
+        MinHeight="700" MinWidth="1120" Background="{DynamicResource Theme_050807}"
+        WindowStartupLocation="CenterScreen">
+    <Window.Resources>
+        <SolidColorBrush x:Key="Panel" Color="{DynamicResource ThemeColor_ED0A100D}" />
+        <SolidColorBrush x:Key="BorderLine" Color="{DynamicResource ThemeColor_31513B}" />
+        <Style x:Key="PanelBorder" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource Panel}" />
+            <Setter Property="BorderBrush" Value="{StaticResource BorderLine}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="18" />
+        </Style>
+        <Style x:Key="ActionButton" TargetType="Button">
+            <Setter Property="Foreground" Value="{DynamicResource Theme_D8FFE0}" />
+            <Setter Property="Background" Value="{DynamicResource Theme_14241A}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Theme_477853}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Padding" Value="14,9" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template"><Setter.Value>
+                <ControlTemplate TargetType="Button">
+                    <Border x:Name="ButtonBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="3" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" RecognizesAccessKey="True" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="ButtonBorder" Property="Background" Value="{DynamicResource Theme_254C35}" /></Trigger>
+                        <Trigger Property="IsPressed" Value="True"><Setter TargetName="ButtonBorder" Property="Background" Value="{DynamicResource Theme_305C42}" /></Trigger>
+                        <Trigger Property="IsKeyboardFocused" Value="True"><Setter TargetName="ButtonBorder" Property="BorderBrush" Value="{DynamicResource Theme_82C796}" /></Trigger>
+                        <Trigger Property="IsEnabled" Value="False"><Setter Property="Opacity" Value="0.45" /></Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value></Setter>
+        </Style>
+        <Style x:Key="TrafficToggle" TargetType="ToggleButton">
+            <Setter Property="Background" Value="{DynamicResource Theme_14241A}" /><Setter Property="BorderBrush" Value="{DynamicResource Theme_477853}" />
+            <Setter Property="BorderThickness" Value="1" /><Setter Property="Padding" Value="9,4" /><Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template"><Setter.Value>
+                <ControlTemplate TargetType="ToggleButton">
+                    <Border x:Name="ToggleBorder" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1" CornerRadius="3" Padding="{TemplateBinding Padding}">
+                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsChecked" Value="False"><Setter Property="Opacity" Value="0.55" /></Trigger>
+                        <Trigger Property="IsChecked" Value="True"><Setter TargetName="ToggleBorder" Property="BorderBrush" Value="{Binding Foreground, RelativeSource={RelativeSource TemplatedParent}}" /></Trigger>
+                        <Trigger Property="IsMouseOver" Value="True"><Setter TargetName="ToggleBorder" Property="Background" Value="{DynamicResource Theme_254C35}" /></Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value></Setter>
+        </Style>
+        <Style x:Key="ProtectionInput" TargetType="TextBox">
+            <Setter Property="Background" Value="{DynamicResource Theme_07100B}" /><Setter Property="Foreground" Value="{DynamicResource Theme_F0F5F1}" />
+            <Setter Property="BorderBrush" Value="{DynamicResource Theme_60816A}" /><Setter Property="Padding" Value="8" />
+            <Setter Property="FlowDirection" Value="LeftToRight" />
+        </Style>
+        <Style x:Key="ProtectionLabel" TargetType="TextBlock">
+            <Setter Property="Foreground" Value="{DynamicResource Theme_CEDFD3}" /><Setter Property="Margin" Value="0,10,0,5" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+        <HierarchicalDataTemplate DataType="{x:Type local:TrafficSourceNode}" ItemsSource="{Binding Details}">
+            <StackPanel Margin="0,3,0,5">
+                <TextBlock Text="{Binding Header}" Foreground="{DynamicResource Theme_E6F2E8}" TextWrapping="Wrap" FontSize="11" />
+                <ProgressBar Value="{Binding Weight, Mode=OneWay}" Maximum="1" Height="3" Margin="0,5,0,0" Foreground="{DynamicResource Theme_75DE88}" Background="{DynamicResource Theme_203728}" BorderThickness="0" />
+            </StackPanel>
+        </HierarchicalDataTemplate>
+        <Style x:Key="SourceTreeItem" TargetType="TreeViewItem">
+            <Setter Property="Foreground" Value="{DynamicResource Theme_CEDFD3}" />
+            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+        </Style>
+    </Window.Resources>
+    <Grid>
+        <local:MatrixRain x:Name="MatrixBackground" FlowDirection="LeftToRight" Opacity="0.26" IsHitTestVisible="False" />
+        <Grid Margin="24">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="70" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="28" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Margin="0,0,0,16">
+                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Width="4" Height="42" Background="{DynamicResource Theme_71E486}" Margin="0,0,14,0" />
+                    <StackPanel>
+                        <TextBlock Text="PULSATILLA" Foreground="{DynamicResource Theme_F1F8F2}" FontSize="24" FontWeight="Bold" />
+                        <TextBlock Text="{x:Static local:ProductInfo.Tagline}" Foreground="{DynamicResource Theme_8EA495}" FontSize="10" />
+                    </StackPanel>
+                </StackPanel>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Ellipse x:Name="MonitorIndicator" Width="8" Height="8" Fill="{DynamicResource Theme_75DE88}" Margin="0,0,8,0" />
+                    <TextBlock x:Name="MonitorStatus" Text="{DynamicResource Loc_3DCFCDA1B99B}" Foreground="{DynamicResource Theme_B5D9BA}" FontSize="11" VerticalAlignment="Center" Margin="0,0,18,0" />
+                    <Button Content="{DynamicResource Loc_9D271E98256B}" Style="{StaticResource ActionButton}" Click="RefreshButton_Click" />
+                    <Button x:Name="DashboardRestartAdminButton" Content="{DynamicResource Loc_6F6E12FFD0D7}" Style="{StaticResource ActionButton}" Margin="8,0,0,0" Click="RestartElevatedButton_Click" />
+                    <Button Content="{DynamicResource Loc_3664895579F0}" Style="{StaticResource ActionButton}" Margin="8,0,0,0" Click="ExportButton_Click" />
+                </StackPanel>
+            </Grid>
+                        <TabControl x:Name="MainTabs" Grid.Row="1" Background="Transparent" Foreground="{DynamicResource Theme_D8E4DA}" BorderThickness="0">
+                            <TabItem Header="{DynamicResource Loc_67B696468610}" Background="{DynamicResource Theme_101B13}" Foreground="{DynamicResource Theme_D8E4DA}">
+                            <Grid>
+                <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+                <Border x:Name="DashboardAlertBanner" Grid.Row="0" Grid.ColumnSpan="3" Visibility="Collapsed"
+                        Background="{DynamicResource Theme_49131B}" BorderBrush="{DynamicResource Theme_FF4658}" BorderThickness="1" CornerRadius="5"
+                        Padding="12,9" Margin="0,0,0,12">
+                    <DockPanel LastChildFill="True">
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                            <Button Content="{DynamicResource Loc_10F2CF9AAEC6}" Style="{StaticResource ActionButton}" Click="OpenAlertsButton_Click" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBlock Text="!" Foreground="{DynamicResource Theme_FFFFFF}" FontSize="20" FontWeight="Bold" Margin="0,0,12,0" />
+                            <StackPanel>
+                                <TextBlock x:Name="DashboardAlertTitle" Text="{DynamicResource Loc_7CD6894A1682}" Foreground="{DynamicResource Theme_FFFFFF}" FontSize="14" FontWeight="Bold" />
+                                <TextBlock x:Name="DashboardAlertText" Text="{DynamicResource Loc_AC3C4AC0DD59}" Foreground="{DynamicResource Theme_FFE0E2}" FontSize="11" TextWrapping="Wrap" />
+                            </StackPanel>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"><Grid>
+                <Grid.ColumnDefinitions><ColumnDefinition Width="290" /><ColumnDefinition Width="16" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                <Border Grid.Row="0" Grid.Column="0" Style="{StaticResource PanelBorder}">
+                    <DockPanel>
+                        <StackPanel DockPanel.Dock="Top">
+                            <TextBlock Text="{DynamicResource Loc_AC78441B1306}" Foreground="{DynamicResource Theme_91A69A}" FontSize="11" FontWeight="SemiBold" />
+                            <TextBlock Text="{DynamicResource Loc_860D69C83FB7}" Foreground="{DynamicResource Theme_A0B0A5}" FontSize="11" TextWrapping="Wrap" Margin="0,5,0,14" />
+                        </StackPanel>
+                        <ListBox x:Name="AdapterList" Background="Transparent" BorderThickness="0" SelectionChanged="AdapterList_SelectionChanged" />
+                    </DockPanel>
+                </Border>
+                <Grid Grid.Row="0" Grid.Column="2">
+                    <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="16" /><RowDefinition Height="*" MinHeight="310" /><RowDefinition Height="16" /><RowDefinition Height="250" /></Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="16" /><ColumnDefinition Width="*" /><ColumnDefinition Width="16" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Style="{StaticResource PanelBorder}" Padding="16,14">
+                            <StackPanel><TextBlock Text="{DynamicResource Loc_ADAA62FA4EDC}" Foreground="{DynamicResource Theme_91A69A}" FontSize="10" FontWeight="SemiBold" /><TextBlock x:Name="DownloadRate" Text="0 B/s" Foreground="{DynamicResource Theme_F6BE52}" FontSize="25" FontWeight="SemiBold" Margin="0,7,0,0" /></StackPanel>
+                        </Border>
+                        <Border Grid.Column="2" Style="{StaticResource PanelBorder}" Padding="16,14">
+                            <StackPanel><TextBlock Text="{DynamicResource Loc_C8B9EE3E77F2}" Foreground="{DynamicResource Theme_91A69A}" FontSize="10" FontWeight="SemiBold" /><TextBlock x:Name="UploadRate" Text="0 B/s" Foreground="{DynamicResource Theme_AC91FA}" FontSize="25" FontWeight="SemiBold" Margin="0,7,0,0" /></StackPanel>
+                        </Border>
+                        <Border Grid.Column="4" Style="{StaticResource PanelBorder}" Padding="16,14">
+                            <StackPanel><TextBlock Text="{DynamicResource Loc_761F67D5191A}" Foreground="{DynamicResource Theme_91A69A}" FontSize="10" FontWeight="SemiBold" /><TextBlock x:Name="AdapterStatus" Text="{DynamicResource Loc_83A3D0A902C8}" Foreground="{DynamicResource Theme_E6F2E8}" FontSize="17" FontWeight="SemiBold" Margin="0,8,0,0" /></StackPanel>
+                        </Border>
+                    </Grid>
+                    <Border Grid.Row="2" Style="{StaticResource PanelBorder}" Padding="18,16,18,12">
+                        <Grid>
+                            <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                            <StackPanel Margin="0,0,0,8">
+                                <TextBlock Text="{DynamicResource Loc_554167595C20}" Foreground="{DynamicResource Theme_E6F2E8}" FontSize="16" FontWeight="SemiBold" />
+                                <TextBlock x:Name="SelectedAdapterLabel" Text="{DynamicResource Loc_513E138B6DB2}" Foreground="{DynamicResource Theme_829488}" FontSize="11" Margin="0,3,0,5" />
+                                <WrapPanel VerticalAlignment="Center">
+                                    <ToggleButton x:Name="ThroughputDownloadToggle" Content="↓ Download" Style="{StaticResource TrafficToggle}" IsChecked="True" Click="ThroughputSeriesButton_Click" Margin="0,0,6,4" Foreground="{DynamicResource Theme_F6BE52}" />
+                                    <ToggleButton x:Name="ThroughputUploadToggle" Content="↑ Upload" Style="{StaticResource TrafficToggle}" IsChecked="True" Click="ThroughputSeriesButton_Click" Margin="0,0,12,4" Foreground="{DynamicResource Theme_AC91FA}" />
+                                    <ComboBox x:Name="ThroughputRangeBox" Width="92" SelectedIndex="0" Margin="0,0,8,4" SelectionChanged="ThroughputRangeBox_SelectionChanged">
+                                        <ComboBoxItem Content="1 minute" /><ComboBoxItem Content="5 minutes" /><ComboBoxItem Content="15 minutes" />
+                                    </ComboBox>
+                                    <Button x:Name="ThroughputFreezeButton" Content="Freeze view" Click="ThroughputFreezeButton_Click" Style="{StaticResource ActionButton}" Padding="10,5" Margin="0,0,0,4" />
+                                </WrapPanel>
+                            </StackPanel>
+                            <local:VisualTrafficChart x:Name="ThroughputChart" Grid.Row="1" />
+                            <TextBlock Grid.Row="2" x:Name="ThroughputSummaryText" Foreground="{DynamicResource Theme_91A69A}" FontSize="10" TextWrapping="Wrap" Margin="0,4,0,0" />
+                        </Grid>
+                    </Border>
+                    <Grid Grid.Row="4">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="1.2*" /><ColumnDefinition Width="16" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Style="{StaticResource PanelBorder}">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource Loc_A2741046959F}" Foreground="{DynamicResource Theme_E6F2E8}" FontSize="16" FontWeight="SemiBold" Margin="0,0,0,13" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="100" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions><RowDefinition Height="30" /><RowDefinition Height="30" /><RowDefinition Height="30" /><RowDefinition Height="30" /><RowDefinition Height="30" /></Grid.RowDefinitions>
+                                    <TextBlock Text="{DynamicResource Loc_B12B510BD093}" Foreground="{DynamicResource Theme_829488}" FontSize="12" /><TextBlock x:Name="Ipv4Value" Grid.Column="1" Text="-" Foreground="{DynamicResource Theme_D6E2D8}" FontSize="12" />
+                                    <TextBlock Text="{DynamicResource Loc_41ED52921661}" Grid.Row="1" Foreground="{DynamicResource Theme_829488}" FontSize="12" /><TextBlock x:Name="GatewayValue" Grid.Row="1" Grid.Column="1" Text="-" Foreground="{DynamicResource Theme_D6E2D8}" FontSize="12" />
+                                    <TextBlock Text="{DynamicResource Loc_000A6CE60A8E}" Grid.Row="2" Foreground="{DynamicResource Theme_829488}" FontSize="12" /><TextBlock x:Name="MacValue" Grid.Row="2" Grid.Column="1" Text="-" Foreground="{DynamicResource Theme_D6E2D8}" FontSize="12" />
+                                    <TextBlock Text="{DynamicResource Loc_6318308FAD9A}" Grid.Row="3" Foreground="{DynamicResource Theme_829488}" FontSize="12" /><TextBlock x:Name="LinkSpeedValue" Grid.Row="3" Grid.Column="1" Text="-" Foreground="{DynamicResource Theme_D6E2D8}" FontSize="12" />
+                                    <TextBlock Text="{DynamicResource Loc_337253F2E8D4}" Grid.Row="4" Foreground="{DynamicResource Theme_829488}" FontSize="12" /><TextBlock x:Name="WifiInfoValue" Grid.Row="4" Grid.Column="1" Text="-" Foreground="{DynamicResource Theme_D6E2D8}" FontSize="12" TextWrapping="Wrap" />
+                                </Grid>
+                            </StackPanel>
+                        </Border>
+                        <Border Grid.Column="2" Style="{StaticResource PanelBorder}">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource Loc_E059DE0C721E}" Foreground="{DynamicResource Theme_E6F2E8}" FontSize="16" FontWeight="SemiBold" />
+                                <Grid Margin="0,8,0,4">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                                    <StackPanel><TextBlock Text="{DynamicResource Loc_DB9A4C7D4C19}" Foreground="{DynamicResource Theme_829488}" FontSize="10" /><TextBlock x:Name="DashboardCpuValue" Text="0%" Foreground="{DynamicResource Theme_83E89A}" FontSize="17" FontWeight="SemiBold" /></StackPanel>
+                                    <StackPanel Grid.Column="1"><TextBlock Text="{DynamicResource Loc_A266FE9C4D1D}" Foreground="{DynamicResource Theme_829488}" FontSize="10" /><TextBlock x:Name="DashboardMemoryValue" Text="0%" Foreground="{DynamicResource Theme_69D8D3}" FontSize="17" FontWeight="SemiBold" /></StackPanel>
+                                </Grid>
+                                <local:NetworkChart x:Name="SystemActivityChart" Height="72" Margin="0,0,0,8" />
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                    <TextBlock x:Name="DashboardConnectionsValue" Text="{DynamicResource Loc_90E5A6ED9800}" Foreground="{DynamicResource Theme_B8D2BE}" FontSize="10" Margin="0,0,14,0" />
+                                    <TextBlock x:Name="DashboardPacketsValue" Text="{DynamicResource Loc_475628C4B9BC}" Foreground="{DynamicResource Theme_B8D2BE}" FontSize="10" />
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Button x:Name="MonitorButton" Content="{DynamicResource Loc_26D15B0178F2}" Style="{StaticResource ActionButton}" HorizontalAlignment="Left" Click="MonitorButton_Click" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Grid>
+                </Grid></ScrollViewer>
+              </Grid>
+              </TabItem>
+              <TabItem Header="{DynamicResource Loc_9FD866625BA6}" Background="{DynamicResource Theme_101B13}" Foreground="{DynamicResource Theme_D8E4DA}">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                    <DockPanel Margin="4,0,4,12">
+                        <StackPanel DockPanel.Dock="Left">
+                            <TextBlock Text="{DynamicResource Loc_B1A251F488FC}" Foreground="{DynamicResource Theme_E6F2E8}" FontSize="17" FontWeight="SemiBold" />
+                            <TextBlock Text="{DynamicResource Loc_26BD2CCD2D0C}" Foreground="{DynamicResource Theme_A0B0A5}" FontSize="11" Margin="0,3,0,0" />
+                        </StackPanel>
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                            <TextBox FlowDirection="LeftToRight" x:Name="LiveTrafficSearchBox" Width="220" Padding="7" Background="{DynamicResource Theme_07100B}" Foreground="{DynamicResource Theme_F0F5F1}" BorderBrush="{DynamicResource Theme_477853}" ToolTip="{DynamicResource Loc_BE635576C7FF}" TextChanged="LiveTrafficSearchBox_TextChanged" />
+                            <ComboBox x:Name="LiveTrafficProtocolBox" Width="155" MinHeight="32" SelectedIndex="0" Padding="6" Margin="8,0,0,0" Background="{DynamicResource Theme_0C1810}" Foreground="{DynamicResource Theme_F0F5F1}"
+                                      Style="{StaticResource ReadableComboBox}" ItemContainerStyle="{StaticResource ReadableComboBoxItem}"
+                                      FlowDirection="LeftToRight" FontSize="13" FontWeight="SemiBold" SelectionChanged="LiveTrafficProtocolBox_SelectionChanged">
+                                <ComboBoxItem Content="{DynamicResource Loc_529027F204C6}" />
+                                <ComboBoxItem Content="{DynamicResource Loc_2E9430507B92}" />
+                                <ComboBoxItem Content="{DynamicResource Loc_DC4030F9688D}" />
+                                <ComboBoxItem Content="{DynamicResource Loc_39D4E9FD27DA}" />
+                            </ComboBox>
+                            <Button Content="{DynamicResource Loc_BA59E2D4A5E3}" Style="{StaticResource ActionButton}" Margin="8,0,0,0" Click="ClearLiveTrafficFilterButton_Click" />
+                        </StackPanel>
+                    </DockPanel>
+                    <Border Grid.Row="1" Style="{StaticResource PanelBorder}">
+                        <DataGrid FlowDirection="LeftToRight" x:Name="LiveTrafficGrid" ItemsSource="{Binding LiveTrafficRows}" IsReadOnly="True" CanUserSortColumns="True">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Policy" Binding="{Binding Policy}" Width="90" />
+                                <DataGridTextColumn Header="Application" local:LocalizationService.Source="Application" Binding="{Binding Application}" Width="170" />
+                                <DataGridTextColumn Header="Remote host" local:LocalizationService.Source="Remote host" Binding="{Binding Host}" Width="200" />
+                                <DataGridTextColumn Header="Protocol" local:LocalizationService.Source="Protocol" Binding="{Binding Protocol}" Width="100" />
+                                <DataGridTextColumn Header="Sent bytes" local:LocalizationService.Source="Sent bytes" Binding="{Binding UploadBytes, StringFormat={}{0:N0}}" Width="140" />
+                                <DataGridTextColumn Header="Received bytes" local:LocalizationService.Source="Received bytes" Binding="{Binding DownloadBytes, StringFormat={}{0:N0}}" Width="150" />
+                                <DataGridTextColumn Header="Last packet" local:LocalizationService.Source="Last packet" Binding="{Binding LastSeenLocal, StringFormat={}{0:HH:mm:ss}}" Width="110" />
+                                <DataGridTextColumn Header="Executable" local:LocalizationService.Source="Executable" Binding="{Binding ExecutablePath}" Width="*" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+                    <DockPanel Grid.Row="2" Margin="4,9,0,0">
+                        <Button DockPanel.Dock="Right" Content="App rules" Style="{StaticResource ActionButton}" Click="OpenApplicationRulesButton_Click" Margin="12,0,0,0" />
+                        <TextBlock x:Name="LiveTrafficStatus" Text="{DynamicResource Loc_F800DF044F55}" Foreground="{DynamicResource Theme_C2CEC5}" FontSize="11" VerticalAlignment="Center" TextWrapping="Wrap" />
+                    </DockPanel>
+                </Grid>
+              </TabItem>
+              <TabItem x:Name="AlertsTab" Header="{DynamicResource Loc_F62E9267D196}" Background="{DynamicResource Theme_101B13}" Foreground="{DynamicResource Theme_D8E4DA}">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+                    <DockPanel Margin="4,0,4,12">
+                        <StackPanel DockPanel.Dock="Left">
+                            <TextBlock Text="{DynamicResource Loc_07520A385B89}" Foreground="{DynamicResource Theme_FF7784}" FontSize="18" FontWeight="Bold" />
+                            <TextBlock Text="{DynamicResource Loc_75A108257F45}" Foreground="{DynamicResource Theme_C2A7AA}" FontSize="11" Margin="0,3,0,0" />
+                        </StackPanel>
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <Button x:Name="ExplainAlertButton" Content="{DynamicResource Loc_C06538427A82}" Style="{StaticResource ActionButton}" IsEnabled="False" Click="ExplainAlertButton_Click" />
+                            <Button Content="{DynamicResource Loc_1B3F25F202F1}" Style="{StaticResource ActionButton}" Margin="8,0,0,0" Click="ClearAlertsButton_Click" />
+                        </StackPanel>
+                    </DockPanel>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="1.1*" /><ColumnDefinition Width="14" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Style="{StaticResource PanelBorder}" BorderBrush="{DynamicResource Theme_79313A}">
+                            <ListBox x:Name="AlertsList" Background="Transparent" BorderThickness="0" SelectionChanged="AlertsList_SelectionChanged" />
+                        </Border>
+                        <Border Grid.Column="2" Style="{StaticResource PanelBorder}" BorderBrush="{DynamicResource Theme_79313A}">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource Loc_1630BFDC2369}" Foreground="{DynamicResource Theme_FF7784}" FontSize="11" FontWeight="Bold" />
+                                <TextBlock x:Name="AlertInsightSource" Text="{DynamicResource Loc_6CD08BC094B7}" Foreground="{DynamicResource Theme_C2CEC5}" FontSize="11" Margin="0,5,0,12" />
+                                <TextBlock x:Name="AlertInsightEvent" Text="{DynamicResource Loc_3007D8E9133C}" Foreground="{DynamicResource Theme_FFFFFF}" FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap" Margin="0,0,0,10" />
+                                <TextBox FlowDirection="LeftToRight" x:Name="AlertInsightText" IsReadOnly="True" Text="{DynamicResource Loc_E260FEC81FAF}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Background="{DynamicResource Theme_101711}" Foreground="{DynamicResource Theme_E2EBE4}" BorderBrush="{DynamicResource Theme_384C3D}" Padding="10" />
+                                <TextBlock Text="{DynamicResource Loc_9CEB9F23CE0E}" Foreground="{DynamicResource Theme_C2CEC5}" FontSize="10" TextWrapping="Wrap" Margin="0,10,0,0" />
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+                </Grid>
+              </TabItem>
+              <TabItem Header="{DynamicResource Loc_71D4CF953E59}" Background="{DynamicResource Theme_101B13}" Foreground="{DynamicResource Theme_D8E4DA}">
+                <Grid Margin="10">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="320" /><ColumnDefinition Width="14" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions><RowDefinition Height="*" /><RowDefinition Height="180" /></Grid.RowDefinitions>
+                    <Border Grid.Column="0" Grid.RowSpan="2" Style="{StaticResource PanelBorder}">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto">
+                            <StackPanel>
+                                <TextBlock Text="{DynamicResource Loc_4FDA695D3E86}" Foreground="{DynamicResource Theme_E6F2E8}" FontSize="17" FontWeight="SemiBold" />
+                                <TextBlock Text="{DynamicResource Loc_67CC9D5A9D39}" Foreground="{DynamicResource Theme_91A69A}" Margin="0,16,0,5" />
+                                <TextBox FlowDirection="LeftToRight" x:Name="NetworkRangeInput" Text="192.168.1.0/24" Padding="8" Background="{DynamicResource Theme_07100B}" Foreground="{DynamicResource Theme_D8E4DA}" BorderBrush="{DynamicResource Theme_31513B}" />
+                                <Button x:Name="PingSweepButton" Content="{DynamicResource Loc_29223B8D821A}" Style="{StaticResource ActionButton}" Margin="0,9,0,0" Click="PingSweepButton_Click" />
+                                <Button x:Name="CancelScanButton" Content="{DynamicResource Loc_298360E0B166}" Style="{StaticResource ActionButton}" Margin="0,6,0,0" IsEnabled="False" Click="CancelScanButton_Click" />
+                                <TextBlock Text="{DynamicResource Loc_9E023BE85919}" Foreground="{DynamicResource Theme_91A69A}" Margin="0,20,0,5" />
+                                <TextBox FlowDirection="LeftToRight" x:Name="TargetInput" Padding="8" Background="{DynamicResource Theme_07100B}" Foreground="{DynamicResource Theme_D8E4DA}" BorderBrush="{DynamicResource Theme_31513B}" />
+                                <Button Content="{DynamicResource Loc_8A9A5F748FF0}" Style="{StaticResource ActionButton}" Margin="0,9,0,0" Click="FastScanButton_Click" />
+                                <Button Content="{DynamicResource Loc_A422067C398A}" Style="{StaticResource ActionButton}" Margin="0,6,0,0" Click="FullScanButton_Click" />
+                                <Button Content="{DynamicResource Loc_CED5BBEDAFB3}" Style="{StaticResource ActionButton}" Margin="0,6,0,0" Click="NmapButton_Click" />
+                                <Button Content="{DynamicResource Loc_972D8E311314}" Style="{StaticResource ActionButton}" Margin="0,6,0,0" Click="GeoIpButton_Click" />
+                                <TextBlock x:Name="GeoIpOutput" Foreground="{DynamicResource Theme_B8D2BE}" TextWrapping="Wrap" Margin="0,8,0,0" />
+                                <TextBlock x:Name="ScanStatusLabel" Text="{DynamicResource Loc_5FA7AAC5375C}" Foreground="{DynamicResource Theme_91A69A}" TextWrapping="Wrap" Margin="0,18,0,0" />
+                            </StackPanel>
+                        </ScrollViewer>
+                    </Border>
+                    <Border Grid.Column="2" Style="{StaticResource PanelBorder}">
+                        <DataGrid FlowDirection="LeftToRight" x:Name="ScanResultsGrid" ItemsSource="{Binding ScanResults}" AlternationCount="2">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Host" local:LocalizationService.Source="Host" Binding="{Binding Host}" Width="160" />
+                                <DataGridTextColumn Header="Status" local:LocalizationService.Source="Status" Binding="{Binding Status}" Width="100" />
+                                <DataGridTextColumn Header="Open ports" local:LocalizationService.Source="Open ports" Binding="{Binding OpenPorts}" Width="220" />
+                                <DataGridTextColumn Header="DNS" local:LocalizationService.Source="DNS" Binding="{Binding Dns}" Width="*" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+                    <Border Grid.Column="2" Grid.Row="1" Style="{StaticResource PanelBorder}" Margin="0,14,0,0">
+                        <TextBox FlowDirection="LeftToRight" x:Name="NmapOutput" IsReadOnly="True" Text="{DynamicResource Loc_9571C0126FCC}" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Background="{DynamicResource Theme_07100B}" Foreground="{DynamicResource Theme_B8D2BE}" BorderThickness="0" />
+                    </Border>
+                </Grid>
+              </TabItem>
+              <TabItem Header="{DynamicResource Loc_DC273117482B}" Background="{DynamicResource Theme_101B13}" Foreground="{DynamicResource Theme_D8E4DA}">
+                <Border Style="{StaticResource PanelBorder}" Margin="10">
+                    <DataGrid FlowDirection="LeftToRight" x:Name="ConnectionsGrid" ItemsSource="{Binding Connections}">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Local endpoint" local:LocalizationService.Source="Local endpoint" Binding="{Binding LocalAddress}" Width="*" />
+                            <DataGridTextColumn Header="Remote endpoint" local:LocalizationService.Source="Remote endpoint" Binding="{Binding RemoteAddress}" Width="*" />
+                            <DataGridTextColumn Header="Protocol" local:LocalizationService.Source="Protocol" Binding="{Binding Protocol}" Width="110" />
+                            <DataGridTextColumn Header="State" local:LocalizationService.Source="State" Binding="{Binding State}" Width="150" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                </Border>
+              </TabItem>
+              <TabItem Header="{DynamicResource Loc_460D21DA0F77}" Background="{DynamicResource Theme_101B13}" Foreground="{DynamicResource Theme_D8E4DA}">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+                    <DockPanel Margin="4,0,4,12">
+                        <StackPanel DockPanel.Dock="Left">
+                            <TextBlock Text="{DynamicResource Loc_1FD35F1A66C7}" Foreground="{DynamicResource Theme_E6F2E8}" FontSize="17" FontWeight="SemiBold" />
+                            <TextBlock Text="{DynamicResource Loc_3DB9AFE3F85E}" Foreground="{DynamicResource Theme_829488}" FontSize="11" Margin="0,3,0,0" />
+                            <TextBlock x:Name="AttributionStatus" Text="{DynamicResource Loc_1791787294B7}" Foreground="{DynamicResource Theme_829488}" FontSize="10" Margin="0,4,0,0" />
+                        </StackPanel>
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                            <ComboBox x:Name="UsagePeriodBox" SelectedIndex="2" Width="130" Padding="6" Background="{DynamicResource Theme_07100B}" Foreground="{DynamicResource Theme_D8E4DA}">
+                                <ComboBoxItem Content="{DynamicResource Loc_A8DFE9D80188}" Tag="1" />
+                                <ComboBoxItem Content="{DynamicResource Loc_04A0373D6B08}" Tag="6" />
+                                <ComboBoxItem Content="{DynamicResource Loc_5C37CF8F018B}" Tag="24" />
+                                <ComboBoxItem Content="{DynamicResource Loc_0603DECA4FCB}" Tag="168" />
+                            </ComboBox>
+                            <Button Content="{DynamicResource Loc_0E9161011702}" Style="{StaticResource ActionButton}" Margin="8,0,0,0" Click="RefreshUsageButton_Click" />
+                            <Button x:Name="BlockApplicationButton" Content="{DynamicResource Loc_DA9EE0890F72}" Style="{StaticResource ActionButton}" Margin="8,0,0,0" IsEnabled="False" Click="BlockApplicationButton_Click" />
+                        </StackPanel>
+                    </DockPanel>
+                    <Border Grid.Row="1" Style="{StaticResource PanelBorder}">
+                        <DataGrid FlowDirection="LeftToRight" x:Name="UsageGrid" ItemsSource="{Binding UsageRows}" SelectionChanged="UsageGrid_SelectionChanged">
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="Application" local:LocalizationService.Source="Application" Binding="{Binding Application}" Width="170" />
+                                <DataGridTextColumn Header="Remote host" local:LocalizationService.Source="Remote host" Binding="{Binding Host}" Width="180" />
+                                <DataGridTextColumn Header="Protocol" local:LocalizationService.Source="Protocol" Binding="{Binding Protocol}" Width="90" />
+                                <DataGridTextColumn Header="Sent" local:LocalizationService.Source="Sent" Binding="{Binding UploadBytes, StringFormat={}{0:N0} B}" Width="110" />
+                                <DataGridTextColumn Header="Received" local:LocalizationService.Source="Received" Binding="{Binding DownloadBytes, StringFormat={}{0:N0} B}" Width="120" />
+                                <DataGridTextColumn Header="Last seen (UTC)" local:LocalizationService.Source="Last seen (UTC)" Binding="{Binding LastSeenUtc, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" Width="180" />
+                                <DataGridTextColumn Header="Executable" local:LocalizationService.Source="Executable" Binding="{Binding ExecutablePath}" Width="*" />
+                            </DataGrid.Columns>
+                        </DataGrid>
+                    </Border>
+                </Grid>
+              </TabItem>
+              <TabItem Header="{DynamicResource Loc_EA28770FA99B}" Background="{DynamicResource Theme_101B13}" Foreground="{DynamicResource Theme_D8E4DA}">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+                    <StackPanel Orientation="Horizontal" Margin="0,0,0,12">
+                        <Button x:Name="SecurityScanButton" Content="{DynamicResource Loc_361A2049BEBD}" Style="{StaticResource ActionButton}" Click="SecurityScanButton_Click" />
+                        <Button Content="{DynamicResource Loc_1215A6799DA1}" Style="{StaticResource ActionButton}" Margin="8,0,0,0" Click="WifiSecurityButton_Click" />
+                        <Button Content="{DynamicResource Loc_5AAB32A627E0}" Style="{StaticResource ActionButton}" Margin="8,0,0,0" Click="ClearEventsButton_Click" />
+                        <Button x:Name="StartCaptureButton" Content="{DynamicResource Loc_AF3BD14AEEA4}" Style="{StaticResource ActionButton}" Margin="8,0,0,0" Click="StartCaptureButton_Click" />
+                        <Button x:Name="StopCaptureButton" Content="{DynamicResource Loc_989176ED75D6}" Style="{StaticResource ActionButton}" Margin="8,0,0,0" IsEnabled="False" Click="StopCaptureButton_Click" />
+                        <TextBlock x:Name="PacketCountLabel" Text="{DynamicResource Loc_6FBFAB211A86}" Foreground="{DynamicResource Theme_91A69A}" VerticalAlignment="Center" Margin="14,0,0,0" />
+                        <TextBlock x:Name="SecurityStatusLabel" Text="{DynamicResource Loc_DA168A16A814}" Foreground="{DynamicResource Theme_91A69A}" VerticalAlignment="Center" Margin="14,0,0,0" />
+                        <TextBlock x:Name="WifiSecurityStatus" Text="" Foreground="{DynamicResource Theme_E5C16A}" VerticalAlignment="Center" Margin="12,0,0,0" />
+                    </StackPanel>
+                    <Grid Grid.Row="1">
+                        <Grid.ColumnDefinitions><ColumnDefinition Width="1.15*" /><ColumnDefinition Width="14" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                        <Border Grid.Column="0" Style="{StaticResource PanelBorder}">
+                            <ListBox x:Name="EventsList" Background="Transparent" BorderThickness="0" Foreground="{DynamicResource Theme_D8E4DA}" />
+                        </Border>
+                        <Border Grid.Column="2" Style="{StaticResource PanelBorder}">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel>
+                                <TextBlock Text="{DynamicResource Loc_AB368DE0B020}" Foreground="{DynamicResource Theme_E6F2E8}" FontSize="16" FontWeight="SemiBold" />
+                                <TextBlock x:Name="PacketSummaryLabel" Text="{DynamicResource Loc_F800DF044F55}" Foreground="{DynamicResource Theme_91A69A}" Margin="0,8,0,10" />
+                                <TextBlock Text="{DynamicResource Loc_A698B663D3A5}" Foreground="{DynamicResource Theme_75DE88}" FontSize="10" FontWeight="SemiBold" />
+                                <TextBox FlowDirection="LeftToRight" x:Name="HexInspector" IsReadOnly="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" Background="{DynamicResource Theme_07100B}" Foreground="{DynamicResource Theme_B8D2BE}" BorderThickness="0" MinHeight="90" Margin="0,5,0,12" />
+                                <TextBlock Text="{DynamicResource Loc_C875C1F91DBC}" Foreground="{DynamicResource Theme_75DE88}" FontSize="10" FontWeight="SemiBold" />
+                                <TextBlock x:Name="HistogramLabel" Text="{DynamicResource Loc_8704C44842B0}" Foreground="{DynamicResource Theme_B8D2BE}" FontFamily="Consolas" TextWrapping="Wrap" Margin="0,6,0,0" />
+                                <TextBlock Text="{DynamicResource Loc_364FD0F18592}" Foreground="{DynamicResource Theme_75DE88}" FontSize="10" FontWeight="SemiBold" Margin="0,12,0,0" />
+                                <TreeView x:Name="TopIpSourcesTree" ItemsSource="{Binding TopIpSources}" ItemContainerStyle="{StaticResource SourceTreeItem}" TreeViewItem.Expanded="TopSource_Expanded"
+                                          Background="Transparent" BorderThickness="0" Margin="0,6,0,0" Foreground="{DynamicResource Theme_CEDFD3}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
+                                <TextBlock Text="TOP SOFTWARE SOURCES" Foreground="{DynamicResource Theme_75DE88}" FontSize="10" FontWeight="SemiBold" Margin="0,18,0,0" />
+                                <TextBlock Text="Local programs, ranked by captured bytes. Expand a program for its remote IPs." Foreground="{DynamicResource Theme_91A69A}" FontSize="10" TextWrapping="Wrap" Margin="0,5,0,4" />
+                                <TreeView x:Name="TopSoftwareSourcesTree" ItemsSource="{Binding TopSoftwareSources}" ItemContainerStyle="{StaticResource SourceTreeItem}" Background="Transparent" BorderThickness="0"
+                                          Foreground="{DynamicResource Theme_CEDFD3}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" />
+                            </StackPanel></ScrollViewer>
+                        </Border>
+                    </Grid>
+                </Grid>
+              </TabItem>
+              <TabItem Header="{DynamicResource Loc_25C1D729F4ED}" Background="{DynamicResource Theme_101B13}" Foreground="{DynamicResource Theme_D8E4DA}">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions><RowDefinition Height="1.1*" /><RowDefinition Height="14" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="14" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                    <Border Grid.Column="0" Style="{StaticResource PanelBorder}">
+                        <DockPanel LastChildFill="True">
+                            <StackPanel DockPanel.Dock="Top" Margin="0,0,0,10">
+                                <Grid>
+                                    <TextBlock Text="{DynamicResource Loc_0D92506DB16D}" Foreground="{DynamicResource Theme_E6F2E8}" FontSize="17" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                    <Button Content="{DynamicResource Loc_7D024DB75023}" Style="{StaticResource ActionButton}" HorizontalAlignment="Right" Click="RefreshHardwareButton_Click" />
+                                </Grid>
+                                <TextBlock x:Name="HardwareRefreshStatus" Text="{DynamicResource Loc_A4C8E9DCA821}" Foreground="{DynamicResource Theme_829488}" FontSize="10" Margin="0,4,0,0" />
+                            </StackPanel>
+                            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                                <StackPanel>
+                                    <TextBlock x:Name="SystemInfoText" Text="{DynamicResource Loc_1C141E0BAC0C}" Foreground="{DynamicResource Theme_B8D2BE}" FontFamily="Consolas" FontSize="12" TextWrapping="Wrap" />
+                                    <Separator Margin="0,10,0,8" Background="{DynamicResource Theme_31513B}" />
+                                    <TextBlock Text="{DynamicResource Loc_0BDB416AF267}" Foreground="{DynamicResource Theme_75DE88}" FontSize="10" FontWeight="SemiBold" />
+                                    <TextBlock x:Name="AdminStatusText" Text="{DynamicResource Loc_03CE3568F431}" Foreground="{DynamicResource Theme_D8E4DA}" FontSize="12" TextWrapping="Wrap" Margin="0,5,0,6" />
+                                    <Button x:Name="RestartElevatedButton" Content="{DynamicResource Loc_117E3104FC3D}" Style="{StaticResource ActionButton}" HorizontalAlignment="Left" Click="RestartElevatedButton_Click" />
+                                    <Separator Margin="0,10,0,8" Background="{DynamicResource Theme_31513B}" />
+                                    <TextBlock Text="{DynamicResource Loc_DC70CD346D64}" Foreground="{DynamicResource Theme_75DE88}" FontSize="10" FontWeight="SemiBold" />
+                                    <TextBlock x:Name="CaptureReadinessText" Text="{DynamicResource Loc_FBDE34992789}" Foreground="{DynamicResource Theme_D8E4DA}" FontSize="12" TextWrapping="Wrap" Margin="0,5,0,6" />
+                                    <Button Content="{DynamicResource Loc_19CF5FAC4CB3}" Style="{StaticResource ActionButton}" HorizontalAlignment="Left" Click="RefreshCaptureDiagnosticsButton_Click" />
+                                    <Separator Margin="0,10,0,8" Background="{DynamicResource Theme_31513B}" />
+                                    <TextBlock Text="{DynamicResource Loc_1E8C47C1AFA0}" Foreground="{DynamicResource Theme_75DE88}" FontSize="10" FontWeight="SemiBold" />
+                                    <TextBlock x:Name="HardwareDetailsText" Text="{DynamicResource Loc_A9DF38CB3DBE}" Foreground="{DynamicResource Theme_B8D2BE}" FontFamily="Consolas" FontSize="11" TextWrapping="Wrap" Margin="0,6,0,0" />
+                                    <Separator Margin="0,10,0,8" Background="{DynamicResource Theme_31513B}" />
+                                    <DockPanel Margin="0,0,0,6">
+                                        <TextBlock Text="{DynamicResource Loc_C2F3192F673F}" Foreground="{DynamicResource Theme_75DE88}" FontSize="10" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                                            <Button Content="{DynamicResource Loc_0E9161011702}" Style="{StaticResource ActionButton}" Padding="8,5" Click="RefreshErrorLogButton_Click" />
+                                            <Button Content="{DynamicResource Loc_591889AC42E0}" Style="{StaticResource ActionButton}" Padding="8,5" Margin="6,0,0,0" Click="OpenLogsFolderButton_Click" />
+                                        </StackPanel>
+                                    </DockPanel>
+                                    <TextBlock x:Name="LogDirectoryText" Foreground="{DynamicResource Theme_A0B0A5}" FontSize="10" TextWrapping="Wrap" Margin="0,0,0,5" />
+                                    <TextBox FlowDirection="LeftToRight" x:Name="ErrorLogPreview" Height="150" IsReadOnly="True" TextWrapping="NoWrap"
+                                             VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                                             Background="{DynamicResource Theme_07100B}" Foreground="{DynamicResource Theme_D8E4DA}" BorderThickness="0"
+                                             FontFamily="Consolas" FontSize="10" />
+                                </StackPanel>
+                            </ScrollViewer>
+                        </DockPanel>
+                    </Border>
+                    <Border Grid.Column="2" Style="{StaticResource PanelBorder}">
+                        <Grid>
+                            <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                            <Grid>
+                                <StackPanel><TextBlock Text="{DynamicResource Loc_7E8636021646}" Foreground="{DynamicResource Theme_E6F2E8}" FontSize="17" FontWeight="SemiBold" /><TextBlock Text="{DynamicResource Loc_9596FBC3DB50}" Foreground="{DynamicResource Theme_829488}" FontSize="11" Margin="0,3,0,0" /></StackPanel>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Right"><TextBox FlowDirection="LeftToRight" x:Name="PingTargetInput" Text="1.1.1.1" Width="140" Padding="7" Background="{DynamicResource Theme_07100B}" Foreground="{DynamicResource Theme_D8E4DA}" BorderBrush="{DynamicResource Theme_31513B}" /><Button Content="{DynamicResource Loc_B6F6F3AD07B3}" Style="{StaticResource ActionButton}" Margin="6,0,0,0" Click="SetPingTargetButton_Click" /></StackPanel>
+                            </Grid>
+                            <local:NetworkChart x:Name="PingLatencyChart" Grid.Row="1" Margin="0,12,0,8" />
+                            <TextBlock x:Name="PingStatusLabel" Grid.Row="2" Text="{DynamicResource Loc_7E06CC1E9359}" Foreground="{DynamicResource Theme_91A69A}" />
+                        </Grid>
+                    </Border>
+                    <Border Grid.Row="2" Grid.ColumnSpan="3" Style="{StaticResource PanelBorder}">
+                        <DockPanel>
+                            <StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,0,0,10">
+                                <TextBlock Text="{DynamicResource Loc_E341794BA909}" Foreground="{DynamicResource Theme_E6F2E8}" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" />
+                                <Button Content="{DynamicResource Loc_1D57F666D952}" Style="{StaticResource ActionButton}" Margin="12,0,0,0" Click="RefreshFirewallButton_Click" />
+                                <TextBlock x:Name="FirewallStatusLabel" Text="{DynamicResource Loc_D4A0E177E647}" Foreground="{DynamicResource Theme_829488}" VerticalAlignment="Center" Margin="12,0,0,0" />
+                            </StackPanel>
+                            <TextBox FlowDirection="LeftToRight" x:Name="FirewallLogBox" IsReadOnly="True" TextWrapping="NoWrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Background="{DynamicResource Theme_07100B}" Foreground="{DynamicResource Theme_B8D2BE}" BorderThickness="0" FontFamily="Consolas" FontSize="11" />
+                        </DockPanel>
+                    </Border>
+                </Grid>
+              </TabItem>
+              <TabItem x:Name="ProtectionTab" Header="Protection" Background="{DynamicResource Theme_101B13}" Foreground="{DynamicResource Theme_D8E4DA}">
+                <Grid Margin="10">
+                    <Grid.RowDefinitions><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                    <TabControl x:Name="ProtectionTabs" Background="{DynamicResource Theme_07100B}" Foreground="{DynamicResource Theme_E6F2E8}" BorderBrush="{DynamicResource Theme_31513B}">
+                        <TabItem Header="Application rules" Background="{DynamicResource Theme_101B13}" Foreground="{DynamicResource Theme_E6F2E8}">
+                            <Grid Margin="14">
+                                <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="Software whitelist / blacklist" Foreground="{DynamicResource Theme_F0F5F1}" FontSize="18" FontWeight="SemiBold" />
+                                    <TextBlock Style="{StaticResource ProtectionLabel}" Text="Trust quiets routine new-app notices. Block installs Windows Firewall rules for inbound and outbound traffic. Attack monitoring remains active for trusted apps." />
+                                    <WrapPanel Margin="0,4,0,8">
+                                        <Button Content="Use selected traffic app" Style="{StaticResource ActionButton}" Click="UseLiveAppButton_Click" Margin="0,0,8,0" />
+                                        <Button Content="Choose executable" Style="{StaticResource ActionButton}" Click="ChooseExecutableButton_Click" />
+                                    </WrapPanel>
+                                    <TextBox x:Name="PolicyPathInput" Style="{StaticResource ProtectionInput}" IsReadOnly="True" ToolTip="Full path of the application whose policy will change" />
+                                </StackPanel>
+                                <WrapPanel x:Name="PolicyActions" Grid.Row="1" Margin="0,10,0,14">
+                                    <Button Content="Trust / whitelist" Tag="Trusted" Style="{StaticResource ActionButton}" Click="ApplicationPolicyButton_Click" Margin="0,0,8,0" />
+                                    <Button Content="Block network / blacklist" Tag="Blocked" Style="{StaticResource ActionButton}" Click="ApplicationPolicyButton_Click" Margin="0,0,8,0" />
+                                    <Button Content="Monitor / remove block" Tag="Monitor" Style="{StaticResource ActionButton}" Click="ApplicationPolicyButton_Click" />
+                                </WrapPanel>
+                                <DataGrid x:Name="ApplicationPoliciesGrid" Grid.Row="2" ItemsSource="{Binding ApplicationPolicies}" IsReadOnly="True" AutoGenerateColumns="False"
+                                          CanUserAddRows="False" FlowDirection="LeftToRight" SelectionChanged="ApplicationPoliciesGrid_SelectionChanged">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Application" Binding="{Binding Application}" Width="180" />
+                                        <DataGridTextColumn Header="Policy" Binding="{Binding Policy}" Width="180" />
+                                        <DataGridTextColumn Header="Executable" Binding="{Binding ExecutablePath}" Width="*" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Network alerts &amp; graphics" Background="{DynamicResource Theme_101B13}" Foreground="{DynamicResource Theme_E6F2E8}">
+                            <ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel Margin="20" MaxWidth="850" HorizontalAlignment="Left">
+                                <TextBlock Text="Network attack indicators" Foreground="{DynamicResource Theme_F0F5F1}" FontSize="18" FontWeight="SemiBold" />
+                                <CheckBox x:Name="AttackMonitoringBox" Content="Watch for inbound port scans, SYN bursts, repeated RDP attempts and DNS rebinding indicators"
+                                          Foreground="{DynamicResource Theme_F0F5F1}" Margin="0,16,0,12" Checked="ProtectionOption_Changed" Unchecked="ProtectionOption_Changed" />
+                                <TextBlock Style="{StaticResource ProtectionLabel}" Text="Requires packet capture. Findings are review signals: legitimate scanners, reconnecting clients, split DNS and VPNs can produce similar patterns. Existing RDP, Wi-Fi and MAC-change alerts remain active." />
+                                <CheckBox x:Name="DnsRotationBox" Content="Also show routine DNS address rotations (off by default)" Foreground="{DynamicResource Theme_F0F5F1}"
+                                          Margin="0,16,0,10" Checked="ProtectionOption_Changed" Unchecked="ProtectionOption_Changed" />
+                                <TextBlock Style="{StaticResource ProtectionLabel}" Text="CDN and load-balancer DNS changes are normal and do not create security alarms. Turning this on adds routine event notices only." />
+                                <Separator Margin="0,20,0,20" Background="{DynamicResource Theme_31513B}" />
+                                <TextBlock Text="Matrix Rain graphics" Foreground="{DynamicResource Theme_F0F5F1}" FontSize="18" FontWeight="SemiBold" />
+                                <ComboBox x:Name="RainQualityBox" Width="200" HorizontalAlignment="Left" Margin="0,14,0,4" SelectionChanged="RainQualityBox_SelectionChanged" />
+                                <TextBlock Style="{StaticResource ProtectionLabel}" Text="Eco: lighter rain with lower resource use. Balanced: denser, smoother rain. Off: no background effect. Full screen keeps the same animation budget. Animation slows while inactive and stops when hidden or minimized; Windows reduced-animation preferences are respected." />
+                            </StackPanel></ScrollViewer>
+                        </TabItem>
+                        <TabItem Header="Email &amp; phishing review" Background="{DynamicResource Theme_101B13}" Foreground="{DynamicResource Theme_E6F2E8}">
+                            <Grid Margin="14">
+                                <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="16" /><ColumnDefinition Width="*" /></Grid.ColumnDefinitions>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto" Grid.Column="0"><StackPanel>
+                                    <TextBlock Text="Local message review" Foreground="{DynamicResource Theme_F0F5F1}" FontSize="18" FontWeight="SemiBold" />
+                                    <TextBlock x:Name="EmailImportDetailsText" Foreground="{DynamicResource Theme_AFC5B7}" TextWrapping="Wrap" Margin="0,6,0,0" />
+                                    <WrapPanel Margin="0,12,0,0">
+                                        <Button Content="Import .eml / .txt" Style="{StaticResource ActionButton}" Click="ImportEmailButton_Click" Margin="0,0,8,6" />
+                                        <Button Content="Analyze locally" Style="{StaticResource ActionButton}" Click="AnalyzeEmailButton_Click" Margin="0,0,8,6" />
+                                        <Button Content="Clear message" Style="{StaticResource ActionButton}" Click="ClearEmailButton_Click" Margin="0,0,0,6" />
+                                    </WrapPanel>
+                                    <TextBlock Text="From" Style="{StaticResource ProtectionLabel}" /><TextBox x:Name="EmailFromInput" Style="{StaticResource ProtectionInput}" MaxLength="1000" />
+                                    <TextBlock Text="Reply-To (optional)" Style="{StaticResource ProtectionLabel}" /><TextBox x:Name="EmailReplyInput" Style="{StaticResource ProtectionInput}" MaxLength="1000" />
+                                    <TextBlock Text="Recipient / To (for your email filter)" Style="{StaticResource ProtectionLabel}" /><TextBox x:Name="EmailRecipientsInput" Style="{StaticResource ProtectionInput}" MaxLength="4000" />
+                                    <TextBlock Text="Subject" Style="{StaticResource ProtectionLabel}" /><TextBox x:Name="EmailSubjectInput" Style="{StaticResource ProtectionInput}" MaxLength="2000" />
+                                    <TextBlock Text="Message text or HTML (links are never opened)" Style="{StaticResource ProtectionLabel}" />
+                                    <TextBox x:Name="EmailBodyInput" Style="{StaticResource ProtectionInput}" Height="200" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" MaxLength="128000" />
+                                    <Expander Header="Local email filters" Foreground="{DynamicResource Theme_E6F2E8}" Margin="0,15,0,0"><StackPanel>
+                                        <TextBlock Text="Only review mail to these addresses (empty = all). Separate entries with commas, semicolons or new lines." Style="{StaticResource ProtectionLabel}" />
+                                        <TextBox x:Name="WatchedEmailsInput" Style="{StaticResource ProtectionInput}" MaxLength="4000" />
+                                        <TextBlock Text="Trusted senders: exact email addresses or domains" Style="{StaticResource ProtectionLabel}" /><TextBox x:Name="TrustedSendersInput" Style="{StaticResource ProtectionInput}" MaxLength="4000" />
+                                        <TextBlock Text="Blocked senders: exact email addresses or domains" Style="{StaticResource ProtectionLabel}" /><TextBox x:Name="BlockedSendersInput" Style="{StaticResource ProtectionInput}" MaxLength="4000" />
+                                        <Button Content="Save filters locally" Style="{StaticResource ActionButton}" Click="SaveEmailFiltersButton_Click" HorizontalAlignment="Left" Margin="0,10,0,0" />
+                                    </StackPanel></Expander>
+                                </StackPanel></ScrollViewer>
+                                <Border Grid.Column="2" Style="{StaticResource PanelBorder}"><ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel>
+                                    <TextBlock Text="Social engineering checks" Foreground="{DynamicResource Theme_F0F5F1}" FontSize="18" FontWeight="SemiBold" />
+                                    <TextBlock Text="Checks sender/reply-to mismatch, deceptive links, internationalized domains, requests for secrets, payment pressure, remote-access requests and risky attachment names." Style="{StaticResource ProtectionLabel}" />
+                                    <Separator Background="{DynamicResource Theme_31513B}" Margin="0,10,0,10" />
+                                    <TextBlock x:Name="EmailResultText" Text="Paste a message or import an .eml/.txt file to review it locally." Foreground="{DynamicResource Theme_E6F2E8}" TextWrapping="Wrap" />
+                                    <Separator Background="{DynamicResource Theme_31513B}" Margin="0,15,0,15" />
+                                    <TextBlock Text="Common MIME text encodings are decoded locally. Attachment contents, sender authentication and encrypted messages require independent review. Messages are not saved or sent to a service." Foreground="{DynamicResource Theme_AFC5B7}" TextWrapping="Wrap" />
+                                </StackPanel></ScrollViewer></Border>
+                            </Grid>
+                        </TabItem>
+                        <TabItem Header="Local exposure reports" Background="{DynamicResource Theme_101B13}" Foreground="{DynamicResource Theme_E6F2E8}">
+                            <Grid Margin="20">
+                                <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="Auto" /><RowDefinition Height="*" /><RowDefinition Height="Auto" /></Grid.RowDefinitions>
+                                <StackPanel>
+                                    <TextBlock Text="Check a local exposure report" Foreground="{DynamicResource Theme_F0F5F1}" FontSize="18" FontWeight="SemiBold" />
+                                    <TextBlock Style="{StaticResource ProtectionLabel}" Text="Set watched email addresses in Email &amp; phishing review, then import a CSV or JSON report you already have. Only matching addresses are displayed. This is an offline report check, not a live dark-web search." />
+                                    <TextBlock Style="{StaticResource ProtectionLabel}" Text="CSV columns: email,service,date. JSON: an array of objects with these fields. Passwords and other columns are not displayed or saved." />
+                                </StackPanel>
+                                <WrapPanel Grid.Row="1" Margin="0,10,0,14">
+                                    <Button Content="Import local report" Style="{StaticResource ActionButton}" Click="ImportExposureReportButton_Click" Margin="0,0,8,0" />
+                                    <Button Content="Clear report" Style="{StaticResource ActionButton}" Click="ClearExposureReportButton_Click" />
+                                </WrapPanel>
+                                <DataGrid Grid.Row="2" x:Name="ExposureResultsGrid" AutoGenerateColumns="False" IsReadOnly="True" FlowDirection="LeftToRight">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Watched email" Binding="{Binding Email}" Width="2*" />
+                                        <DataGridTextColumn Header="Reported service" Binding="{Binding Service}" Width="2*" />
+                                        <DataGridTextColumn Header="Reported date" Binding="{Binding ReportedDate}" Width="*" />
+                                    </DataGrid.Columns>
+                                </DataGrid>
+                                <TextBlock Grid.Row="3" x:Name="ExposureStatusText" Text="No local report loaded." Foreground="{DynamicResource Theme_AFC5B7}" TextWrapping="Wrap" Margin="0,12,0,0" />
+                            </Grid>
+                        </TabItem>
+                    </TabControl>
+                    <TextBlock x:Name="ProtectionStatus" Grid.Row="1" Text="Preferences and application rules are stored locally." Foreground="{DynamicResource Theme_C8DDCF}" TextWrapping="Wrap" Margin="4,12,4,0" />
+                </Grid>
+              </TabItem>
+              <TabItem x:Name="AboutTab" Header="About" Background="{DynamicResource Theme_101B13}" Foreground="{DynamicResource Theme_D8E4DA}">
+                <Grid Margin="12">
+                    <Grid.RowDefinitions><RowDefinition Height="Auto" /><RowDefinition Height="14" /><RowDefinition Height="*" /></Grid.RowDefinitions>
+                    <Border Style="{StaticResource PanelBorder}">
+                        <Grid>
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*" /><ColumnDefinition Width="Auto" /></Grid.ColumnDefinitions>
+                            <StackPanel>
+                                <TextBlock Text="PULSATILLA" Foreground="{DynamicResource Theme_F1F8F2}" FontSize="25" FontWeight="Bold" />
+                                <TextBlock x:Name="ProductTaglineText" Text="Network clarity. Security insight." Foreground="{DynamicResource Theme_91A69A}" Margin="0,5,0,0" />
+                                <TextBlock x:Name="AboutVersionText" Foreground="{DynamicResource Theme_91A69A}" Margin="0,5,0,12" />
+                                <TextBlock Text="Created and developed by" Foreground="{DynamicResource Theme_829488}" />
+                                <TextBlock x:Name="CreatorNameText" Foreground="{DynamicResource Theme_F0F5F1}" FontSize="22" FontWeight="SemiBold" Margin="0,4,0,4" />
+                                <TextBlock Text="{x:Static local:ProductInfo.Company}" Foreground="{DynamicResource Theme_CEDFD3}" Margin="0,0,0,4" />
+                                <TextBlock x:Name="CreatorLocationText" Foreground="{DynamicResource Theme_CEDFD3}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" MaxWidth="400">
+                                <TextBlock Text="Connect with the creator" Foreground="{DynamicResource Theme_E6F2E8}" FontSize="15" FontWeight="SemiBold" Margin="0,0,0,10" />
+                                <WrapPanel>
+                                    <Button x:Name="InstagramButton" Content="Instagram" Style="{StaticResource ActionButton}" Click="CreatorLinkButton_Click" Margin="0,0,8,8" />
+                                    <Button x:Name="LinkedinButton" Content="LinkedIn" Style="{StaticResource ActionButton}" Click="CreatorLinkButton_Click" Margin="0,0,8,8" />
+                                    <Button x:Name="FacebookButton" Content="Facebook" Style="{StaticResource ActionButton}" Click="CreatorLinkButton_Click" Margin="0,0,8,8" />
+                                    <Button x:Name="GithubButton" Content="GitHub" Style="{StaticResource ActionButton}" Click="CreatorLinkButton_Click" Margin="0,0,0,8" />
+                                </WrapPanel>
+                                <TextBlock Text="Technology: .NET &amp; WPF by Microsoft. Optional integrations: Nmap and Ollama." Foreground="{DynamicResource Theme_91A69A}" TextWrapping="Wrap" Margin="0,6,0,0" />
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                    <Border Grid.Row="2" Style="{StaticResource PanelBorder}" Padding="0">
+                        <TabControl x:Name="AboutDocumentsTabs" Margin="12" Background="Transparent" BorderThickness="0">
+                            <TabItem Header="README" Background="{DynamicResource Theme_101B13}" Foreground="{DynamicResource Theme_D8E4DA}"><FlowDocumentScrollViewer x:Name="ReadmeViewer" VerticalScrollBarVisibility="Auto" Background="Transparent" BorderThickness="0" /></TabItem>
+                            <TabItem Header="License" Background="{DynamicResource Theme_101B13}" Foreground="{DynamicResource Theme_D8E4DA}"><FlowDocumentScrollViewer x:Name="LicenseViewer" VerticalScrollBarVisibility="Auto" Background="Transparent" BorderThickness="0" /></TabItem>
+                            <TabItem Header="Services" Background="{DynamicResource Theme_101B13}" Foreground="{DynamicResource Theme_D8E4DA}"><FlowDocumentScrollViewer x:Name="ServicesViewer" VerticalScrollBarVisibility="Auto" Background="Transparent" BorderThickness="0" /></TabItem>
+                            <TabItem Header="Privacy" Background="{DynamicResource Theme_101B13}" Foreground="{DynamicResource Theme_D8E4DA}"><FlowDocumentScrollViewer x:Name="PrivacyViewer" VerticalScrollBarVisibility="Auto" Background="Transparent" BorderThickness="0" /></TabItem>
+                        </TabControl>
+                    </Border>
+                </Grid>
+              </TabItem>
+            </TabControl>
+            <DockPanel Grid.Row="2" Margin="0,12,0,0">
+                <ComboBox x:Name="ThemeSelector" DockPanel.Dock="Right" Width="105" Margin="12,-5,0,-5" FlowDirection="LeftToRight" DisplayMemberPath="Name" SelectedValuePath="Mode" ToolTip="Color theme (Dark is the default)" SelectionChanged="ThemeSelector_SelectionChanged" />
+                <ComboBox x:Name="LanguageSelector" DockPanel.Dock="Right" Width="170" Margin="12,-5,0,-5"
+                          FlowDirection="LeftToRight" DisplayMemberPath="NativeName" SelectedValuePath="Code"
+                          ToolTip="{DynamicResource Loc_A4FE65264EF7}" SelectionChanged="LanguageSelector_SelectionChanged" /><TextBlock Text="{DynamicResource Loc_AC7AAB22A5AA}" Foreground="{DynamicResource Theme_9AA99F}" FontSize="10" /><TextBlock x:Name="LastUpdateLabel" DockPanel.Dock="Right" Text="{DynamicResource Loc_E65C2D958C60}" Foreground="{DynamicResource Theme_9AA99F}" FontSize="10" HorizontalAlignment="Right" /></DockPanel>
+        </Grid>
+    </Grid>
+</Window>
