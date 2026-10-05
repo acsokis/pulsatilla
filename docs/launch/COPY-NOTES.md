@@ -4,6 +4,13 @@ Prepared on 2026-10-05. The four LinkedIn/Facebook files contain only the final 
 copy the appropriate language file into the platform's post editor. No post has been published
 by this copy preparation task.
 
+Open `share.html` locally for six copy buttons (four posts and two longer articles) and
+image downloads. Pick English or German, copy the text, download a PNG and attach it in
+the platform editor. Images are attached separately; copying text does not upload an image.
+The same folder contains every linked Markdown source and image, so the page works offline.
+On GitHub, HTML is shown as source; download the project ZIP or publication kit to open it.
+Original-project credits are kept in About and the technical origin documentation.
+
 ## Links to verify before publication
 
 - Public repository: `https://github.com/acsokis/pulsatilla`. Source publication and public

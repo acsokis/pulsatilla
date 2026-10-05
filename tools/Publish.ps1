@@ -27,7 +27,7 @@ try {
     foreach ($document in @('LICENSE','README.md','CHANGELOG.md')) { Copy-Item -LiteralPath $document -Destination $outputPath }
     $docOutput = Join-Path $outputPath 'docs'
     New-Item -ItemType Directory -Path $docOutput | Out-Null
-    foreach ($document in @('PRIVACY.md','MONETIZATION.md','LEGAL_AND_WORDING.md','DEVELOPMENT.md')) { Copy-Item -LiteralPath (Join-Path 'docs' $document) -Destination $docOutput }
+    foreach ($document in @('PRIVACY.md','MONETIZATION.md','LEGAL_AND_WORDING.md','DEVELOPMENT.md','ORIGIN.md','ORIGIN-REVIEW.md')) { Copy-Item -LiteralPath (Join-Path 'docs' $document) -Destination $docOutput }
     $executable = Join-Path $outputPath 'Pulsatilla.exe'
     $manifest = [ordered]@{
         product = 'Pulsatilla'; version = $version; runtime = $Runtime; selfContained = [bool]$SelfContained

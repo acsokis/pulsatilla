@@ -88,7 +88,16 @@ internal static class ExtendedChecks
         ((FlowDocumentScrollViewer)window.FindName("LicenseViewer")).Document = AboutContent.CreateDocument("# MIT License\n\n" + AboutContent.LicenseText);
         ((FlowDocumentScrollViewer)window.FindName("ServicesViewer")).Document = AboutContent.CreateDocument(AboutContent.Services);
         ((FlowDocumentScrollViewer)window.FindName("PrivacyViewer")).Document = AboutContent.CreateDocument(AboutContent.Privacy);
-        ((TextBlock)window.FindName("AboutVersionText")).Text = "Pulsatilla 1.0.0 · Community · MIT";
+        var originDocument = AboutContent.CreateDocument(AboutContent.Origin);
+        var originText = new TextRange(originDocument.ContentStart, originDocument.ContentEnd).Text;
+        Assert(originText.Contains("Göldner Iván") && originText.Contains("Gábor Kocsis") && originText.Contains("2025-11-26"), "Origin attribution or archive dates missing from embedded document");
+        Assert(originDocument.Blocks.OfType<Paragraph>().SelectMany(paragraph => paragraph.Inlines.OfType<Hyperlink>())
+            .Any(link => link.NavigateUri.AbsoluteUri == AboutContent.OriginalCreatorFacebook), "Original creator link is not clickable in Origin story");
+        Assert(((TextBlock)window.FindName("OriginCreatorText")).Text.Contains("Göldner Iván"), "Original creator missing from About header");
+        Assert((string)((Button)window.FindName("OriginFacebookButton")).Tag == AboutContent.OriginalCreatorFacebook &&
+            AboutContent.OriginalCreatorFacebook == "https://www.facebook.com/goldnerivan#", "Original creator profile link is incorrect");
+        ((FlowDocumentScrollViewer)window.FindName("OriginViewer")).Document = originDocument;
+        ((TextBlock)window.FindName("AboutVersionText")).Text = "Pulsatilla · Community · MIT";
         var actualChart = (VisualTrafficChart)window.FindName("ThroughputChart");
         var tracker = new TrafficSourceTracker();
         for (var index = 0; index < 120; index++)
@@ -120,7 +129,7 @@ internal static class ExtendedChecks
                 }
                 tabs.SelectedIndex = 9;
                 var aboutTabs = (TabControl)window.FindName("AboutDocumentsTabs");
-                for (var documentIndex = 1; documentIndex < 4; documentIndex++)
+                for (var documentIndex = 1; documentIndex < aboutTabs.Items.Count; documentIndex++)
                 {
                     aboutTabs.SelectedIndex = documentIndex; window.UpdateLayout();
                     Program.SaveImage(window, $"about-{documentIndex}-{mode.ToString().ToLowerInvariant()}-preview.png", 1500, 900);

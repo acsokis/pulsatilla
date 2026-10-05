@@ -22,6 +22,7 @@
     <EmbeddedResource Include="../../LICENSE" LogicalName="Pulsatilla.Wpf.LICENSE" />
     <EmbeddedResource Include="../../docs/MONETIZATION.md" LogicalName="Pulsatilla.Wpf.Services.md" />
     <EmbeddedResource Include="../../docs/PRIVACY.md" LogicalName="Pulsatilla.Wpf.Privacy.md" />
+    <EmbeddedResource Include="../../docs/ORIGIN.md" LogicalName="Pulsatilla.Wpf.Origin.md" />
     <Compile Include="../../Pulsatilla.Wpf/MatrixRain.cs" Link="MatrixRain.cs" />
     <Compile Include="../../Pulsatilla.Wpf/PacketCaptureService.cs" Link="PacketCaptureService.cs" />
     <Compile Include="../../Pulsatilla.Wpf/BoundedPacketQueue.cs" Link="BoundedPacketQueue.cs" />

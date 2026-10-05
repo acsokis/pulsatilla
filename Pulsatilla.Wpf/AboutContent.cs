@@ -13,10 +13,12 @@ public sealed record CreatorProfile(string Name, string Location, string Instagr
 
 public static class AboutContent
 {
+    public const string OriginalCreatorFacebook = "https://www.facebook.com/goldnerivan#";
     public static string Readme => ReadResource("Pulsatilla.Wpf.README.md");
     public static string LicenseText => ReadResource("Pulsatilla.Wpf.LICENSE");
     public static string Services => ReadResource("Pulsatilla.Wpf.Services.md");
     public static string Privacy => ReadResource("Pulsatilla.Wpf.Privacy.md");
+    public static string Origin => ReadResource("Pulsatilla.Wpf.Origin.md");
     public static CreatorProfile Creator => JsonSerializer.Deserialize<CreatorProfile>(ReadResource("Pulsatilla.Wpf.CreatorProfile.json"),
         new JsonSerializerOptions { PropertyNameCaseInsensitive = true })!;
 

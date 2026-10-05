@@ -1,11 +1,15 @@
 # Pulsatilla
 
+![Pulsatilla — Network clarity. Security insight. — Gabor Web](docs/launch/assets/marketing/pulsatilla-launch-en.png)
+
 **Network clarity. Security insight.**
 
 [Source on GitHub](https://github.com/acsokis/pulsatilla) · [Windows downloads](https://github.com/acsokis/pulsatilla/releases) · [Support via PayPal](https://paypal.me/gaborcarter) · [English / German launch materials](docs/launch)
 
 Network monitoring, security awareness and local exposure review in one Windows desktop app.
-Created by **Gábor Kocsis**, based in Germany. The Community application is [MIT-licensed](LICENSE).
+Pulsatilla's C#/WPF application is developed by **Gábor Kocsis / Gabor Web**, based in Germany.
+The [origin story](docs/ORIGIN.md) records the personal-project starting point and contributor roles.
+The Community application's current license is [MIT](LICENSE).
 Optional paid services are a separate [integration roadmap](docs/MONETIZATION.md), not active subscriptions.
 
 Windows network monitor and scanner built with C# and WPF on .NET 8. Targets Windows 10 and Windows 11 x64. No third-party packages are required.
@@ -26,7 +30,7 @@ These separate services are planned; no subscription or service price is publish
 
 Download the Windows x64 ZIP from [GitHub Releases](https://github.com/acsokis/pulsatilla/releases),
 extract it and run `Pulsatilla.exe`. The compact package requires the **.NET 8 Windows Desktop
-Runtime x64**. Community 1.0.0 is an early release; the executable is currently unsigned.
+Runtime x64**. Community is an early release; the executable is currently unsigned.
 Use monitoring normally, and restart as Administrator only for packet capture or confirmed
 application firewall actions. Security findings are indicators to review, not attack proof.
 
@@ -42,6 +46,11 @@ for live traffic, IP/software sources, local email review, Light mode and a Germ
 The kit also includes separately labeled AI-generated marketing illustrations, social posts,
 SEO/GEO copy and a [commercial overview](docs/launch/commercial-overview.md).
 
+To share the project, open [the copy-and-paste publication page](docs/launch/share.html)
+locally after downloading the repository. It includes English/German LinkedIn and Facebook
+posts, longer articles, copy buttons and downloadable images. On GitHub, use the
+[plain-text post files](docs/launch/README.md#ready-to-copy-posts).
+
 ## Features
 
 - Layered Matrix rain with native WPF motion, Eco/Balanced/Off modes, fixed sprite budgets, minimized-window suspension and red anomaly/error flashes.
@@ -49,7 +58,7 @@ SEO/GEO copy and a [commercial overview](docs/launch/commercial-overview.md).
 - Filled live throughput chart with amber download and purple upload, 1/5/15-minute views, timeline inspection, series toggles, freeze/resume and window volume/peak summaries.
 - Dark theme by default, with persistent Light and Windows theme choices, matching title bars, dropdowns and rain palettes.
 - Expandable top source IPs with protocol/port/local-program details, and a separate top software section with per-program remote IPs.
-- About tab with the full embedded README, creator credits and Instagram/LinkedIn/Facebook/GitHub links.
+- About tab with the full embedded README, origin story, contributor credits and Instagram/LinkedIn/Facebook/GitHub links.
 - Local event explanations: optional Ollama `qwen2.5:3b` on `127.0.0.1`; built-in offline diagnostics remain available without Ollama or an API key.
 - Live CPU/RAM dashboard chart and detailed CPU/SoC, board/BIOS, GPU/driver, memory-module, disk, and network-adapter inventory.
 - Adapter inventory, IPv4, gateway, MAC, link speed, and Wi-Fi status.
@@ -78,7 +87,7 @@ Rules and preferences are stored in `%LOCALAPPDATA%\Pulsatilla\protection.json`.
 The footer theme selector starts in **Dark** for a new profile. **Light** changes the whole
 interface and rain palette; **Windows** follows the Windows app-color preference and updates
 during the session. The selection persists with protection preferences. The **About** tab
-includes the complete README, MIT license, service roadmap and privacy notes inside the EXE,
+includes the complete README, origin story, MIT license, service roadmap and privacy notes inside the EXE,
 so they remain available offline.
 
 The Dashboard graph uses selected-adapter byte counters sampled every 500 ms; it does not
@@ -185,8 +194,14 @@ creator links and rendering Dashboard/Sources/About in both themes without syste
 
 ## Creator credits
 
-Created and developed by **Gábor Kocsis**, based in **Germany (Németország)**.
-Company: **Gabor Web**.
+**Gábor Kocsis — Germany (Németország), Gabor Web:** additional product ideas,
+Pulsatilla's C#/WPF redevelopment, performance/quality work and release preparation.
+
+The original creator's attribution and both contributor roles are recorded separately in
+**About / Origin story** and [ORIGIN.md](docs/ORIGIN.md), with an
+[archive comparison](docs/ORIGIN-REVIEW.md). Development also used AI coding assistance.
+No upstream URL or license was supplied in the archive; its reuse permission is not
+established by Pulsatilla's MIT notice, and the original ZIP is not included in this repository.
 
 - [Instagram](https://www.instagram.com/gabor_carter/)
 - [LinkedIn](https://www.linkedin.com/in/gabor-web/)
@@ -194,7 +209,8 @@ Company: **Gabor Web**.
 - [GitHub](https://github.com/acsokis)
 
 Technology credits: .NET and WPF by Microsoft. Optional integrations: Nmap and Ollama.
-Creator metadata lives in `Pulsatilla.Wpf/Resources/CreatorProfile.json` and is embedded in the app.
+Gábor's profile metadata lives in `Pulsatilla.Wpf/Resources/CreatorProfile.json`;
+the origin story and both contributor credits are embedded in the app.
 
 ## Interface languages
 

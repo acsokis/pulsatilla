@@ -22,11 +22,14 @@ internal static class Program
         if (!File.Exists(xamlPath)) throw new InvalidOperationException("Run from the Pulsatilla repository root.");
         var output = Path.Combine(root, "docs", "launch", "assets", "screenshots");
         Directory.CreateDirectory(output);
+        var originOutput = Path.Combine(root, "docs", "origin", "screenshots");
+        Directory.CreateDirectory(originOutput);
         var app = new Application { ShutdownMode = ShutdownMode.OnExplicitShutdown };
         foreach (var resource in new[] { "ThemeColors", "DarkControls" })
             app.Resources.MergedDictionaries.Add(new ResourceDictionary
             { Source = new Uri($"/Pulsatilla;component/Resources/{resource}.xaml", UriKind.Relative) });
         ThemeService.Apply(ThemeMode.Dark);
+        SaveLogo(Path.Combine(root, "docs", "launch", "assets", "marketing", "pulsatilla-logo.png"));
         var xaml = File.ReadAllText(xamlPath);
         xaml = Regex.Replace(xaml, "x:Class=\"[^\"]+\"", "")
             .Replace("clr-namespace:Pulsatilla.Wpf", "clr-namespace:Pulsatilla.Wpf;assembly=Pulsatilla");
@@ -94,26 +97,29 @@ internal static class Program
         Text("EmailResultText", result.Summary + "\n\n" + string.Join("\n\n", result.Findings.Select(finding => "• " + finding)));
         var creator = AboutContent.Creator;
         Text("CreatorNameText", creator.Name); Text("CreatorLocationText", creator.Location);
-        Text("AboutVersionText", "Pulsatilla 1.0.0 · Community · MIT");
+        Text("AboutVersionText", "Pulsatilla " + (typeof(ProductInfo).Assembly.GetName().Version?.ToString(3) ?? "1.0.1") + " · Community · MIT");
         Find<FlowDocumentScrollViewer>("ReadmeViewer").Document = AboutContent.CreateReadmeDocument();
         Find<FlowDocumentScrollViewer>("LicenseViewer").Document = AboutContent.CreateDocument("# MIT License\n\n" + AboutContent.LicenseText);
         Find<FlowDocumentScrollViewer>("ServicesViewer").Document = AboutContent.CreateDocument(AboutContent.Services);
         Find<FlowDocumentScrollViewer>("PrivacyViewer").Document = AboutContent.CreateDocument(AboutContent.Privacy);
+        Find<FlowDocumentScrollViewer>("OriginViewer").Document = AboutContent.CreateDocument(AboutContent.Origin);
         var tabs = Find<TabControl>("MainTabs");
-        void Save(string name, int tabIndex)
+        void Save(string name, int tabIndex, string? directory = null)
         {
             tabs.SelectedIndex = tabIndex; window.UpdateLayout();
             window.Dispatcher.Invoke(() => { }, DispatcherPriority.ApplicationIdle);
             var bitmap = new RenderTargetBitmap(Width, Height, 96, 96, PixelFormats.Pbgra32); bitmap.Render(window);
             var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
-            using var stream = File.Create(Path.Combine(output, name)); encoder.Save(stream);
+            using var stream = File.Create(Path.Combine(directory ?? output, name)); encoder.Save(stream);
             Console.WriteLine("Saved " + name);
         }
         try
         {
             window.Show();
             Save("dashboard-dark-en.png", 0); Save("live-traffic-dark-en.png", 1); Save("security-sources-dark-en.png", 6);
-            Find<TabControl>("ProtectionTabs").SelectedIndex = 2; Save("email-review-dark-en.png", 8); Save("about-dark-en.png", 9);
+            Find<TabControl>("ProtectionTabs").SelectedIndex = 2; Save("email-review-dark-en.png", 8); Save("about-dark-en.png", 9, originOutput);
+            Find<TabControl>("AboutDocumentsTabs").SelectedIndex = 1; Save("origin-story-dark-en.png", 9, originOutput);
+            Find<TabControl>("AboutDocumentsTabs").SelectedIndex = 0;
             ThemeService.Apply(ThemeMode.Light); Find<ComboBox>("ThemeSelector").SelectedValue = ThemeMode.Light;
             Save("dashboard-light-en.png", 0);
             ThemeService.Apply(ThemeMode.Dark); Find<ComboBox>("ThemeSelector").SelectedValue = ThemeMode.Dark;
@@ -124,5 +130,50 @@ internal static class Program
             Save("dashboard-dark-de.png", 0);
         }
         finally { window.Close(); app.Shutdown(); }
+    }
+
+    private static void SaveLogo(string output)
+    {
+        // Deterministic vector artwork, separate from the AI-generated flower banners.
+        var visual = new DrawingVisual();
+        using (var drawing = visual.RenderOpen())
+        {
+            Brush Color(string value) => new SolidColorBrush((System.Windows.Media.Color)ColorConverter.ConvertFromString(value));
+            drawing.DrawRoundedRectangle(Color("#080e0d"), null, new Rect(0, 0, 1280, 320), 24, 24);
+            var petal = Geometry.Parse("M0,0 C-57,-31 -64,-102 0,-120 C64,-102 57,-31 0,0 Z");
+            drawing.PushTransform(new TranslateTransform(155, 156));
+            for (var angle = 0; angle < 360; angle += 60)
+            {
+                drawing.PushTransform(new RotateTransform(angle));
+                drawing.DrawGeometry(Color("#b28af5"), new Pen(Color("#d9c5ff"), 2), petal);
+                drawing.Pop();
+            }
+            drawing.DrawEllipse(Color("#ffcc71"), null, new Point(0, 0), 28, 28);
+            var network = new Pen(Color("#162a1e"), 3);
+            drawing.DrawLine(network, new Point(-18, 0), new Point(18, 0));
+            drawing.DrawLine(network, new Point(0, -18), new Point(0, 18));
+            drawing.DrawLine(network, new Point(-13, -13), new Point(13, 13));
+            drawing.DrawLine(network, new Point(-13, 13), new Point(13, -13));
+            foreach (var node in new[] { new Point(-18, 0), new Point(18, 0), new Point(0, -18), new Point(0, 18) })
+                drawing.DrawEllipse(Color("#90e0a9"), null, node, 5, 5);
+            drawing.Pop();
+            void Text(string value, double x, double baseline, double size, string color, double tracking = 0, bool bold = false)
+            {
+                foreach (var character in value)
+                {
+                    var text = new FormattedText(character.ToString(), System.Globalization.CultureInfo.InvariantCulture,
+                        FlowDirection.LeftToRight, new Typeface(new FontFamily("Segoe UI"), FontStyles.Normal,
+                        bold ? FontWeights.Bold : FontWeights.Normal, FontStretches.Normal), size, Color(color), 1);
+                    drawing.DrawText(text, new Point(x, baseline - text.Baseline)); x += text.WidthIncludingTrailingWhitespace + tracking;
+                }
+            }
+            Text("PULSATILLA", 320, 144, 87, "#f2f6f3", 8, bold: true);
+            Text("Network clarity. Security insight.", 324, 198, 30, "#c5d7ca");
+            Text("GABOR WEB", 324, 251, 23, "#90e0a9", 4);
+        }
+        var bitmap = new RenderTargetBitmap(1280, 320, 96, 96, PixelFormats.Pbgra32); bitmap.Render(visual);
+        var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
+        using var stream = File.Create(output); encoder.Save(stream);
+        Console.WriteLine("Saved pulsatilla-logo.png");
     }
 }
