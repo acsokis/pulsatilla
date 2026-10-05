@@ -5,6 +5,9 @@ examples for a future product page; this file does not create or host a website.
 The public repository is `https://github.com/acsokis/pulsatilla`, verified on 2026-10-05.
 No product domain, office address or service price is assumed.
 
+Project development start, supplied by Gábor Kocsis: **2026-10-05 at 13:55 CEST**,
+Germany / Europe/Berlin; ISO **2026-10-05T13:55:00+02:00**.
+
 Voluntary development support is available via the creator-provided public link
 [PayPal.Me / gaborcarter](https://paypal.me/gaborcarter). It does not unlock features or buy
 a paid service; the app does not handle payment information. Optional paid services remain planned.
@@ -59,6 +62,7 @@ aktive Abonnements oder externe Dienste zur Datenleck-Prüfung gibt es in dieser
 | Company name | Gabor Web |
 | Creator | Gábor Kocsis |
 | Creator location | Germany; no city or physical business address has been provided |
+| Development start | 5 October 2026, 13:55 CEST / Europe/Berlin, supplied by Gábor Kocsis |
 | Platform | Windows 10/11 x64, C#/WPF on .NET 8 |
 | Current framework-dependent download | Requires .NET 8 Desktop Runtime |
 | License | MIT; commercial use and redistribution are permitted with the required notice |
@@ -190,6 +194,7 @@ actual product-page URL if one is later published; no unprovided domain is used 
       "@type": "SoftwareApplication",
       "@id": "#pulsatilla",
       "name": "Pulsatilla",
+      "dateCreated": "2026-10-05T13:55:00+02:00",
       "description": "MIT-licensed Windows network monitoring with live traffic, local application activity and explicitly imported email and exposure-report review. Separate paid services are planned; no external exposure provider is active.",
       "url": "https://github.com/acsokis/pulsatilla",
       "applicationCategory": "UtilitiesApplication",

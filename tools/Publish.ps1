@@ -13,6 +13,10 @@ try {
     [xml]$project = Get-Content -LiteralPath 'Pulsatilla.Wpf/Pulsatilla.Wpf.csproj' -Raw -Encoding UTF8
     $version = [string]$project.Project.PropertyGroup.Version
     if ($version -notmatch '^\d+\.\d+\.\d+(?:-[A-Za-z0-9.-]+)?$') { throw 'Invalid product version.' }
+    $productSource = [IO.File]::ReadAllText((Join-Path $projectRoot 'Pulsatilla.Wpf/ProductInfo.cs'), [Text.Encoding]::UTF8)
+    $developmentStart = [regex]::Match($productSource, 'DevelopmentStartedAt\s*=\s*"([^"]+)"').Groups[1].Value
+    if ([string]::IsNullOrWhiteSpace($developmentStart)) { throw 'Missing development start.' }
+    [DateTimeOffset]::Parse($developmentStart) | Out-Null
     $packageName = "pulsatilla-$version-$Runtime"
     if ($SelfContained) { $packageName += '-self-contained' }
     if ([string]::IsNullOrWhiteSpace($OutputDirectory)) { $OutputDirectory = Join-Path $projectRoot "dist/$packageName" }
@@ -34,6 +38,7 @@ try {
         requiredRuntime = $(if ($SelfContained) { 'Included' } else { '.NET 8 Windows Desktop Runtime x64' })
         license = 'MIT'; creator = [string]$project.Project.PropertyGroup.Authors; builtAtUtc = [DateTime]::UtcNow.ToString('o')
         company = [string]$project.Project.PropertyGroup.Company
+        developmentStartedAt = $developmentStart; developmentStartSource = 'Supplied by Gabor Kocsis'
         executableSha256 = (Get-FileHash -LiteralPath $executable -Algorithm SHA256).Hash
         signature = [string](Get-AuthenticodeSignature -LiteralPath $executable).Status
     }

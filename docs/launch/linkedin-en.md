@@ -1,5 +1,7 @@
 I’m introducing Pulsatilla, my open-source Windows network tool from Gabor Web.
 
+I started Pulsatilla on 5 October 2026 at 13:55 CEST, here in Germany.
+
 Network clarity. Security insight.
 
 Pulsatilla brings live traffic, application activity and local security review into one desktop interface:

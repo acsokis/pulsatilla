@@ -8,6 +8,10 @@
 
 These roles are credited from Gábor Kocsis's account. The archive itself contains no author metadata, so this inspection does not independently prove authorship or establish who typed each line. Pulsatilla's development workflow also used AI coding assistance.
 
+## When Pulsatilla began
+
+Pulsatilla development started on **5 October 2026 at 13:55, Germany / Europe/Berlin (CEST, UTC+02:00)**, as supplied by Gábor Kocsis. The timestamp is **2026-10-05T13:55:00+02:00**, or 11:55 UTC. This dates the Pulsatilla project; the original personal Python project has its separate November 2025 archive dates.
+
 ## What changed
 
 - Original: Python with PyQt6, Scapy, NumPy, pyqtgraph and OpenGL. Pulsatilla: a Windows C# / WPF application with no third-party runtime packages; Nmap and Ollama remain optional integrations.
@@ -20,13 +24,14 @@ These roles are credited from Gábor Kocsis's account. The archive itself contai
 
 - Original Python file timestamps in the supplied ZIP: **2025-11-26 to 2025-11-28**. They support a late-November 2025 snapshot, not a verified project start date.
 - Earliest to latest source-file timestamp: **28 hours, 11 minutes**. This is a span between saved files, not hours worked.
-- Pulsatilla's first public Git import: **2026-10-05**. This repository has no earlier development history, so the date of the C#/WPF port's beginning cannot be established from it.
+- Pulsatilla's reported development start: **2026-10-05 13:55 CEST**.
+- First public Git import: **2026-10-05 19:35:05 CEST**, approximately **5 hours, 40 minutes** after the reported start. Git records publication, while the start time was supplied by Gábor Kocsis.
 
 ZIP timestamps have no reliable original timezone and can be changed when files are copied or archived. Neither timestamps nor source size reveal actual engineering time.
 
-## Effort estimates
+## Elapsed time and reconstruction estimates
 
-Actual working hours were not recorded in the supplied archive or public repository. A separate technical review describes reconstruction estimates and their assumptions; those estimates are not either contributor's timesheet.
+The reported start-to-first-import interval is **5 hours, 40 minutes, 5 seconds** of elapsed time. Active working hours were not separately logged. The following estimates describe hypothetical manual reconstruction of the inspected scope, rather than the actual AI-assisted Pulsatilla timeline or either contributor's timesheet.
 
 - Recreating the original Python prototype: approximately **20–80 engineering hours**.
 - Redeveloping the C#/WPF application with the inspected additions, validation and packaging: approximately **60–200 engineering hours**.

@@ -1,9 +1,11 @@
 # Pulsatilla publication kit
 
 English and German launch materials by Gabor Web / Gábor Kocsis, prepared on 2026-10-05.
+Pulsatilla development started on **2026-10-05 at 13:55 CEST (Germany / Europe/Berlin)**,
+as supplied by Gábor Kocsis.
 The source project is public at [acsokis/pulsatilla](https://github.com/acsokis/pulsatilla).
 Download the Community application from [GitHub Releases](https://github.com/acsokis/pulsatilla/releases).
-Get the complete [share-ready publication ZIP](https://github.com/acsokis/pulsatilla/releases/download/v1.0.1/pulsatilla-publication-kit-1.0.1.zip),
+Get the complete [share-ready publication ZIP](https://github.com/acsokis/pulsatilla/releases/download/v1.0.2/pulsatilla-publication-kit-1.0.2.zip),
 extract it and open `share.html` for the copy buttons and image downloads.
 
 ## Ready-to-copy posts
@@ -11,6 +13,8 @@ extract it and open `share.html` for the copy buttons and image downloads.
 Open **[share.html](share.html)** locally for a visual publication page with one-click
 copy buttons, English/German posts and articles, and downloadable images. On GitHub,
 HTML is displayed as source; download the repository ZIP and open the file in a browser.
+The page includes direct application/kit download links and English/German sections for
+voluntary support and planned service opportunities.
 
 | Platform | English | Deutsch |
 | --- | --- | --- |

@@ -579,6 +579,7 @@
                                 <TextBlock Text="PULSATILLA" Foreground="{DynamicResource Theme_F1F8F2}" FontSize="25" FontWeight="Bold" />
                                 <TextBlock x:Name="ProductTaglineText" Text="Network clarity. Security insight." Foreground="{DynamicResource Theme_91A69A}" Margin="0,5,0,0" />
                                 <TextBlock x:Name="AboutVersionText" Foreground="{DynamicResource Theme_91A69A}" Margin="0,5,0,12" />
+                                <TextBlock x:Name="DevelopmentStartedText" Text="{x:Static local:ProductInfo.DevelopmentStartedDisplay}" Foreground="{DynamicResource Theme_CEDFD3}" Margin="0,0,0,12" TextWrapping="Wrap" />
                                 <TextBlock Text="Pulsatilla development &amp; product direction" Foreground="{DynamicResource Theme_829488}" />
                                 <TextBlock x:Name="CreatorNameText" Foreground="{DynamicResource Theme_F0F5F1}" FontSize="22" FontWeight="SemiBold" Margin="0,4,0,4" />
                                 <TextBlock Text="{x:Static local:ProductInfo.Company}" Foreground="{DynamicResource Theme_CEDFD3}" Margin="0,0,0,4" />

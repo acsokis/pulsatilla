@@ -1,5 +1,7 @@
 What is your Windows PC doing on the network?
 
+I started the Pulsatilla project on 5 October 2026 at 13:55 CEST in Germany.
+
 I built Pulsatilla to make that activity visible: a live download/upload graph, application traffic, network events and local email review in one desktop app.
 
 The dashboard reads counters from your selected network adapter. Run packet capture as Administrator for IPv4 traffic details and local app attribution. Paste or import an email to review suspicious wording and links locally; nothing reads your mailbox automatically. Blocking an application creates Windows Firewall rules only after confirmation.

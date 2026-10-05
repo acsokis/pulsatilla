@@ -61,12 +61,17 @@ metadata and does not date the original source.
 
 ## Pulsatilla publication history
 
+- Development start supplied by Gábor Kocsis: **2026-10-05 13:55:00 +02:00**, Germany / Europe/Berlin, CEST; **11:55 UTC**. This is contributor-supplied history rather than a timestamp recovered from Git.
 - First import: [`ad71d0b`](https://github.com/acsokis/pulsatilla/commit/ad71d0b6d6e273cbcec29b0b20676d35ce8969a1), **2026-10-05 19:35:05 +02:00**.
 - Follow-up funding/publication-kit commit: [`240cdab`](https://github.com/acsokis/pulsatilla/commit/240cdaba985926195ff5bd6c792c12dcc69188dc), **2026-10-05 19:49:38 +02:00**.
 
 The first commit imported an already developed application. The 14-minute gap between
 these commits does not measure the development or porting time. No earlier development
 history is present in this repository.
+
+From the supplied 13:55 start to the first public import at 19:35:05, the elapsed interval
+is **5 hours, 40 minutes, 5 seconds**. It dates the Pulsatilla phase, not the original Python
+project. The interval includes any pauses and is not a logged total of active work.
 
 ## Functional and architectural comparison
 
@@ -94,7 +99,9 @@ it cannot quantify faster rendering, overall reliability or effectiveness agains
 
 ## Reconstruction-effort estimates
 
-Actual historical hours cannot be recovered. For planning only, a broad engineering judgment is:
+The Pulsatilla start is now supplied by its developer, with **5:40:05 elapsed to the first
+public Git import**. Active working hours are not logged. For planning only, a broad
+estimate of hypothetical manual reconstruction is:
 
 - Original Python prototype: **20–80 engineering hours**.
 - C#/WPF redevelopment with the inspected new features, validation and packaging:

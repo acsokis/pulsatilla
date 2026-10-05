@@ -90,7 +90,8 @@ internal static class ExtendedChecks
         ((FlowDocumentScrollViewer)window.FindName("PrivacyViewer")).Document = AboutContent.CreateDocument(AboutContent.Privacy);
         var originDocument = AboutContent.CreateDocument(AboutContent.Origin);
         var originText = new TextRange(originDocument.ContentStart, originDocument.ContentEnd).Text;
-        Assert(originText.Contains("Göldner Iván") && originText.Contains("Gábor Kocsis") && originText.Contains("2025-11-26"), "Origin attribution or archive dates missing from embedded document");
+        Assert(originText.Contains("Göldner Iván") && originText.Contains("Gábor Kocsis") && originText.Contains("2025-11-26") && originText.Contains("2026-10-05T13:55:00+02:00"), "Origin attribution, archive dates or reported Pulsatilla start missing from embedded document");
+        Assert(((TextBlock)window.FindName("DevelopmentStartedText")).Text == ProductInfo.DevelopmentStartedDisplay, "About start timestamp is missing");
         Assert(originDocument.Blocks.OfType<Paragraph>().SelectMany(paragraph => paragraph.Inlines.OfType<Hyperlink>())
             .Any(link => link.NavigateUri.AbsoluteUri == AboutContent.OriginalCreatorFacebook), "Original creator link is not clickable in Origin story");
         Assert(((TextBlock)window.FindName("OriginCreatorText")).Text.Contains("Göldner Iván"), "Original creator missing from About header");

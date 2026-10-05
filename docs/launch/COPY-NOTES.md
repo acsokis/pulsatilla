@@ -4,6 +4,10 @@ Prepared on 2026-10-05. The four LinkedIn/Facebook files contain only the final 
 copy the appropriate language file into the platform's post editor. No post has been published
 by this copy preparation task.
 
+The project start supplied by Gábor Kocsis is **2026-10-05 at 13:55 CEST**,
+Germany / Europe/Berlin, ISO **2026-10-05T13:55:00+02:00**. Use this absolute date
+in reusable copy rather than “today”; the original private project's archive has separate dates.
+
 Open `share.html` locally for six copy buttons (four posts and two longer articles) and
 image downloads. Pick English or German, copy the text, download a PNG and attach it in
 the platform editor. Images are attached separately; copying text does not upload an image.

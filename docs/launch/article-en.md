@@ -1,5 +1,7 @@
 # Pulsatilla: network visibility and an open-source service business
 
+I started the Pulsatilla project on 5 October 2026 at 13:55 CEST (Germany / Europe/Berlin).
+
 I’m developing Pulsatilla, a Windows desktop application for understanding network activity and reviewing local security indicators. My name is Gábor Kocsis, and I’m based in Germany under the Gabor Web name. Pulsatilla brings traffic charts, application activity, network diagnostics and local email review into one interface. The Community application is published as an early release with its source code on GitHub.
 
 The Dashboard starts with the selected network adapter. Windows byte counters supply the live download and upload rates, shown in amber and purple. You can inspect a timestamp, switch between one-, five- and fifteen-minute views, pause the visible timeline and review traffic volume. This view works without Administrator rights or packet capture, making it a useful starting point for understanding a connection.
