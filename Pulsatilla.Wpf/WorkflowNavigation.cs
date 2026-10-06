@@ -9,11 +9,13 @@ public sealed class WorkflowNavigation
 {
     private readonly TabControl _main;
     private readonly Dictionary<string, TabItem> _pages = new(StringComparer.Ordinal);
+    private NetworkPathPanel? _networkPanel;
     public ContentControl NetworkHost { get; } = new();
     public ContentControl ApplicationsHost { get; } = new();
     public ContentControl AttachmentsHost { get; } = new();
     public ContentControl VpnHost { get; } = new();
     public ContentControl SampleHost { get; } = new();
+    public ContentControl ServiceHost { get; } = new();
     public TextBlock PathSummary { get; } = Text("Resolving the local outbound route…");
     public TextBlock InspectionSummary { get; } = Text("Inspection stopped. Select Network Path, then Inspect Traffic.");
     public TextBlock SecuritySummary { get; } = Text("Local review. Findings are indicators, not a malware diagnosis.");
@@ -99,6 +101,7 @@ public sealed class WorkflowNavigation
             scanActions.Children.Insert(0, warning);
         }
         Add(scan, "HEX / Sample Analysis", SampleHost);
+        Add(scan, "Service Detection", ServiceHost);
         var security = Group("Security");
         var overview = new Grid { Margin = new Thickness(10) };
         overview.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -143,9 +146,19 @@ public sealed class WorkflowNavigation
     }
 
     public string CurrentPage => (_main.SelectedItem as TabItem)?.Tag as string ?? "Dashboard";
+    public void InstallNetworkPanel(NetworkPathPanel panel)
+    {
+        _networkPanel = panel;
+        NetworkHost.Content = panel;
+        _pages["Network Path"].Content = null;
+        _pages["Network"].Content = NetworkHost;
+        foreach (var section in new[] { "Network Path", "Adapters", "Routes", "Interface Priority", "Diagnostics" })
+            _pages[section] = _pages["Network"];
+    }
     public bool Select(string name)
     {
         if (!_pages.TryGetValue(name, out var tab)) return false;
+        if (tab.Tag as string == "Network") _networkPanel?.SelectSection(name);
         for (var current = tab; current is not null;)
         {
             if (current.Parent is not TabControl owner) break;
