@@ -17,6 +17,7 @@ internal static class LocalEmailParser
     {
         if (raw.Length > EmailSafetyService.MaximumMessageLength) throw new ArgumentException("Message is too large; maximum is 128,000 characters.");
         var warnings = new List<string>(); var attachments = new List<string>(); var bodies = new List<string>();
+        var attachmentContents = new List<EmailAttachment>(); var decodedAttachmentBytes = 0;
         raw = raw.TrimStart('\uFEFF').Replace("\r\n", "\n");
         var (headers, body) = Split(raw);
         if (headers.Count == 0) return new("", "", "", "", byteTransport ? Encoding.UTF8.GetString(Encoding.Latin1.GetBytes(raw)) : raw);
@@ -24,7 +25,8 @@ internal static class LocalEmailParser
         var parts = 0;
         Extract(headers, body, 0);
         return new(Header("From"), Header("Reply-To"), string.Join(",", new[] { Header("To"), Header("Cc"), Header("Bcc") }.Where(value => value.Length > 0)),
-            Header("Subject"), string.Join("\n\n", bodies)) { AttachmentNames = attachments, ImportWarnings = warnings.Distinct().ToArray() };
+            Header("Subject"), string.Join("\n\n", bodies)) { AttachmentNames = attachments, ImportWarnings = warnings.Distinct().ToArray(),
+                ReturnPath = Header("Return-Path"), Received = Header("Received"), AuthenticationResults = Header("Authentication-Results"), Attachments = attachmentContents };
 
         void Extract(Dictionary<string, string> partHeaders, string payload, int depth)
         {
@@ -40,7 +42,22 @@ internal static class LocalEmailParser
                 catch (FormatException) { warnings.Add("Invalid attachment metadata; verify attachments independently."); attachment = true; }
             }
             if (!string.IsNullOrEmpty(name)) attachments.Add(DecodeWords(name, warnings));
-            if (attachment) { warnings.Add("Attachment contents were not inspected; only available filenames were checked."); return; }
+            if (attachment || !string.IsNullOrEmpty(name) && !type.MediaType.StartsWith("multipart/", StringComparison.OrdinalIgnoreCase))
+            {
+                try
+                {
+                    var attachmentTransfer = partHeaders.GetValueOrDefault("Content-Transfer-Encoding", "").Trim().ToLowerInvariant();
+                    var bytes = attachmentTransfer switch {
+                        "base64" => Convert.FromBase64String(payload), "quoted-printable" => QuotedPrintable(payload),
+                        "" or "7bit" or "8bit" or "binary" => byteTransport ? Encoding.Latin1.GetBytes(payload) : Encoding.UTF8.GetBytes(payload),
+                        _ => throw new FormatException("Unsupported attachment encoding.") };
+                    if (attachmentContents.Count >= 64 || decodedAttachmentBytes + bytes.Length > EmailAttachment.MaximumAggregateBytes)
+                        warnings.Add("Attachment byte/count limit reached; remaining content was not inspected.");
+                    else { decodedAttachmentBytes += bytes.Length; attachmentContents.Add(new EmailAttachment(DecodeWords(name ?? "unnamed attachment", warnings), type.MediaType, bytes)); }
+                }
+                catch (Exception ex) when (ex is FormatException or ArgumentException) { warnings.Add("Attachment contents were not inspected: invalid or unsupported transfer encoding."); }
+                return;
+            }
             if (type.MediaType.StartsWith("multipart/", StringComparison.OrdinalIgnoreCase))
             {
                 var boundary = type.Boundary;

@@ -15,6 +15,9 @@
     <Compile Include="../../Pulsatilla.Wpf/SecurityEventPolicy.cs" Link="SecurityEventPolicy.cs" />
     <Compile Include="../../Pulsatilla.Wpf/EmailAddressRules.cs" Link="EmailAddressRules.cs" />
     <Compile Include="../../Pulsatilla.Wpf/LocalEmailParser.cs" Link="LocalEmailParser.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/HexPatternEngine.cs" Link="HexPatternEngine.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/EmailAttachment.cs" Link="EmailAttachment.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/SafeProcessRunner.cs" Link="SafeProcessRunner.cs" />
     <Compile Include="../../Pulsatilla.Wpf/LocalExposureService.cs" Link="LocalExposureService.cs" />
     <EmbeddedResource Include="../../Pulsatilla.Wpf/Resources/theme-palette.json" LogicalName="Pulsatilla.Wpf.ThemePalette.json" />
     <EmbeddedResource Include="../../Pulsatilla.Wpf/Resources/CreatorProfile.json" LogicalName="Pulsatilla.Wpf.CreatorProfile.json" />

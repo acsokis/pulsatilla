@@ -9,6 +9,10 @@ public sealed record EmailMessage(string From, string ReplyTo, string Recipients
 {
     public IReadOnlyList<string> AttachmentNames { get; init; } = [];
     public IReadOnlyList<string> ImportWarnings { get; init; } = [];
+    public string ReturnPath { get; init; } = "";
+    public string Received { get; init; } = "";
+    public string AuthenticationResults { get; init; } = "";
+    public IReadOnlyList<EmailAttachment> Attachments { get; init; } = [];
 }
 public sealed record EmailSafetyResult(string Summary, IReadOnlyList<string> Findings, bool FilteredOut, int Score);
 
@@ -46,9 +50,24 @@ public static class EmailSafetyService
         if (from is null) Flag(10, "Sender is missing or invalid; verify the actual sender before acting.");
         if (MatchesSender(from, blockedSenders)) Flag(70, "Sender matches your blacklist. Treat the message as unwanted.");
         if (MatchesSender(from, trustedSenders)) findings.Add("Sender matches your whitelist. This does not authenticate the sender or override suspicious content.");
+        if (from is not null && message.From.Contains('<') && Tokens(trustedSenders).Select(Address).Where(a => a is not null).Any(a =>
+            message.From[..message.From.IndexOf('<')].Contains(a!, StringComparison.OrdinalIgnoreCase) && !a!.Equals(from, StringComparison.OrdinalIgnoreCase)))
+            Flag(25, "The sender display name contains a trusted address but the actual From address differs. Check for impersonation.");
         if (message.ReplyTo.Length > 0 && reply is null) Flag(15, "Reply-To address is invalid.");
         else if (from is not null && reply is not null && Domain(from) != Domain(reply))
             Flag(20, "Reply-To uses a different domain from the sender. This can be legitimate, but confirm independently before replying.");
+        if (message.ReturnPath.Length > 0 && Address(message.ReturnPath) is { } envelope && from is not null && Domain(envelope) != Domain(from))
+            Flag(10, "Return-Path differs from the From domain. Mailing services can cause this; verify independently.");
+        if (message.AuthenticationResults.Length > 0)
+            findings.Add("Authentication-Results is supplied message text, not independently verified authentication: " + message.AuthenticationResults[..Math.Min(800, message.AuthenticationResults.Length)]);
+        foreach (var attachment in message.Attachments.Take(64))
+        {
+            var filename = attachment.FileName;
+            if (Regex.IsMatch(filename, @"\.(?:pdf|docx?|xlsx?|jpg|png|txt)\.(?:exe|scr|js|vbs|bat|cmd|lnk)$", RegexOptions.IgnoreCase, Timeout))
+                Flag(30, "An attachment has a document/image extension followed by an executable/script extension.");
+            if (attachment.Analysis.Matches.Any(m => m.Id is "pe" or "elf"))
+                Flag(25, "An attachment has executable-format bytes. This is a review indicator, not a malware verdict.");
+        }
 
         foreach (var warning in message.ImportWarnings)
             if (warning.StartsWith("Attachment contents", StringComparison.Ordinal)) findings.Add(warning);
