@@ -40,7 +40,6 @@ public partial class MainWindow : Window
     private readonly Dictionary<string, int> _packetSizeBuckets = new();
     private readonly BoundedPacketQueue _pendingPackets = new();
     private bool _reportedCaptureBacklog;
-    private readonly PacketCaptureService _captureService = new();
     private readonly ProcessConnectionResolver _processOwners = new();
     private readonly TrafficUsageStore _usageStore = new();
     private readonly WindowsFirewallRuleService _firewallRules = new();
@@ -50,7 +49,6 @@ public partial class MainWindow : Window
     private NetworkInterface? _selectedAdapter;
     private bool _monitoring = true;
     private CancellationTokenSource? _scanCancellation;
-    private CancellationTokenSource? _captureCancellation;
     private long _packetCount;
     private int _ownerRefreshInProgress;
     private bool _latencyPending;
@@ -80,6 +78,7 @@ public partial class MainWindow : Window
         DataContext = this;
         InitializeProtection();
         InitializePresentation();
+        InitializeWorkflow();
         LiveTrafficView = CollectionViewSource.GetDefaultView(LiveTrafficRows);
         LiveTrafficView.Filter = FilterLiveTraffic;
         LiveTrafficGrid.ItemsSource = LiveTrafficView;
@@ -97,7 +96,6 @@ public partial class MainWindow : Window
         _connectionsTimer.Start();
         _packetUiTimer.Start();
         _systemTimer.Start();
-        _latencyTimer.Start();
         _ownerRefreshTimer.Start();
         _usageSaveTimer.Start();
         RefreshConnections();
@@ -129,15 +127,23 @@ public partial class MainWindow : Window
 
     private void LoadAdapters()
     {
+        LoadAdapterInventory();
+        if (_networkPath is not null) _ = _networkPath.RefreshAsync();
+    }
+
+    private void LoadAdapterInventory()
+    {
         var selectedId = _selectedAdapter?.Id;
-        var adapters = NetworkInterface.GetAllNetworkInterfaces()
+        var adapters = EnumerateAdaptersSafely()
             .Where(adapter => adapter.NetworkInterfaceType != NetworkInterfaceType.Loopback)
             .OrderBy(adapter => adapter.Name, StringComparer.OrdinalIgnoreCase)
             .ToArray();
         AdapterList.Items.Clear();
         foreach (var adapter in adapters)
         {
-            var address = adapter.GetIPProperties().UnicastAddresses.FirstOrDefault(item => item.Address.AddressFamily == AddressFamily.InterNetwork)?.Address;
+            var properties = GetAdapterPropertiesSafely(adapter);
+            if (properties is null) continue; // Hot removal can race enumeration.
+            var address = properties.UnicastAddresses.FirstOrDefault(item => item.Address.AddressFamily == AddressFamily.InterNetwork)?.Address;
             var item = new ListBoxItem
             {
                 Tag = adapter, Padding = new Thickness(10, 9, 6, 9), Margin = new Thickness(0, 2, 0, 2),
@@ -155,15 +161,26 @@ public partial class MainWindow : Window
             AdapterList.Items.Add(item);
             if (adapter.Id == selectedId) AdapterList.SelectedItem = item;
         }
-        if (AdapterList.SelectedItem is null && AdapterList.Items.Count > 0) AdapterList.SelectedIndex = 0;
         if (adapters.Length == 0) LastUpdateLabel.Text = T("No network adapters found");
     }
 
     private void AdapterList_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (AdapterList.SelectedItem is not ListBoxItem { Tag: NetworkInterface adapter }) return;
+        if (!_applyingRoutedAdapter && _selectedAdapter?.Id != adapter.Id)
+        {
+            if (_inspection.Snapshot.IsActive) _inspection.Stop("Manual interface choice changed; restart inspection explicitly.");
+            _networkPath?.SelectManualAdapter(adapter.Id);
+        }
+        var properties = GetAdapterPropertiesSafely(adapter);
+        if (properties is null)
+        {
+            _inspection.Stop("Selected adapter disappeared; refresh Network Path.");
+            _selectedAdapter = null; Ipv4Value.Text = GatewayValue.Text = "Unknown";
+            SelectedAdapterLabel.Text = "Selected adapter unavailable";
+            return;
+        }
         _selectedAdapter = adapter;
-        var properties = adapter.GetIPProperties();
         Ipv4Value.Text = properties.UnicastAddresses.FirstOrDefault(item => item.Address.AddressFamily == AddressFamily.InterNetwork)?.Address.ToString() ?? "-";
         GatewayValue.Text = properties.GatewayAddresses.FirstOrDefault(item => item.Address.AddressFamily == AddressFamily.InterNetwork)?.Address.ToString() ?? "-";
         MacValue.Text = FormatMac(adapter.GetPhysicalAddress().GetAddressBytes());
@@ -183,7 +200,7 @@ public partial class MainWindow : Window
     private void SampleTraffic()
     {
         IEnumerable<NetworkInterface> adapters = _selectedAdapter is null
-            ? NetworkInterface.GetAllNetworkInterfaces().Where(adapter => adapter.NetworkInterfaceType != NetworkInterfaceType.Loopback)
+            ? EnumerateAdaptersSafely().Where(adapter => adapter.NetworkInterfaceType != NetworkInterfaceType.Loopback)
             : [_selectedAdapter];
         long received = 0, sent = 0;
         foreach (var adapter in adapters)
@@ -219,24 +236,14 @@ public partial class MainWindow : Window
 
     private async Task RefreshWifiInfoAsync()
     {
+        if (_workflowProcessLifetime.IsCancellationRequested || Interlocked.Exchange(ref _wifiInformationPending, 1) != 0) return;
         try
             {
-                var startInfo = new ProcessStartInfo("netsh")
-                {
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    RedirectStandardOutput = true,
-                    RedirectStandardError = true
-                };
-                startInfo.ArgumentList.Add("wlan");
-                startInfo.ArgumentList.Add("show");
-                startInfo.ArgumentList.Add("interfaces");
-                using var process = Process.Start(startInfo);
-                if (process is null) return;
-                using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(3));
-                var outputTask = process.StandardOutput.ReadToEndAsync(timeout.Token);
-                await process.WaitForExitAsync(timeout.Token);
-                var details = outputTask.Result.Split(Environment.NewLine)
+                var result = await SafeProcessRunner.RunAsync(SafeProcessRunner.SystemExecutable("netsh.exe"),
+                    ["wlan", "show", "interfaces"], TimeSpan.FromSeconds(3), _workflowProcessLifetime.Token, 65536);
+                if (_workflowProcessLifetime.IsCancellationRequested) return;
+                if (result.ExitCode != 0 || result.OutputTruncated) throw new IOException("Wi-Fi details were unavailable or incomplete.");
+                var details = result.Output.Split(Environment.NewLine)
                     .Select(line => line.Trim())
                     .Where(line => line.StartsWith("SSID", StringComparison.OrdinalIgnoreCase) ||
                         line.StartsWith("BSSID", StringComparison.OrdinalIgnoreCase) ||
@@ -246,6 +253,7 @@ public partial class MainWindow : Window
                 WifiInfoValue.Text = details.Length == 0 ? "Not connected / unavailable" : string.Join("  |  ", details);
             }
         catch (Exception) { WifiInfoValue.Text = T("Wi-Fi details unavailable"); }
+        finally { Interlocked.Exchange(ref _wifiInformationPending, 0); }
     }
 
     private void MonitorButton_Click(object sender, RoutedEventArgs e)
@@ -354,34 +362,33 @@ public partial class MainWindow : Window
 
     private async void NmapButton_Click(object sender, RoutedEventArgs e)
     {
-        if (!IPAddress.TryParse(TargetInput.Text.Trim(), out var target))
-        {
-            ScanStatusLabel.Text = T("Enter a valid target IP address.");
-            return;
-        }
-        ScanStatusLabel.Text = T("Running Nmap...");
-        NmapOutput.Clear();
+        if (_workflowProcessLifetime.IsCancellationRequested || Interlocked.Exchange(ref _nmapOperationPending, 1) != 0) return;
+        var button = sender as Button;
+        if (button is not null) button.IsEnabled = false;
         try
         {
-            var startInfo = new ProcessStartInfo("nmap") { UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true };
-            startInfo.ArgumentList.Add("-sV");
-            startInfo.ArgumentList.Add("-O");
-            startInfo.ArgumentList.Add(target.ToString());
-            using var process = Process.Start(startInfo) ?? throw new InvalidOperationException("Nmap could not be started.");
-            using var timeout = new CancellationTokenSource(TimeSpan.FromMinutes(2));
-            var outputTask = process.StandardOutput.ReadToEndAsync(timeout.Token);
-            var errorTask = process.StandardError.ReadToEndAsync(timeout.Token);
-            await process.WaitForExitAsync(timeout.Token);
-            NmapOutput.Text = await outputTask;
-            if (string.IsNullOrWhiteSpace(NmapOutput.Text)) NmapOutput.Text = await errorTask;
-            ScanStatusLabel.Text = process.ExitCode == 0 ? T("Nmap scan complete.") : L($"Nmap exited with code {process.ExitCode}.");
+            var target = ActiveServiceScanner.ValidateTarget(TargetInput.Text.Trim(), 80);
+            var executable = SelectNmapExecutable();
+            if (executable is null) { ScanStatusLabel.Text = "Nmap is NOT INSTALLED or no executable was selected. No scan started."; return; }
+            if (MessageBox.Show(this, $"ACTIVE NETWORK OPERATION\n\nRun Nmap service and OS detection against {target}? Inspect only a target you are authorized to scan.\n\nExecutable: {executable}\nArguments: -sV -O {target}\nDeadline: two minutes.",
+                "Explicit Nmap scan", MessageBoxButton.YesNo, MessageBoxImage.Warning) != MessageBoxResult.Yes) return;
+            ScanStatusLabel.Text = T("Running Nmap..."); NmapOutput.Clear();
+            var result = await SafeProcessRunner.RunAsync(executable, ["-sV", "-O", target.ToString()],
+                TimeSpan.FromMinutes(2), _workflowProcessLifetime.Token, 262144);
+            if (_workflowProcessLifetime.IsCancellationRequested) return;
+            NmapOutput.Text = string.IsNullOrWhiteSpace(result.Output) ? result.Error : result.Output +
+                (string.IsNullOrWhiteSpace(result.Error) ? "" : "\n\n" + result.Error);
+            if (result.OutputTruncated) NmapOutput.Text += "\n[Output preview limited to 256 KiB per stream.]";
+            ScanStatusLabel.Text = result.ExitCode == 0 ? T("Nmap scan complete.") : L($"Nmap exited with code {result.ExitCode}.");
         }
-        catch (Exception ex)
+        catch (OperationCanceledException) { if (!_workflowProcessLifetime.IsCancellationRequested) ScanStatusLabel.Text = "Nmap operation cancelled; its owned process was stopped."; }
+        catch (Exception ex) when (ex is IOException or ArgumentException or TimeoutException or UnauthorizedAccessException or System.ComponentModel.Win32Exception)
         {
-            AppLogger.WriteException("ERROR", "Nmap scan failed", ex);
-            NmapOutput.Text = ex.Message;
+            AppLogger.WriteEvent("WARN", "Nmap operation unavailable, rejected or exceeded its deadline; no process output was logged.");
+            NmapOutput.Text = ex is ArgumentException ? "Enter a literal target IP and select a regular local nmap.exe executable." : "Nmap failed or exceeded the two-minute deadline. Any running process started for this operation was stopped.";
             ScanStatusLabel.Text = T("Nmap unavailable or failed.");
         }
+        finally { Interlocked.Exchange(ref _nmapOperationPending, 0); if (button is not null) button.IsEnabled = true; }
     }
 
     private void RefreshConnections()
@@ -500,6 +507,7 @@ public partial class MainWindow : Window
             return;
         }
         _pingTarget = value;
+        _latencyTimer.Start();
         PingStatusLabel.Text = L($"Monitoring {_pingTarget}");
     }
 
@@ -534,10 +542,12 @@ public partial class MainWindow : Window
 
     private async Task RefreshHardwareDetailsAsync()
     {
+        if (_workflowProcessLifetime.IsCancellationRequested || Interlocked.Exchange(ref _hardwareInformationPending, 1) != 0) return;
         HardwareRefreshStatus.Text = T("Reading Windows hardware inventory...");
         try
         {
-            const string query = "$processors=@(Get-CimInstance Win32_Processor | Select-Object Name,Manufacturer,SocketDesignation,NumberOfCores,NumberOfLogicalProcessors,MaxClockSpeed); " +
+            const string query = "$OutputEncoding=[Console]::OutputEncoding=[System.Text.UTF8Encoding]::new($false); " +
+                "$processors=@(Get-CimInstance Win32_Processor | Select-Object Name,Manufacturer,SocketDesignation,NumberOfCores,NumberOfLogicalProcessors,MaxClockSpeed); " +
                 "$board=Get-CimInstance Win32_BaseBoard | Select-Object Manufacturer,Product,Version; " +
                 "$bios=Get-CimInstance Win32_BIOS | Select-Object Manufacturer,SMBIOSBIOSVersion,ReleaseDate; " +
                 "$gpus=@(Get-CimInstance Win32_VideoController | Select-Object Name,VideoProcessor,DriverVersion,CurrentHorizontalResolution,CurrentVerticalResolution,CurrentRefreshRate); " +
@@ -545,24 +555,12 @@ public partial class MainWindow : Window
                 "$disks=@(Get-CimInstance Win32_DiskDrive | Select-Object Model,InterfaceType,MediaType,Status,@{Name='CapacityGB';Expression={[math]::Round($_.Size/1GB,0)}}); " +
                 "$adapters=@(Get-CimInstance Win32_NetworkAdapter | Where-Object {$_.PhysicalAdapter} | Select-Object Name,Manufacturer,NetEnabled,MACAddress,@{Name='SpeedMbps';Expression={[math]::Round($_.Speed/1MB,0)}}); " +
                 "[pscustomobject]@{processors=$processors;baseboard=$board;bios=$bios;gpus=$gpus;memoryModules=$memory;physicalDisks=$disks;networkAdapters=$adapters} | ConvertTo-Json -Depth 5 -Compress";
-            var startInfo = new ProcessStartInfo("powershell.exe")
-            {
-                UseShellExecute = false,
-                CreateNoWindow = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true
-            };
-            startInfo.ArgumentList.Add("-NoProfile");
-            startInfo.ArgumentList.Add("-NonInteractive");
-            startInfo.ArgumentList.Add("-Command");
-            startInfo.ArgumentList.Add(query);
-            using var process = Process.Start(startInfo) ?? throw new InvalidOperationException("PowerShell could not be started.");
-            using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(15));
-            var outputTask = process.StandardOutput.ReadToEndAsync(timeout.Token);
-            var errorTask = process.StandardError.ReadToEndAsync(timeout.Token);
-            await process.WaitForExitAsync(timeout.Token);
-            var output = await outputTask;
-            if (process.ExitCode != 0) throw new InvalidOperationException((await errorTask).Trim());
+            var executable = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.System), "WindowsPowerShell", "v1.0", "powershell.exe");
+            var result = await SafeProcessRunner.RunAsync(executable, ["-NoProfile", "-NonInteractive", "-Command", query],
+                TimeSpan.FromSeconds(15), _workflowProcessLifetime.Token, 262144);
+            if (_workflowProcessLifetime.IsCancellationRequested) return;
+            if (result.ExitCode != 0 || result.OutputTruncated) throw new IOException("Windows hardware inventory was unavailable or incomplete.");
+            var output = result.Output;
 
             using var document = JsonDocument.Parse(output);
             var root = document.RootElement;
@@ -586,13 +584,15 @@ public partial class MainWindow : Window
             HardwareDetailsText.Text = hardware.Length > 0 ? hardware.ToString().TrimEnd() : "No hardware inventory was returned.";
             HardwareRefreshStatus.Text = L($"Windows CIM inventory refreshed {DateTime.Now:HH:mm:ss}");
         }
-        catch (Exception ex)
+        catch (OperationCanceledException) { }
+        catch (Exception)
         {
-            HardwareDetailsText.Text = L($"Hardware inventory failed: {ex.Message}");
+            HardwareDetailsText.Text = "Hardware inventory failed or exceeded its deadline. The owned inventory process was stopped.";
             HardwareRefreshStatus.Text = T("Hardware inventory unavailable");
-            AppLogger.WriteException("ERROR", "Hardware inventory refresh failed", ex);
+            AppLogger.WriteEvent("WARN", "Hardware inventory refresh unavailable, incomplete or exceeded its deadline.");
             RefreshErrorLogPreview();
         }
+        finally { Interlocked.Exchange(ref _hardwareInformationPending, 0); }
     }
 
     private static void AppendHardwareItems(StringBuilder output, JsonElement root, string name, string title,
@@ -677,8 +677,7 @@ public partial class MainWindow : Window
 
     private void RefreshCaptureDiagnostics()
     {
-        var adapterAddress = _selectedAdapter?.GetIPProperties().UnicastAddresses
-            .FirstOrDefault(item => item.Address.AddressFamily == AddressFamily.InterNetwork)?.Address;
+        var adapterAddress = GetSelectedIpv4();
         var status = adapterAddress is null
             ? "No selected adapter with IPv4. Select an adapter on Dashboard first."
             : HasAdministratorRights()
@@ -775,11 +774,11 @@ public partial class MainWindow : Window
             var report = new
             {
                 exportedAtUtc = DateTime.UtcNow,
-                adapters = NetworkInterface.GetAllNetworkInterfaces().Select(adapter => new
+                adapters = EnumerateAdaptersSafely().Select(adapter => new
                 {
                     adapter.Name, Status = adapter.OperationalStatus.ToString(), adapter.Description,
                     Mac = FormatMac(adapter.GetPhysicalAddress().GetAddressBytes()),
-                    IPv4 = adapter.GetIPProperties().UnicastAddresses.FirstOrDefault(item => item.Address.AddressFamily == AddressFamily.InterNetwork)?.Address.ToString()
+                    IPv4 = GetAdapterPropertiesSafely(adapter)?.UnicastAddresses.FirstOrDefault(item => item.Address.AddressFamily == AddressFamily.InterNetwork)?.Address.ToString()
                 }),
                 scanResults = ScanResults,
                 connections = Connections,
@@ -891,17 +890,24 @@ public partial class MainWindow : Window
 
     private async Task RefreshProcessOwnersAsync()
     {
-        if (Interlocked.Exchange(ref _ownerRefreshInProgress, 1) != 0) return;
+        if (_workflowProcessLifetime.IsCancellationRequested || Interlocked.Exchange(ref _ownerRefreshInProgress, 1) != 0) return;
         try
         {
             await Task.Run(_processOwners.Refresh);
+            if (_workflowProcessLifetime.IsCancellationRequested || Dispatcher.HasShutdownStarted) return;
             await Dispatcher.InvokeAsync(() => AttributionStatus.Text =
-                $"Windows socket table: {_processOwners.TcpEndpointCount:N0} TCP / {_processOwners.UdpEndpointCount:N0} UDP endpoint entries");
+                $"Windows socket table: {_processOwners.TcpEndpointCount:N0} TCP / {_processOwners.UdpEndpointCount:N0} UDP endpoint entries"
+                + (_processOwners.SnapshotTruncated ? " — bounded snapshot incomplete; packet ownership stays Unknown." : ""),
+                DispatcherPriority.Background, _workflowProcessLifetime.Token);
         }
+        catch (OperationCanceledException) when (_workflowProcessLifetime.IsCancellationRequested || Dispatcher.HasShutdownStarted) { }
         catch (Exception ex)
         {
+            if (_workflowProcessLifetime.IsCancellationRequested || Dispatcher.HasShutdownStarted) return;
             AppLogger.WriteException("WARN", "Process attribution refresh failed", ex);
-            await Dispatcher.InvokeAsync(() => AddEvent("WARN", $"Process attribution unavailable: {ex.Message}"));
+            try { await Dispatcher.InvokeAsync(() => AddEvent("WARN", "Process attribution unavailable; refresh Network Path before retrying."),
+                DispatcherPriority.Background, _workflowProcessLifetime.Token); }
+            catch (OperationCanceledException) when (_workflowProcessLifetime.IsCancellationRequested || Dispatcher.HasShutdownStarted) { }
         }
         finally { Interlocked.Exchange(ref _ownerRefreshInProgress, 0); }
     }
@@ -915,23 +921,15 @@ public partial class MainWindow : Window
 
     private async void WifiSecurityButton_Click(object sender, RoutedEventArgs e)
     {
+        if (_workflowProcessLifetime.IsCancellationRequested || Interlocked.Exchange(ref _wifiReviewPending, 1) != 0) return;
         WifiSecurityStatus.Text = T("Checking nearby Wi-Fi networks...");
         try
         {
-            var startInfo = new ProcessStartInfo("netsh")
-            {
-                UseShellExecute = false, CreateNoWindow = true,
-                RedirectStandardOutput = true, RedirectStandardError = true
-            };
-            startInfo.ArgumentList.Add("wlan");
-            startInfo.ArgumentList.Add("show");
-            startInfo.ArgumentList.Add("networks");
-            startInfo.ArgumentList.Add("mode=bssid");
-            using var process = Process.Start(startInfo) ?? throw new InvalidOperationException("netsh could not be started.");
-            using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(8));
-            var outputTask = process.StandardOutput.ReadToEndAsync(timeout.Token);
-            await process.WaitForExitAsync(timeout.Token);
-            var output = await outputTask;
+            var result = await SafeProcessRunner.RunAsync(SafeProcessRunner.SystemExecutable("netsh.exe"),
+                ["wlan", "show", "networks", "mode=bssid"], TimeSpan.FromSeconds(8), _workflowProcessLifetime.Token, 131072);
+            if (_workflowProcessLifetime.IsCancellationRequested) return;
+            if (result.ExitCode != 0 || result.OutputTruncated) throw new IOException("Wi-Fi review data was unavailable or incomplete.");
+            var output = result.Output;
             var ssidMatch = System.Text.RegularExpressions.Regex.Match(WifiInfoValue.Text,
                 @"SSID\s*:\s*(.*?)\s*(?:\||$)", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
             var currentSsid = ssidMatch.Success ? ssidMatch.Groups[1].Value.Trim() : string.Empty;
@@ -969,16 +967,18 @@ public partial class MainWindow : Window
                 WifiSecurityStatus.Text = L($"No same-name BSSID or open-network warning detected for '{currentSsid}'.");
             }
         }
-        catch (Exception ex)
+        catch (OperationCanceledException) { }
+        catch (Exception)
         {
-            AppLogger.WriteException("WARN", "Wi-Fi security scan failed", ex);
-            WifiSecurityStatus.Text = L($"Wi-Fi check unavailable: {ex.Message}");
+            AppLogger.WriteEvent("WARN", "Wi-Fi review unavailable, incomplete or exceeded its deadline.");
+            WifiSecurityStatus.Text = "Wi-Fi check unavailable or exceeded its deadline.";
         }
+        finally { Interlocked.Exchange(ref _wifiReviewPending, 0); }
     }
 
     private void ClearEventsButton_Click(object sender, RoutedEventArgs e) => EventsList.Items.Clear();
 
-    private void OpenAlertsButton_Click(object sender, RoutedEventArgs e) => MainTabs.SelectedItem = AlertsTab;
+    private void OpenAlertsButton_Click(object sender, RoutedEventArgs e) => _workflow?.Select("Events");
 
     private void AlertsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -1037,11 +1037,13 @@ public partial class MainWindow : Window
     {
         LiveTrafficSearchBox.Clear();
         LiveTrafficProtocolBox.SelectedIndex = 0;
+        ClearDetailedFlowFilters();
     }
 
     private bool FilterLiveTraffic(object item)
     {
         if (item is not LiveTrafficRow row) return false;
+        if (!FilterLiveTrafficDetails(row)) return false;
         var protocol = (LiveTrafficProtocolBox.SelectedItem as ComboBoxItem)?.Content?.ToString();
         if (LiveTrafficProtocolBox.SelectedIndex > 0 && !string.IsNullOrWhiteSpace(protocol) && !row.Protocol.Equals(protocol, StringComparison.OrdinalIgnoreCase))
             return false;
@@ -1051,32 +1053,34 @@ public partial class MainWindow : Window
             row.ExecutablePath.Contains(search, StringComparison.OrdinalIgnoreCase);
     }
 
-    private void UpdateLiveTraffic(PacketObservation packet, string application, string executablePath, string host, bool outbound)
+    private void UpdateLiveTraffic(PacketObservation packet, string application, string executablePath, string host, bool outbound, int processId)
     {
-        var key = $"{application}\0{executablePath}\0{host}\0{packet.Protocol}";
+        var local = outbound ? packet.Source : packet.Destination;
+        var localPort = outbound ? packet.SourcePort : packet.DestinationPort;
+        var remotePort = outbound ? packet.DestinationPort : packet.SourcePort;
+        var key = string.Join((char)31, application, executablePath, processId.ToString(), local, localPort.ToString(), host, remotePort.ToString(), packet.Protocol);
         if (!_liveFlowByKey.TryGetValue(key, out var row))
         {
-            row = new LiveTrafficRow(application, executablePath, host, packet.Protocol);
+            row = new LiveTrafficRow(application, executablePath, host, packet.Protocol)
+            {
+                ProcessId = processId, LocalAddress = local, LocalPort = localPort,
+                RemoteAddress = host, RemotePort = remotePort, FirstSeenUtc = packet.CapturedAtUtc,
+                FlowKey = key, Hostname = _passiveHostnames.GetValueOrDefault(host, "Unknown")
+            };
             row.Trust = _protection.GetTrust(executablePath);
             _liveFlowByKey.Add(key, row);
             LiveTrafficRows.Insert(0, row);
             if (LiveTrafficRows.Count > 2000)
             {
                 var oldest = LiveTrafficRows.MinBy(flow => flow.LastSeenLocal);
-                if (oldest is not null)
-                {
-                    LiveTrafficRows.Remove(oldest);
-                    _liveFlowByKey.Remove($"{oldest.Application}\0{oldest.ExecutablePath}\0{oldest.Host}\0{oldest.Protocol}");
-                }
+                if (oldest is not null) { LiveTrafficRows.Remove(oldest); _liveFlowByKey.Remove(oldest.FlowKey); }
             }
         }
         row.AddPacket(packet.Length, outbound);
     }
-
     private async void StartCaptureButton_Click(object sender, RoutedEventArgs e)
     {
-        var address = _selectedAdapter?.GetIPProperties().UnicastAddresses
-            .FirstOrDefault(item => item.Address.AddressFamily == AddressFamily.InterNetwork)?.Address;
+        var address = GetSelectedIpv4();
         if (address is null)
         {
             PacketSummaryLabel.Text = T("Select an adapter with an IPv4 address first.");
@@ -1085,42 +1089,23 @@ public partial class MainWindow : Window
             return;
         }
 
-        _captureCancellation?.Cancel();
-        _captureCancellation = new CancellationTokenSource();
-        var token = _captureCancellation.Token;
-        StartCaptureButton.IsEnabled = false;
-        StopCaptureButton.IsEnabled = true;
-        PacketSummaryLabel.Text = L($"Capturing on {address}. Raw packet capture may require administrator privileges.");
-        CaptureReadinessText.Text = L($"Capture active on {address}.");
-        LiveTrafficStatus.Text = L($"Capturing on {address}; waiting for flows...");
+        if (_inspection.Snapshot.IsActive || _selectedAdapter is null) return;
+        var adapterId = _selectedAdapter.Id;
+        while (_pendingPackets.TryDequeue(out _)) { }
         _lastCaptureError = null;
-        AddEvent("INFO", $"Packet capture requested on {address}");
-        try
-        {
-            await _captureService.CaptureAsync(address, packet => _pendingPackets.TryEnqueue(packet), token);
-        }
-        catch (OperationCanceledException) { }
-        catch (Exception ex)
-        {
-            _lastCaptureError = ex is SocketException socketException && socketException.SocketErrorCode == SocketError.AccessDenied
-                ? "Access denied (10013). Restart as administrator and try again."
-                : ex.Message;
-            CaptureReadinessText.Text = _lastCaptureError;
-            AddEvent("ERROR", $"Packet capture failed: {_lastCaptureError}");
-            PacketSummaryLabel.Text = _lastCaptureError;
-        }
-        finally
-        {
-            StartCaptureButton.IsEnabled = true;
-            StopCaptureButton.IsEnabled = false;
-            _captureCancellation?.Dispose();
-            _captureCancellation = null;
-        }
+        _workflow?.Select("Live Traffic");
+        AddEvent("INFO", "Passive inspection explicitly requested; no scan started.");
+        var result = await _inspection.RunAsync(adapterId, address,
+            packet => _pendingPackets.TryEnqueue(packet with { CaptureAdapterId = adapterId, CaptureAddress = address.ToString() }));
+        if (!result.Success) _lastCaptureError = result.Message;
+        PacketSummaryLabel.Text = CaptureReadinessText.Text = result.Message;
+        if (!result.Success) AddEvent("ERROR", result.Message);
+        UpdateInspectionStatus();
     }
 
     private void StopCaptureButton_Click(object sender, RoutedEventArgs e)
     {
-        _captureCancellation?.Cancel();
+        _inspection.Stop();
         PacketSummaryLabel.Text = T("Stopping capture...");
         CaptureReadinessText.Text = T("Stopping packet capture...");
         LiveTrafficStatus.Text = T("Capture stopped. Existing flow totals remain until the app closes.");
@@ -1131,11 +1116,12 @@ public partial class MainWindow : Window
         PacketObservation? last = null;
         var drained = 0;
         var drainBudget = Stopwatch.StartNew();
-        var localAddress = _selectedAdapter?.GetIPProperties().UnicastAddresses
-            .FirstOrDefault(item => item.Address.AddressFamily == AddressFamily.InterNetwork)?.Address;
+        var localAddress = GetSelectedIpv4();
         var localIp = localAddress?.ToString();
         while (drained < 200 && drainBudget.Elapsed.TotalMilliseconds < 12 && _pendingPackets.TryDequeue(out var packet))
         {
+            if (packet.CaptureAdapterId.Length > 0 && packet.CaptureAdapterId != _selectedAdapter?.Id) { drained++; continue; }
+            if (packet.CaptureAddress.Length > 0 && packet.CaptureAddress != localIp) { drained++; continue; }
             last = packet;
             drained++;
             Interlocked.Increment(ref _packetCount);
@@ -1159,7 +1145,7 @@ public partial class MainWindow : Window
                     var application = process?.Name ?? "Unattributed";
                     var executablePath = process?.ExecutablePath ?? string.Empty;
                     _usageStore.Record(application, executablePath, host, packet.Protocol, outbound, packet.Length, DateTime.UtcNow);
-                    UpdateLiveTraffic(packet, application, executablePath, host, outbound);
+                    UpdateLiveTraffic(packet, application, executablePath, host, outbound, process?.ProcessId ?? 0);
                     if (process is not null && executablePath.Length > 0)
                         ObserveApplicationActivity(application, executablePath, host, packet.CapturedAtUtc);
                 }
@@ -1175,6 +1161,8 @@ public partial class MainWindow : Window
                 }
                 foreach (var answer in packet.DnsAddresses)
                 {
+                    if (_passiveHostnames.Count >= 1024 && !_passiveHostnames.ContainsKey(answer)) _passiveHostnames.Remove(_passiveHostnames.Keys.First());
+                    _passiveHostnames[answer] = packet.DnsName;
                     if (knownAddresses.Count >= 16) continue;
                     if (knownAddresses.Count > 0 && knownAddresses.Add(answer) && _protection.Settings.ReportDnsRotation)
                         AddEvent("DNS REVIEW", $"New address observed for {packet.DnsName}: {answer}");
@@ -1187,8 +1175,15 @@ public partial class MainWindow : Window
         var packetCount = Interlocked.Read(ref _packetCount);
         PacketCountLabel.Text = L($"{packetCount:N0} packets");
         DashboardPacketsValue.Text = L($"{packetCount:N0} packets captured");
-        PacketSummaryLabel.Text = L($"{last.Source}:{last.SourcePort}  ->  {last.Destination}:{last.DestinationPort}    {last.Protocol} / {last.Length} bytes");
+        PacketSummaryLabel.Text = $"Captured UTC: {last.CapturedAtUtc:O}\n{last.Source}:{last.SourcePort} → {last.Destination}:{last.DestinationPort} | {last.Protocol} | IPv4 packet length: {last.Length} bytes"
+            + (last.Protocol == "TCP" ? $" | Observed TCP flags: 0x{last.TcpFlags:X2} (not a connection-state verdict)" : "")
+            + $"\nHEX/ASCII shows at most the first 96 captured bytes ({last.HexPreview.Length / 2} shown), including the IPv4 header; payload and application decoding may be incomplete.";
         HexInspector.Text = last.HexPreview;
+        if (_packetHex is not null)
+        {
+            var bytes = Convert.FromHexString(last.HexPreview);
+            _packetHex.SetBytes(bytes, HexPatternEngine.Default.Analyze(bytes, HexPatternContext.Packet));
+        }
         HistogramLabel.Text = string.Join(Environment.NewLine, _packetSizeBuckets.Select(pair =>
             $"{pair.Key,-12} {new string('#', Math.Min(36, pair.Value))}  {pair.Value}"));
         RefreshTopSources();
@@ -1298,6 +1293,8 @@ public partial class MainWindow : Window
 
     protected override void OnClosed(EventArgs e)
     {
+        DisposeWorkflowProcesses();
+        DisposeEmailWorkflow();
         _sourceResolutionCancellation.Cancel();
         _sampleTimer.Stop();
         _connectionsTimer.Stop();
@@ -1307,7 +1304,10 @@ public partial class MainWindow : Window
         _ownerRefreshTimer.Stop();
         _usageSaveTimer.Stop();
         _scanCancellation?.Cancel();
-        _captureCancellation?.Cancel();
+        _inspection.Dispose();
+        _networkPath?.Dispose();
+        _vpnPanel?.Dispose();
+        _servicePanel?.Dispose();
         try { Task.Run(() => _usageStore.SaveAsync()).GetAwaiter().GetResult(); }
         catch (Exception) { }
         base.OnClosed(e);

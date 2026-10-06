@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0-windows</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable></PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../Pulsatilla.Wpf/SafeProcessRunner.cs" Link="SafeProcessRunner.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/VpnModels.cs" Link="VpnModels.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/OpenVpnProfileValidator.cs" Link="OpenVpnProfileValidator.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/VpnProtectedStore.cs" Link="VpnProtectedStore.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/OpenVpnProvider.cs" Link="OpenVpnProvider.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/LocalFileInspector.cs" Link="LocalFileInspector.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/HexPatternEngine.cs" Link="HexPatternEngine.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/AppStorage.cs" Link="AppStorage.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/ProductInfo.cs" Link="ProductInfo.cs" />
+  </ItemGroup>
+</Project>

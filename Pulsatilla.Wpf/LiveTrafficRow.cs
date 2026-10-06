@@ -15,6 +15,19 @@ public sealed class LiveTrafficRow(string application, string executablePath, st
     public string ExecutablePath { get; } = executablePath;
     public string Host { get; } = host;
     public string Protocol { get; } = protocol;
+    public int ProcessId { get; init; }
+    public string LocalAddress { get; init; } = "Unknown";
+    public int LocalPort { get; init; }
+    public string RemoteAddress { get; init; } = host;
+    public string RemoteHost => RemoteAddress;
+    public int RemotePort { get; init; }
+    public string Hostname { get; init; } = "Unknown";
+    public string Country { get; init; } = "Unknown";
+    public string Status { get; init; } = "Observed packet (socket state unknown)";
+    public DateTime FirstSeenUtc { get; init; } = DateTime.UtcNow;
+    public DateTime FirstSeenLocal => FirstSeenUtc.ToLocalTime();
+    public DateTime LastSeenUtc => LastSeenLocal.ToUniversalTime();
+    public string FlowKey { get; init; } = "";
     public ApplicationTrust Trust
     {
         get => _trust;
@@ -29,10 +42,12 @@ public sealed class LiveTrafficRow(string application, string executablePath, st
 
     public void AddPacket(int bytes, bool outbound)
     {
-        if (outbound) UploadBytes += bytes;
-        else DownloadBytes += bytes;
+        if (bytes <= 0) return;
+        if (outbound) UploadBytes = SaturatingAdd(UploadBytes, bytes);
+        else DownloadBytes = SaturatingAdd(DownloadBytes, bytes);
         LastSeenLocal = DateTime.Now;
     }
+    private static long SaturatingAdd(long current, int bytes) => current > long.MaxValue - bytes ? long.MaxValue : current + bytes;
 
     private void SetField<T>(ref T field, T value, [CallerMemberName] string? propertyName = null)
     {

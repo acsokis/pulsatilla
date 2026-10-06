@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0-windows</TargetFramework><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings></PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../Pulsatilla.Wpf/NetworkPathModels.cs" Link="NetworkPathModels.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/WindowsNetworkTopology.cs" Link="WindowsNetworkTopology.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/ActiveInterfaceService.cs" Link="ActiveInterfaceService.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/InterfacePriorityService.cs" Link="InterfacePriorityService.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/ProcessConnectionResolver.cs" Link="ProcessConnectionResolver.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/PacketCaptureService.cs" Link="PacketCaptureService.cs" />
+  </ItemGroup>
+</Project>

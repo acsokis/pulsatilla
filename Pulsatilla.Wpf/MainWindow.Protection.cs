@@ -14,6 +14,7 @@ public partial class MainWindow
     private readonly Dictionary<string, DateTime> _lastBlockedActivity = new(StringComparer.OrdinalIgnoreCase);
     private bool _protectionInitialized;
     private EmailMessage? _importedEmail;
+    private bool _applicationPolicyPending;
     public ObservableCollection<ApplicationPolicy> ApplicationPolicies { get; } = [];
 
     private void InitializeProtection()
@@ -66,7 +67,7 @@ public partial class MainWindow
     private void OpenApplicationRulesButton_Click(object sender, RoutedEventArgs e)
     {
         UseLiveAppButton_Click(sender, e);
-        MainTabs.SelectedItem = ProtectionTab;
+        _workflow?.Select("Firewall");
         ProtectionTabs.SelectedIndex = 0;
     }
 
@@ -93,6 +94,20 @@ public partial class MainWindow
     {
         if (sender is not Button { Tag: string value } || !Enum.TryParse<ApplicationTrust>(value, out var trust)) return;
         var path = PolicyPathInput.Text.Trim();
+        await SetApplicationPolicyAsync(path, trust);
+    }
+
+    private async Task SetApplicationPolicyAsync(string path, ApplicationTrust trust)
+    {
+        if (_applicationPolicyPending)
+        { ProtectionStatus.Text = "An application policy update is already in progress. Wait for its result."; return; }
+        _applicationPolicyPending = true;
+        try { await SetApplicationPolicyCoreAsync(path, trust); }
+        finally { _applicationPolicyPending = false; }
+    }
+
+    private async Task SetApplicationPolicyCoreAsync(string path, ApplicationTrust trust)
+    {
         if (!Path.IsPathFullyQualified(path) || trust != ApplicationTrust.Monitor && !File.Exists(path))
         { ProtectionStatus.Text = "Choose an existing executable with a full path; a removed executable can still have its block rules cleared."; return; }
         var needsFirewall = trust == ApplicationTrust.Blocked || _firewallRules.IsBlocked(path);
@@ -150,46 +165,12 @@ public partial class MainWindow
         SaveProtectionSettings();
     }
 
-    private void ImportEmailButton_Click(object sender, RoutedEventArgs e)
-    {
-        var dialog = new OpenFileDialog { Filter = "Email or text (*.eml;*.txt)|*.eml;*.txt", CheckFileExists = true };
-        if (dialog.ShowDialog(this) != true) return;
-        try
-        {
-            if (new FileInfo(dialog.FileName).Length > EmailSafetyService.MaximumMessageLength * 4)
-                throw new ArgumentException("File is too large for the local reviewer.");
-            var message = Path.GetExtension(dialog.FileName).Equals(".eml", StringComparison.OrdinalIgnoreCase)
-                ? EmailSafetyService.ParseMessage(File.ReadAllBytes(dialog.FileName)) : EmailSafetyService.ParseMessage(File.ReadAllText(dialog.FileName));
-            _importedEmail = message;
-            EmailFromInput.Text = message.From; EmailReplyInput.Text = message.ReplyTo;
-            EmailRecipientsInput.Text = message.Recipients; EmailSubjectInput.Text = message.Subject;
-            EmailBodyInput.Text = message.Body;
-            EmailImportDetailsText.Text = "Imported locally: " + Path.GetFileName(dialog.FileName) +
-                (message.AttachmentNames.Count > 0 ? "\nAttachment names: " + string.Join(", ", message.AttachmentNames) : "");
-            EmailResultText.Text = "Message text decoded locally. Select Analyze to inspect it.";
-        }
-        catch (Exception ex) { EmailResultText.Text = "Could not import message: " + ex.Message; }
-    }
-
-    private void AnalyzeEmailButton_Click(object sender, RoutedEventArgs e)
-    {
-        try
-        {
-            var message = new EmailMessage(EmailFromInput.Text, EmailReplyInput.Text, EmailRecipientsInput.Text, EmailSubjectInput.Text, EmailBodyInput.Text)
-            { AttachmentNames = _importedEmail?.AttachmentNames ?? [], ImportWarnings = _importedEmail?.ImportWarnings ?? [] };
-            var result = EmailSafetyService.Analyze(message,
-                WatchedEmailsInput.Text, TrustedSendersInput.Text, BlockedSendersInput.Text);
-            EmailResultText.Text = result.Summary + (result.FilteredOut ? "" : $"\nIndicator score: {result.Score}/100") +
-                "\n\n" + string.Join("\n\n", result.Findings.Select(finding => "• " + finding));
-        }
-        catch (RegexMatchTimeoutException) { EmailResultText.Text = "Message is too complex for this local reviewer. No links were opened."; }
-        catch (Exception ex) { EmailResultText.Text = "Analysis could not finish: " + ex.Message; }
-    }
-
     private void ClearEmailButton_Click(object sender, RoutedEventArgs e)
     {
+        InvalidateEmailOperation();
         EmailFromInput.Clear(); EmailReplyInput.Clear(); EmailRecipientsInput.Clear(); EmailSubjectInput.Clear(); EmailBodyInput.Clear();
         _importedEmail = null;
+        _attachmentsPanel?.SetMessage(null);
         EmailImportDetailsText.Text = "";
         EmailResultText.Text = "Paste a message or import an .eml/.txt file to review it locally.";
     }

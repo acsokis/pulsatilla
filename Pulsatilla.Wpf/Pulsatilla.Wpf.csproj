@@ -8,7 +8,7 @@
     <UseWPF>true</UseWPF>
     <AssemblyName>Pulsatilla</AssemblyName>
     <RootNamespace>Pulsatilla.Wpf</RootNamespace>
-    <Version>1.0.2</Version>
+    <Version>1.1.0-beta.1</Version>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
     <Product>Pulsatilla</Product>
     <Title>Pulsatilla</Title>

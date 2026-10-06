@@ -69,22 +69,9 @@ public sealed class WindowsFirewallRuleService
     {
         try
         {
-            var startInfo = new ProcessStartInfo("netsh")
-            {
-                UseShellExecute = false,
-                CreateNoWindow = true,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true
-            };
-            foreach (var argument in arguments) startInfo.ArgumentList.Add(argument);
-            using var process = Process.Start(startInfo);
-            if (process is null) return (false, "netsh could not be started.");
-            var outputTask = process.StandardOutput.ReadToEndAsync();
-            var errorTask = process.StandardError.ReadToEndAsync();
-            await process.WaitForExitAsync().WaitAsync(TimeSpan.FromSeconds(15));
-            var output = await outputTask;
-            var error = await errorTask;
-            return process.ExitCode == 0 ? (true, output.Trim()) : (false, (error + " " + output).Trim());
+            var result = await SafeProcessRunner.RunAsync(SafeProcessRunner.SystemExecutable("netsh.exe"),
+                arguments, TimeSpan.FromSeconds(15), maxOutputChars: 65536);
+            return result.ExitCode == 0 ? (true, result.Output.Trim()) : (false, (result.Error + " " + result.Output).Trim());
         }
         catch (Exception ex) { return (false, ex.Message); }
     }
