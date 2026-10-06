@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net8.0-windows</TargetFramework><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings></PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../Pulsatilla.Wpf/TrafficInspectionService.cs" Link="TrafficInspectionService.cs" />
+    <Compile Include="../../Pulsatilla.Wpf/PacketCaptureService.cs" Link="PacketCaptureService.cs" />
+  </ItemGroup>
+</Project>

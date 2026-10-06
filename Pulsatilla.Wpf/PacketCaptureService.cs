@@ -8,7 +8,7 @@ public sealed class PacketCaptureService
 {
     private const int ReceiveAllCode = unchecked((int)0x98000001);
 
-    public async Task CaptureAsync(IPAddress localAddress, Action<PacketObservation> onPacket, CancellationToken cancellationToken)
+    public async Task CaptureAsync(IPAddress localAddress, Action<PacketObservation> onPacket, CancellationToken cancellationToken, Action? onReady = null)
     {
         using var socket = new Socket(AddressFamily.InterNetwork, SocketType.Raw, ProtocolType.IP)
         {
@@ -16,6 +16,7 @@ public sealed class PacketCaptureService
         };
         socket.Bind(new IPEndPoint(localAddress, 0));
         socket.IOControl((IOControlCode)ReceiveAllCode, BitConverter.GetBytes(1), null);
+        onReady?.Invoke();
 
         var buffer = new byte[65_535];
         while (!cancellationToken.IsCancellationRequested)
@@ -142,5 +143,7 @@ public sealed record PacketObservation(string Source, string Destination, string
     int SourcePort, int DestinationPort, string HexPreview, string? DnsName, string[] DnsAddresses)
 {
     public byte TcpFlags { get; init; }
+    public string CaptureAdapterId { get; init; } = "";
+    public string CaptureAddress { get; init; } = "";
     public DateTime CapturedAtUtc { get; init; } = DateTime.UtcNow;
 }
