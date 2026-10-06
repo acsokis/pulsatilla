@@ -44,8 +44,6 @@ Email
     Attachments
     Sender Rules
     Local Exposure Reports
-VPN
-    Status / Profiles / Connection / Routes / Privacy Check
 History
 Settings
 About
@@ -96,7 +94,7 @@ Manual choice is retained only while valid; uncertain topology is displayed as U
 | Readable routes and verified/undoable interface metrics | Next | High |
 | Bounded masked HEX patterns and virtualized viewer | Next | Medium |
 | Packet/scanner/email attachment integration and explicit Defender action | Next | High |
-| Independent provider-neutral secure OpenVPN profiles/status/lifecycle | Next | High |
+| VPN management | Core only from beta.2 | Private experimental module |
 | Optional quick actions | Later | Medium |
 | Secure Chat and advanced WFP | Outside this Community task | Separate Core roadmap |
 
@@ -110,7 +108,7 @@ Baseline log: ignored `dist/validation-workflow-baseline.log`. No capture, scan 
 mutation was performed. This document is the local checkpoint before implementation.
 
 Implement navigation, scrolling, grouping, route selection, path screen, inspection/session,
-live/application views, routes/metrics, HEX engine/integrations, email/Defender, VPN, then QA.
+live/application views, routes/metrics, HEX engine/integrations, email/Defender, then QA. VPN management continues in Core.
 Use small commits and phase reports. Unavailable prerequisites must have an accurate label.
 Physical hardware/DPI/sleep/VPN and privileged OS recovery tests remain NOT TESTED until run.
 No public release is published automatically.

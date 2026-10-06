@@ -1,4 +1,6 @@
 using System.IO;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -104,34 +106,63 @@ internal static class Program
         Find<FlowDocumentScrollViewer>("PrivacyViewer").Document = AboutContent.CreateDocument(AboutContent.Privacy);
         Find<FlowDocumentScrollViewer>("OriginViewer").Document = AboutContent.CreateDocument(AboutContent.Origin);
         var tabs = Find<TabControl>("MainTabs");
-        void Save(string name, int tabIndex, string? directory = null)
+        var navigation = new WorkflowNavigation(window, tabs, EditionCapabilities.Community);
+        ResponsiveWorkflowShell.Apply(window, tabs);
+        // Preserve export dimensions independently of the workstation work area.
+        window.Width = Width; window.Height = Height;
+        using var network = new NetworkPathPanel(new SyntheticTopology());
+        network.RefreshAsync().GetAwaiter().GetResult();
+        window.Dispatcher.Invoke(() => { }, DispatcherPriority.Background);
+        navigation.InstallNetworkPanel(network);
+        navigation.PathSummary.Text = "DEMO · Ethernet → example gateway 192.0.2.1";
+        navigation.InspectionSummary.Text = "COMMUNITY 1.1.0-beta.2 · DEMO DATA · no capture or system changes";
+        var applications = new ApplicationTrafficPanel();
+        applications.Refresh(rows, []);
+        navigation.ApplicationsHost.Content = applications;
+        void Save(string name, string page)
         {
-            tabs.SelectedIndex = tabIndex; window.UpdateLayout();
+            if (!navigation.Select(page)) throw new InvalidOperationException("Unknown workflow page: " + page); window.UpdateLayout();
             window.Dispatcher.Invoke(() => { }, DispatcherPriority.ApplicationIdle);
             var bitmap = new RenderTargetBitmap(Width, Height, 96, 96, PixelFormats.Pbgra32); bitmap.Render(window);
             var encoder = new PngBitmapEncoder(); encoder.Frames.Add(BitmapFrame.Create(bitmap));
-            using var stream = File.Create(Path.Combine(directory ?? output, name)); encoder.Save(stream);
+            using var stream = File.Create(Path.Combine(output, name)); encoder.Save(stream);
             Console.WriteLine("Saved " + name);
         }
         try
         {
             window.Show();
-            Save("dashboard-dark-en.png", 0); Save("live-traffic-dark-en.png", 1); Save("security-sources-dark-en.png", 6);
-            Find<TabControl>("ProtectionTabs").SelectedIndex = 2; Save("email-review-dark-en.png", 8); Save("about-dark-en.png", 9, originOutput);
-            Find<TabControl>("AboutDocumentsTabs").SelectedIndex = 1; Save("origin-story-dark-en.png", 9, originOutput);
-            Find<TabControl>("AboutDocumentsTabs").SelectedIndex = 0;
+            Save("community-beta2-dashboard-dark-en.png", "Dashboard");
+            Save("community-beta2-network-path-dark-en.png", "Network Path");
+            Save("community-beta2-live-traffic-dark-en.png", "Live Traffic");
+            Save("community-beta2-security-sources-dark-en.png", "Traffic Sources");
+            Save("community-beta2-email-review-dark-en.png", "Inspector & Sender Rules");
             ThemeService.Apply(ThemeMode.Light); Find<ComboBox>("ThemeSelector").SelectedValue = ThemeMode.Light;
-            Save("dashboard-light-en.png", 0);
+            Save("community-beta2-dashboard-light-en.png", "Dashboard");
             ThemeService.Apply(ThemeMode.Dark); Find<ComboBox>("ThemeSelector").SelectedValue = ThemeMode.Dark;
             LocalizationService.SetLanguage("de", persist: false); LocalizationService.Apply(window);
             Find<ComboBox>("LanguageSelector").SelectedValue = "de";
             Text("MonitorStatus", "DEMODATEN · keine Live-Erfassung");
             Text("LastUpdateLabel", "Demo · simulierte Daten / Beispieldaten");
-            Save("dashboard-dark-de.png", 0);
+            Save("community-beta2-dashboard-dark-de.png", "Dashboard");
         }
         finally { window.Close(); app.Shutdown(); }
     }
 
+    private sealed class SyntheticTopology : INetworkTopologyReader
+    {
+        public NetworkTopologySnapshot Read()
+        {
+            var adapters = new[] { new NetworkAdapterInfo("demo-ethernet", "Demo Ethernet",
+                "Synthetic adapter — not this computer's inventory", 1, 1, OperationalStatus.Up,
+                NetworkInterfaceType.Ethernet, AdapterClassification.Physical,
+                ["192.0.2.10"], ["192.0.2.1"], ["192.0.2.53"], true, 0) };
+            InterfaceMetricState[] metrics = [new(1, AddressFamily.InterNetwork, true, 25)];
+            NetworkRouteInfo[] routes = [new("0.0.0.0", 0, "192.0.2.1", 1,
+                AddressFamily.InterNetwork, 10, 25, true, false, "Demo Ethernet")];
+            return new(adapters, routes, metrics, 1, null, [], null,
+                new DateTime(2026, 10, 6, 10, 0, 0, DateTimeKind.Utc));
+        }
+    }
     private static void SaveLogo(string output)
     {
         // Deterministic vector artwork, separate from the AI-generated flower banners.

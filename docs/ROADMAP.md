@@ -1,5 +1,15 @@
 # Pulsatilla Community roadmap
 
+## M2026-10-EDITION-SPLIT — 6 October 2026
+
+Community beta.2 removes VPN management while retaining all passive tunnel/network
+inspection. Core composes private management/security modules over the shared MIT UI.
+Edition capability checks, static gold styling and separate synthetic UI tests are
+implemented. Local previews are being packaged; real VPN/OS/DPI acceptance is separate.
+Published beta.1 history and MIT rights remain unchanged. See the
+[edition report](architecture/PULSATILLA-EDITION-REPORT.md).
+
+
 ## M2026-10-NETWORK-FIRST — Network Path to Inspect Traffic
 
 Opened **6 October 2026**. Latest owner-requested product milestone, shared with the
@@ -28,9 +38,8 @@ identity and verification, LAN chat, remote discovery, channels and file transfe
 These are **roadmap items**, not available Community functionality. Community adds no
 unfinished secure-chat UI or advanced WFP enforcement in this milestone.
 
-Development tooling: Ruflo routing and Codex implementation/review are available in this
-session. A callable Copilot/Codepilot integration is unavailable; its execution is not claimed.
-No paid service, license acceptance, visibility change or public release is automatic.
+Development uses targeted local builds/checks and the existing authenticated coding tools.
+No paid service, license acceptance or visibility change is automatic.
 
 ### Latest validation checkpoint — 6 October 2026
 

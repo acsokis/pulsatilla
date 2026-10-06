@@ -96,7 +96,9 @@ public static class WindowsSignatureInspector
             var publisher = "";
             if (status == LocalSignatureStatus.Valid)
             {
+#pragma warning disable SYSLIB0057 // PE signer metadata extraction; Windows trust is evaluated separately above.
                 try { using var cert = new X509Certificate2(X509Certificate.CreateFromSignedFile(path)); publisher = cert.GetNameInfo(X509NameType.SimpleName, false); }
+#pragma warning restore SYSLIB0057
                 catch (CryptographicException) { }
             }
             return new(status, publisher, $"Embedded signature / offline Windows trust result 0x{code:X8}. Catalog signatures and current online revocation are not checked.");

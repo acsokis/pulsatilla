@@ -32,7 +32,11 @@ internal static class Program
         ResponsiveWorkflowShell.Apply(window, main);
         window.ShowInTaskbar = false; window.ShowActivated = false;
         window.Left = -20000; window.Top = -20000; window.Show();
-        Check(main.Items.Count == 10, "Ten main workflow sections");
+        Check(!navigation.Select("VPN"), "Community has no VPN page");
+        Check(!typeof(WorkflowNavigation).Assembly.GetTypes().Any(type => type.Name is "VpnPanel" or "OpenVpnProvider" or "DpapiVpnProfileStore" or "IVpnProvider"), "Community assembly excludes VPN management types");
+        var called = false;
+        Check(!navigation.RegisterFeature(new("synthetic-private", "Synthetic private module", FeatureCapability.VpnManagement, FeatureTier.ExperimentalCore, "", "Private"), () => { called = true; return new Border(); }) && !called, "Unsupported module does not instantiate a page or service");
+        Check(main.Items.Count == 9, "Nine Community workflow sections");
         Check(navigation.Select("Firewall") && navigation.CurrentPage == "Security", "Firewall shortcut selects its parent");
         Check(navigation.Select("Events") && navigation.CurrentPage == "Security", "Alerts shortcut selects its parent");
         Check(navigation.Select("Adapters") && navigation.CurrentPage == "Network", "Adapter page reachable");
@@ -56,7 +60,7 @@ internal static class Program
             using (var file = File.Create(Path.Combine(output, $"adapters-{theme}-{language}.png"))) encoder.Save(file);
             renders++;
         }
-        foreach (var page in new[] { "Dashboard", "Network Path", "Live Traffic", "Applications", "Connections", "Packet Inspector", "Protocol Analysis", "Traffic Sources", "Scan", "Overview", "Inspector & Sender Rules", "VPN", "History", "Settings", "About" })
+        foreach (var page in new[] { "Dashboard", "Network Path", "Live Traffic", "Applications", "Connections", "Packet Inspector", "Protocol Analysis", "Traffic Sources", "Scan", "Overview", "Inspector & Sender Rules", "History", "Settings", "About" })
         {
             Check(navigation.Select(page), "Reachable: " + page);
             window.Measure(new Size(1120, 700)); window.Arrange(new Rect(0, 0, 1120, 700)); window.UpdateLayout();

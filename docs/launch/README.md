@@ -1,12 +1,12 @@
 # Pulsatilla publication kit
 
-English and German launch materials by Gabor Web / Gábor Kocsis, prepared on 2026-10-05.
+English and German launch materials by Gabor Web / Gábor Kocsis, updated on 2026-10-06.
 Pulsatilla development started on **2026-10-05 at 13:55 CEST (Germany / Europe/Berlin)**,
 as supplied by Gábor Kocsis.
 The source project is public at [acsokis/pulsatilla](https://github.com/acsokis/pulsatilla).
 Download the Community application from [GitHub Releases](https://github.com/acsokis/pulsatilla/releases).
-Get the complete [share-ready publication ZIP](https://github.com/acsokis/pulsatilla/releases/download/v1.0.2/pulsatilla-publication-kit-1.0.2.zip),
-extract it and open `share.html` for the copy buttons and image downloads.
+Get the complete [share-ready publication ZIP](https://github.com/acsokis/pulsatilla/releases/download/v1.1.0-beta.1/pulsatilla-publication-kit-1.1.0-beta.1.zip).
+The released ZIP is the beta.1 snapshot. For the current beta.2 source-preview screenshots and copy page, download the current repository ZIP and open docs/launch/share.html locally.
 
 ## Ready-to-copy posts
 
@@ -33,7 +33,7 @@ See [commercial options](commercial-overview.md) and [SEO/GEO text](seo-geo.md).
 
 ## App screenshots — synthetic demonstration data
 
-These PNGs render the **actual application XAML and controls**. Every screenshot labels
+Updated **6 October 2026**, these PNGs render the **current Community 1.1.0-beta.2 XAML, workflow navigation and controls**. They describe the source preview, not the older downloadable beta.1 interface. Every screenshot labels
 demonstration data. Traffic, local applications, IP addresses, messages and event examples
 are synthetic; they are not captures of a live network or evidence of actual attacks.
 The UI operation handlers are removed for rendering. Nothing is sent to a provider and
@@ -44,18 +44,22 @@ catalog; some technical labels remain in English. No translation expansion was p
 
 ### Dashboard / Übersicht
 
-![Dark Dashboard with synthetic amber download and violet upload](assets/screenshots/dashboard-dark-en.png)
-![German Dark Dashboard with labeled demonstration data](assets/screenshots/dashboard-dark-de.png)
-![Light Dashboard with synthetic demonstration data](assets/screenshots/dashboard-light-en.png)
+![Dark Dashboard with synthetic amber download and violet upload](assets/screenshots/community-beta2-dashboard-dark-en.png)
+![German Dark Dashboard with labeled demonstration data](assets/screenshots/community-beta2-dashboard-dark-de.png)
+![Light Dashboard with synthetic demonstration data](assets/screenshots/community-beta2-dashboard-light-en.png)
+
+### Network path
+
+![Current Network Path with a synthetic adapter and reserved example addresses](assets/screenshots/community-beta2-network-path-dark-en.png)
 
 ### Application traffic and source detail
 
-![Live traffic table with synthetic local application rows](assets/screenshots/live-traffic-dark-en.png)
-![Expandable top source IPs and software with reserved example addresses](assets/screenshots/security-sources-dark-en.png)
+![Live traffic table with synthetic local application rows](assets/screenshots/community-beta2-live-traffic-dark-en.png)
+![Expandable top source IPs and software with reserved example addresses](assets/screenshots/community-beta2-security-sources-dark-en.png)
 
 ### Local email review
 
-![Local review of a synthetic example.test email](assets/screenshots/email-review-dark-en.png)
+![Local review of a synthetic example.test email](assets/screenshots/community-beta2-email-review-dark-en.png)
 
 Regenerate from the repository root on Windows with the .NET 8 SDK:
 
@@ -76,7 +80,7 @@ The complete [generation prompts](IMAGE-PROMPTS.md) are included.
 | [German service roadmap](assets/marketing/pulsatilla-services-roadmap-de.png) | 1672 × 941 | German launch and planned service post |
 | [Logo PNG](assets/marketing/pulsatilla-logo.png) / [SVG](assets/marketing/pulsatilla-logo.svg) | 1280 × 320 | Reusable flower/network brand mark and wordmark |
 
-The English launch banner is also displayed at the top of the GitHub README.
+The GitHub README leads with current product information and the actual Dashboard preview. Brand banners remain available here for sharing.
 Original-project attribution remains in About and the separate technical origin documents;
 the copy-ready publication material focuses on Pulsatilla and Gabor Web.
 
