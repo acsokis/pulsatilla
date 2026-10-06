@@ -5,9 +5,6 @@ dist/
 *.user
 *.suo
 tools/Protection.Checks/*preview.png
-.ruflo/
-.claude-flow/
-.swarm/
 .env
 .env.*
 !.env.example
@@ -19,3 +16,13 @@ node_modules/
 *.log
 *.tmp
 *.migration-*
+# Machine-specific developer authentication and MCP paths
+.codex/config.toml
+.mcp.json
+.vscode/tasks.json
+.vscode/extensions.json
+
+# Local machine launchers/workspace; never include absolute private paths in public source
+Test.*.cmd
+pulsatilla.code-workspace
+**/*_wpftmp.csproj

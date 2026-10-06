@@ -35,5 +35,4 @@ DIP/resolution simulation does not certify physical display DPI or live OS opera
 ## Source direction
 
 Private Core consumes a pinned public MIT baseline inward. Private modules never flow
-into Community. Preserve published MIT history and notices. Ruflo is a development
-tool under D:\_ruflo_, not an application dependency.
+into Community. Preserve published MIT history and notices. The application has no development-orchestration runtime dependency.
