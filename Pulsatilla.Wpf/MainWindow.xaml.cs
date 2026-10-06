@@ -80,6 +80,7 @@ public partial class MainWindow : Window
         DataContext = this;
         InitializeProtection();
         InitializePresentation();
+        InitializeWorkflow();
         LiveTrafficView = CollectionViewSource.GetDefaultView(LiveTrafficRows);
         LiveTrafficView.Filter = FilterLiveTraffic;
         LiveTrafficGrid.ItemsSource = LiveTrafficView;
@@ -978,7 +979,7 @@ public partial class MainWindow : Window
 
     private void ClearEventsButton_Click(object sender, RoutedEventArgs e) => EventsList.Items.Clear();
 
-    private void OpenAlertsButton_Click(object sender, RoutedEventArgs e) => MainTabs.SelectedItem = AlertsTab;
+    private void OpenAlertsButton_Click(object sender, RoutedEventArgs e) => _workflow?.Select("Events");
 
     private void AlertsList_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {

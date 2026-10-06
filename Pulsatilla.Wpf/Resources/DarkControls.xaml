@@ -53,6 +53,8 @@
     </Style>
     <Style TargetType="ComboBox" BasedOn="{StaticResource ReadableComboBox}" />
     <Style TargetType="TabItem">
+        <Setter Property="Background" Value="{DynamicResource Theme_101B13}" />
+        <Setter Property="Foreground" Value="{DynamicResource Theme_D8E4DA}" />
         <Setter Property="Padding" Value="9,6" />
         <Setter Property="Template"><Setter.Value>
             <ControlTemplate TargetType="TabItem">

@@ -66,7 +66,7 @@ public partial class MainWindow
     private void OpenApplicationRulesButton_Click(object sender, RoutedEventArgs e)
     {
         UseLiveAppButton_Click(sender, e);
-        MainTabs.SelectedItem = ProtectionTab;
+        _workflow?.Select("Firewall");
         ProtectionTabs.SelectedIndex = 0;
     }
 

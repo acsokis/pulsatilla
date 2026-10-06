@@ -18,6 +18,21 @@ Windows network monitor and scanner built with C# and WPF on .NET 8. Targets Win
 
 ## Community and continuing development
 
+### Latest milestone — M2026-10-NETWORK-FIRST (6 October 2026)
+
+Community is receiving an independent **.NET 8/WPF** workflow rework: Network Path ->
+Inspect Traffic -> applications/connections/packets -> security review, with active
+scans kept separate. Its pre-change Release build and existing synthetic checks pass.
+The [dated roadmap](docs/ROADMAP.md) and [UI/navigation plan](docs/architecture/UI-NAVIGATION.md)
+track verified progress, ongoing implementation and untested hardware scenarios separately.
+Existing published downloads are unchanged until a separately approved release.
+
+Core's companion milestone freezes a private development rollback baseline and documents
+the proposed native C++/Qt6, WFP and secure-P2P direction. Those later Core stages are
+roadmap items. Secure Chat and advanced WFP enforcement are not added to Community here.
+
+### Separate Core development
+
 **Development continues in Pulsatilla Core.** This repository remains **Pulsatilla Community**
 with its existing [MIT rights and notice](LICENSE); it has no payment or activation gate.
 Core is **1.1.0-dev**, a separate private development preview, not a released product,

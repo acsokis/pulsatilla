@@ -9,7 +9,7 @@ Core planning milestone. Progress entries report evidence, not predicted complet
 | --- | --- | --- |
 | Existing .NET 8 product checkpoint | PASS | Release: zero warnings/errors; existing protection and 18-language catalog checks passed. |
 | Navigation and feature mapping | PASS | [UI rework plan](architecture/UI-NAVIGATION.md). |
-| Navigation skeleton and adapter scrolling | IN PROGRESS | Preserve existing controls and action handlers. |
+| Navigation skeleton and adapter scrolling | PASS (synthetic scope) | Preserved controls; 80-adapter last-item reachability and 15 theme/language renders; [phase reports](architecture/WORKFLOW-PHASE-REPORTS.md). |
 | Native classification, routed AUTO selection, network path | PLANNED | Native Windows route evidence; no fabricated underlay. |
 | Shared passive inspection and endpoint-aware traffic | PLANNED | One session; explicit start/stop; separate active scanning. |
 | Routes, metric readback and undo | PLANNED | No automatic privileged changes. |
