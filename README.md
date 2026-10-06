@@ -16,6 +16,40 @@ Optional paid services are a separate [integration roadmap](docs/MONETIZATION.md
 
 Windows network monitor and scanner built with C# and WPF on .NET 8. Targets Windows 10 and Windows 11 x64. No third-party packages are required.
 
+## Community and continuing development
+
+**Development continues in Pulsatilla Core.** This repository remains **Pulsatilla Community**
+with its existing [MIT rights and notice](LICENSE); it has no payment or activation gate.
+Core is **1.1.0-dev**, a separate private development preview, not a released product,
+commercial sale or download-ready upgrade. Existing Community downloads retain their own
+version, runtime requirements and limitations.
+
+Implemented Core development additions include:
+
+- An application security view with local executable metadata, SHA-256, actual Windows
+  Authenticode results and explained advisory risk/UNKNOWN states.
+- More precise endpoint-owner attribution and confirmed inbound/outbound/both-direction
+  Core-owned firewall operations, serialized state checks and rollback handling.
+- Strict VPN-profile validation/protected imports and Windows-protected credential storage.
+- Bounded history/logging, retention controls and exports of retained records rather than
+  only the visible table page.
+- A .NET 10 development target, separate ReleaseCommercial build/package checks and an
+  unsigned machine-wide MSI candidate with optional shortcuts.
+- Explicit manual update checking and localized Core controls integrated into the interface.
+
+These are development implementations with remaining production/recovery/clean-machine,
+trusted-signing, rights and legal-review gates. **Live VPN connection, kill switch,
+per-application split routing and cloud/dark-web breach lookup remain unavailable.**
+No active checkout, license purchase or hosted-service entitlement is implied.
+
+Read the [updated origin story](docs/ORIGIN.md) and
+[Python reference/source-family analysis](docs/PYTHON-REFERENCE-ANALYSIS.md) for the archive,
+delivery history, both contributor roles and the limits of search/AI hypotheses.
+The source-family observations do not prove copying or establish permission to reuse
+the original Python archive; contributor credit and the Community MIT notice do not supply
+a missing original-rightsholder grant.
+
+
 ## Support development
 
 If Pulsatilla helps you, you can support its development voluntarily through
