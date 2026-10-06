@@ -7,7 +7,7 @@ try {
     if ($LASTEXITCODE -ne 0) { throw 'Publication page build failed.' }
     [xml]$project = Get-Content -LiteralPath 'Pulsatilla.Wpf/Pulsatilla.Wpf.csproj' -Raw -Encoding UTF8
     $version = [string]$project.Project.PropertyGroup.Version
-    if ($version -notmatch '^\d+\.\d+\.\d+$') { throw 'Invalid version.' }
+    if ($version -notmatch '^\d+\.\d+\.\d+(?:-[A-Za-z0-9.-]+)?$') { throw 'Invalid version.' }
     if ([string]::IsNullOrWhiteSpace($OutputDirectory)) {
         $OutputDirectory = Join-Path $projectRoot "dist/pulsatilla-publication-kit-$version"
     }

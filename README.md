@@ -20,12 +20,14 @@ Windows network monitor and scanner built with C# and WPF on .NET 8. Targets Win
 
 ### Latest milestone — M2026-10-NETWORK-FIRST (6 October 2026)
 
-Community is receiving an independent **.NET 8/WPF** workflow rework: Network Path ->
+The **1.1.0-beta.1 Community preview** contains an independent **.NET 8/WPF** workflow rework: Network Path ->
 Inspect Traffic -> applications/connections/packets -> security review, with active
-scans kept separate. Its pre-change Release build and existing synthetic checks pass.
+scans kept separate. See the [release notes](docs/releases/1.1.0-beta.1.md) for included
+features, runtime requirements and experimental limits.
 The [dated roadmap](docs/ROADMAP.md) and [UI/navigation plan](docs/architecture/UI-NAVIGATION.md)
 track verified progress, ongoing implementation and untested hardware scenarios separately.
-Existing published downloads are unchanged until a separately approved release.
+The 6 October release is published as a GitHub prerelease; previous downloads remain
+available. It has no payment or activation gate.
 
 Core's companion milestone freezes a private development rollback baseline and documents
 the proposed native C++/Qt6, WFP and secure-P2P direction. Those later Core stages are
@@ -36,7 +38,9 @@ roadmap items. Secure Chat and advanced WFP enforcement are not added to Communi
 **Development continues in Pulsatilla Core.** This repository remains **Pulsatilla Community**
 with its existing [MIT rights and notice](LICENSE); it has no payment or activation gate.
 Core is **1.1.0-dev**, a separate private development preview, not a released product,
-commercial sale or download-ready upgrade. Existing Community downloads retain their own
+commercial sale or public download-ready upgrade. Its source and development packages
+remain private. Community's feature scope is intentionally smaller than the future Core
+roadmap; no existing MIT functionality is removed or made paid. Existing Community downloads retain their own
 version, runtime requirements and limitations.
 
 Implemented Core development additions include:
@@ -53,9 +57,13 @@ Implemented Core development additions include:
 - Explicit manual update checking and localized Core controls integrated into the interface.
 
 These are development implementations with remaining production/recovery/clean-machine,
-trusted-signing, rights and legal-review gates. **Live VPN connection, kill switch,
+trusted-signing, rights and legal-review gates. **Core live VPN connection, kill switch,
 per-application split routing and cloud/dark-web breach lookup remain unavailable.**
 No active checkout, license purchase or hosted-service entitlement is implied.
+
+Community's separately developed OpenVPN certificate-profile connection is experimental
+in this beta, requires an installed supported client and passes synthetic checks only;
+it is not an assurance of a verified VPN service or future Core capability.
 
 Read the [updated origin story](docs/ORIGIN.md) and
 [Python reference/source-family analysis](docs/PYTHON-REFERENCE-ANALYSIS.md) for the archive,
@@ -87,7 +95,8 @@ application firewall actions. Security findings are indicators to review, not at
 
 ## Screenshots
 
-The following is the real WPF interface rendered with **synthetic demo data**. No personal
+The following shows the earlier **1.0.x** WPF interface rendered with **synthetic demo data**.
+The 1.1.0 beta has reorganized navigation. No personal
 traffic, device inventory, mailbox content or user profile is included.
 
 ![Pulsatilla Dashboard with simulated amber download and purple upload rates](docs/launch/assets/screenshots/dashboard-dark-en.png)
@@ -101,7 +110,7 @@ To share the project, open [the copy-and-paste publication page](docs/launch/sha
 locally after downloading the repository. It includes English/German LinkedIn and Facebook
 posts, longer articles, copy buttons and downloadable images. On GitHub, use the
 [plain-text post files](docs/launch/README.md#ready-to-copy-posts).
-The complete [publication ZIP](https://github.com/acsokis/pulsatilla/releases/download/v1.0.2/pulsatilla-publication-kit-1.0.2.zip)
+The complete [publication ZIP](https://github.com/acsokis/pulsatilla/releases/download/v1.1.0-beta.1/pulsatilla-publication-kit-1.1.0-beta.1.zip)
 contains all texts and images with the local copy page.
 
 ## Features

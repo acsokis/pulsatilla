@@ -1,5 +1,28 @@
 # Changelog
 
+## 1.1.0-beta.1 — 2026-10-06
+
+Community preview for milestone **M2026-10-NETWORK-FIRST**. Free, MIT-licensed;
+no account, payment or activation gate. Windows x64 / .NET 8 Desktop Runtime.
+
+- Reorganized the retained tools into Dashboard, Network, Inspect, Scan, Security,
+  Email, VPN, History, Settings and About; bounded adapter/table scrolling and compact layout.
+- Added native Windows Network Path, adapter classification and route-based AUTO
+  selection, explicit metric readback/rollback/undo and hot-removal handling.
+- Added a single passive inspection session, precise TCP endpoint attribution,
+  explicit UDP uncertainty and native application/socket summaries.
+- Added bounded HEX patterns, local executable/hash/signature review, MIME attachments,
+  asynchronous bounded email import, full-message paste and local file drop.
+- Added explicit Defender review and bounded active service-banner inspection.
+- Added experimental installed-OpenVPN integration with strict profiles, protected
+  local storage and explicit external privacy checks. No bundled provider or VPN subscription.
+- Hardened process execution, late-result cancellation and cross-page application-policy updates.
+
+This beta does not provide cloud dark-web monitoring, secure chat, advanced WFP,
+an enforced kill switch or split routing. Real VPN/firewall/installer/hardware/DPI
+acceptance remains separate from the synthetic checks. New controls retain English
+fallback pending editorial translation. See the dated roadmap and release notes.
+
 ## 1.0.2 — 2026-10-05
 
 - Recorded the developer-supplied Pulsatilla start: 2026-10-05, 13:55 CEST (Europe/Berlin).

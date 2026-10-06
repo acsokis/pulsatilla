@@ -32,9 +32,21 @@ try {
     $docOutput = Join-Path $outputPath 'docs'
     New-Item -ItemType Directory -Path $docOutput | Out-Null
     foreach ($document in @('PRIVACY.md','MONETIZATION.md','LEGAL_AND_WORDING.md','DEVELOPMENT.md','ORIGIN.md','ORIGIN-REVIEW.md')) { Copy-Item -LiteralPath (Join-Path 'docs' $document) -Destination $docOutput }
+    Copy-Item -LiteralPath 'docs/ROADMAP.md' -Destination $docOutput
+    $releaseDocs = Join-Path $docOutput 'releases'
+    New-Item -ItemType Directory -Path $releaseDocs | Out-Null
+    if (Test-Path -LiteralPath (Join-Path 'docs/releases' ($version + '.md'))) { Copy-Item -LiteralPath (Join-Path 'docs/releases' ($version + '.md')) -Destination $releaseDocs }
+    $architectureDocs = Join-Path $docOutput 'architecture'
+    New-Item -ItemType Directory -Path $architectureDocs | Out-Null
+    foreach ($document in @('VPN-INTEGRATION.md','TRAFFIC-INSPECTION.md','WORKFLOW-PHASE-REPORTS.md','UI-ACCEPTANCE.md')) {
+        Copy-Item -LiteralPath (Join-Path 'docs/architecture' $document) -Destination $architectureDocs
+    }
     $executable = Join-Path $outputPath 'Pulsatilla.exe'
     $manifest = [ordered]@{
-        product = 'Pulsatilla'; version = $version; runtime = $Runtime; selfContained = [bool]$SelfContained
+        product = 'Pulsatilla'; edition = 'Community'; version = $version; runtime = $Runtime; selfContained = [bool]$SelfContained
+        releaseChannel = $(if ($version.Contains('-')) { 'Preview' } else { 'Release' })
+        sourceCommit = [string](& git rev-parse HEAD)
+        trackedSourceModified = [bool](& git status --porcelain --untracked-files=no)
         requiredRuntime = $(if ($SelfContained) { 'Included' } else { '.NET 8 Windows Desktop Runtime x64' })
         license = 'MIT'; creator = [string]$project.Project.PropertyGroup.Authors; builtAtUtc = [DateTime]::UtcNow.ToString('o')
         company = [string]$project.Project.PropertyGroup.Company
