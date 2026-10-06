@@ -18,60 +18,48 @@ Windows network monitor and scanner built with C# and WPF on .NET 8. Targets Win
 
 ## Community and continuing development
 
-### Latest milestone — M2026-10-NETWORK-FIRST (6 October 2026)
+### Latest milestone — M2026-10-EDITION-SPLIT (6 October 2026)
 
-The **1.1.0-beta.1 Community preview** contains an independent **.NET 8/WPF** workflow rework: Network Path ->
-Inspect Traffic -> applications/connections/packets -> security review, with active
-scans kept separate. See the [release notes](docs/releases/1.1.0-beta.1.md) for included
-features, runtime requirements and experimental limits.
-The [dated roadmap](docs/ROADMAP.md) and [UI/navigation plan](docs/architecture/UI-NAVIGATION.md)
-track verified progress, ongoing implementation and untested hardware scenarios separately.
-The 6 October release is published as a GitHub prerelease; previous downloads remain
-available. It has no payment or activation gate.
+**Community 1.1.0-beta.2** is the current local development preview. It shares its
+network-first workflow with the private **Pulsatilla Core 1.1.0-dev** preview.
+The [edition matrix](docs/architecture/EDITION-FEATURE-MATRIX.md) and
+[edition report](docs/architecture/PULSATILLA-EDITION-REPORT.md) describe the boundary and evidence.
+The published [1.1.0-beta.1 release](docs/releases/1.1.0-beta.1.md) remains unchanged;
+this local beta.2 is not yet a new GitHub release.
 
-Core's companion milestone freezes a private development rollback baseline and documents
-the proposed native C++/Qt6, WFP and secure-P2P direction. Those later Core stages are
-roadmap items. Secure Chat and advanced WFP enforcement are not added to Community here.
+Community remains free, MIT-licensed and has no payment or activation gate. Its
+Dashboard, Network, Inspect, Scan, Security, Email, History, Settings and About pages
+retain passive tunnel detection and inspection of already-connected VPN traffic.
+**Community has no VPN-management UI, profiles, credentials, provider services,
+connect/disconnect actions or kill-switch controls.** Monitoring an existing tunnel
+is separate from managing one.
 
-### Separate Core development
+### Development continues in Pulsatilla Core
 
-**Development continues in Pulsatilla Core.** This repository remains **Pulsatilla Community**
-with its existing [MIT rights and notice](LICENSE); it has no payment or activation gate.
-Core is **1.1.0-dev**, a separate private development preview, not a released product,
-commercial sale or public download-ready upgrade. Its source and development packages
-remain private. Community's feature scope is intentionally smaller than the future Core
-roadmap; no existing MIT functionality is removed or made paid. Existing Community downloads retain their own
-version, runtime requirements and limitations.
+Core consumes the shared MIT Community UI inward and adds private modules:
 
-Implemented Core development additions include:
+- A Core security center with executable metadata, hashes, actual Windows signature
+  results and explained advisory/UNKNOWN states.
+- Windows-protected VPN profile and credential storage, plus an experimental,
+  certificate-only OpenVPN connector. Stored username/password credentials are not
+  connected to that experimental connector.
+- Direction-aware Core-owned firewall operations, serialized state checks and rollback.
+- Bounded history/logging, retention controls and exports of retained records.
+- A .NET 10 development target, private packaging checks, explicit manual update checks
+  and Core controls using static, theme-aware gold accents and text badges.
 
-- An application security view with local executable metadata, SHA-256, actual Windows
-  Authenticode results and explained advisory risk/UNKNOWN states.
-- More precise endpoint-owner attribution and confirmed inbound/outbound/both-direction
-  Core-owned firewall operations, serialized state checks and rollback handling.
-- Strict VPN-profile validation/protected imports and Windows-protected credential storage.
-- Bounded history/logging, retention controls and exports of retained records rather than
-  only the visible table page.
-- A .NET 10 development target, separate ReleaseCommercial build/package checks and an
-  unsigned machine-wide MSI candidate with optional shortcuts.
-- Explicit manual update checking and localized Core controls integrated into the interface.
+Live VPN/recovery, privileged mutations, clean-machine installation and commercial
+clearance remain separate manual gates. WFP kill switch, per-application split routing,
+WireGuard management, secure P2P/messaging, advanced reports and hosted threat or breach
+services are future work, with no unfinished navigation pretending they are available.
+Core source and development packages remain private; no active sale, checkout or
+hosted-service entitlement is implied.
 
-These are development implementations with remaining production/recovery/clean-machine,
-trusted-signing, rights and legal-review gates. **Core live VPN connection, kill switch,
-per-application split routing and cloud/dark-web breach lookup remain unavailable.**
-No active checkout, license purchase or hosted-service entitlement is implied.
-
-Community's separately developed OpenVPN certificate-profile connection is experimental
-in this beta, requires an installed supported client and passes synthetic checks only;
-it is not an assurance of a verified VPN service or future Core capability.
-
-Read the [updated origin story](docs/ORIGIN.md) and
-[Python reference/source-family analysis](docs/PYTHON-REFERENCE-ANALYSIS.md) for the archive,
-delivery history, both contributor roles and the limits of search/AI hypotheses.
-The source-family observations do not prove copying or establish permission to reuse
-the original Python archive; contributor credit and the Community MIT notice do not supply
-a missing original-rightsholder grant.
-
+The beta.1 VPN source was already published under MIT. Its historical rights and
+notices remain preserved; this later edition boundary does not revoke that license.
+See the [origin story](docs/ORIGIN.md) and
+[Python source-family analysis](docs/PYTHON-REFERENCE-ANALYSIS.md) for attribution,
+delivery history and the limits of provenance evidence.
 
 ## Support development
 

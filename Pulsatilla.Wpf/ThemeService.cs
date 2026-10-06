@@ -46,6 +46,12 @@ public static class ThemeService
                 brush.Color = color;
             else Application.Current.Resources["Theme_" + dark] = new SolidColorBrush(color);
         }
+        var highContrast = SystemParameters.HighContrast;
+        static SolidColorBrush PremiumBrush(string value) { var brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString(value)); brush.Freeze(); return brush; }
+        Application.Current.Resources["CoreAccentBrush"] = highContrast ? SystemColors.ControlTextBrush : PremiumBrush(IsLight ? "#765618" : "#C8A45D");
+        Application.Current.Resources["CoreBorderBrush"] = highContrast ? SystemColors.ControlTextBrush : PremiumBrush(IsLight ? "#9A7736" : "#A58A54");
+        Application.Current.Resources["CoreHeaderBrush"] = highContrast ? SystemColors.ControlBrush : PremiumBrush(IsLight ? "#FAF3E6" : "#242016");
+        Application.Current.Resources["CoreGlowBrush"] = Brushes.Transparent; // semantic token only; no expensive glow is rendered.
         foreach (Window window in Application.Current.Windows) ApplyTitleBar(window);
         Changed?.Invoke(null, EventArgs.Empty);
     }

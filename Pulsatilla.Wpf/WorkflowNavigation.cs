@@ -13,7 +13,6 @@ public sealed class WorkflowNavigation
     public ContentControl NetworkHost { get; } = new();
     public ContentControl ApplicationsHost { get; } = new();
     public ContentControl AttachmentsHost { get; } = new();
-    public ContentControl VpnHost { get; } = new();
     public ContentControl SampleHost { get; } = new();
     public ContentControl ServiceHost { get; } = new();
     public TextBlock PathSummary { get; } = Text("Resolving the local outbound route…");
@@ -24,9 +23,15 @@ public sealed class WorkflowNavigation
     public Button PathButton { get; } = Button("Network Path");
     public event EventHandler? NavigationChanged;
 
-    public WorkflowNavigation(Window window, TabControl main)
+    private readonly EditionCapabilities _capabilities;
+    private readonly Dictionary<string, FeatureDescriptor> _features = new(StringComparer.Ordinal);
+    public IReadOnlyCollection<string> TopLevelPageNames => _main.Items.Cast<TabItem>().Select(item => (string)item.Tag).ToArray();
+    public IReadOnlyCollection<FeatureDescriptor> Features => _features.Values.ToArray();
+
+    public WorkflowNavigation(Window window, TabControl main, EditionCapabilities? capabilities = null)
     {
         _main = main;
+        _capabilities = capabilities ?? EditionCapabilities.Community;
         var old = main.Items.Cast<TabItem>().ToArray();
         if (old.Length != 10) throw new InvalidOperationException("Expected the ten checkpoint pages.");
         main.Items.Clear();
@@ -128,13 +133,14 @@ public sealed class WorkflowNavigation
         Move(security, "Firewall", old[8]);
         var email = Group("Email"); Move(email, "Inspector & Sender Rules", protectionPages[2]);
         Add(email, "Attachments", AttachmentsHost); Move(email, "Local Exposure Reports", protectionPages[3]);
-        var vpn = Group("VPN"); Add(vpn, "Status / Profiles / Privacy", VpnHost);
         old[5].Header = "History"; old[5].Tag = "History"; main.Items.Add(old[5]); _pages.Add("History", old[5]);
         var settings = Group("Settings"); Move(settings, "System & Diagnostics", old[7]);
         Move(settings, "Appearance & Monitoring", protectionPages[1]);
         old[9].Tag = "About"; main.Items.Add(old[9]); _pages.Add("About", old[9]);
         PathButton.Click += (_, _) => Select("Network Path");
         main.SelectionChanged += (_, e) => { if (ReferenceEquals(e.Source, main)) NavigationChanged?.Invoke(this, EventArgs.Empty); };
+        foreach (var item in main.Items.Cast<TabItem>())
+        { var name = (string)item.Tag; _features.Add(name, new(name.ToLowerInvariant(), name, FeatureCapability.None, FeatureTier.Community, "", name)); }
         main.SelectedItem = dashboard;
         StopButton.IsEnabled = false;
         var container = (Grid)main.Parent;
@@ -143,6 +149,27 @@ public sealed class WorkflowNavigation
         var bar = new DockPanel { Margin = new Thickness(0, 0, 0, 10) };
         DockPanel.SetDock(StopButton, Dock.Right); bar.Children.Add(StopButton); bar.Children.Add(InspectionSummary);
         Grid.SetRow(bar, 1); container.Children.Add(bar);
+    }
+
+    /// <summary>Factory is never called for unsupported capabilities; no hidden or disabled page is created.</summary>
+    public bool RegisterFeature(FeatureDescriptor feature, Func<UIElement> createContent)
+    {
+        ArgumentNullException.ThrowIfNull(feature); ArgumentNullException.ThrowIfNull(createContent);
+        if (!_capabilities.Supports(feature.Capability)) return false;
+        if (string.IsNullOrWhiteSpace(feature.Id) || string.IsNullOrWhiteSpace(feature.Name) || string.IsNullOrWhiteSpace(feature.NavigationGroup)) throw new ArgumentException("Feature metadata is incomplete.");
+        if (_features.Values.Any(value => value.Id == feature.Id)) throw new InvalidOperationException("Feature already registered.");
+        var content = createContent();
+        TabControl group;
+        if (_pages.TryGetValue(feature.NavigationGroup, out var existing) && existing.Content is TabControl tabs) group = tabs;
+        else
+        {
+            group = Group(feature.NavigationGroup);
+            var item = _pages[feature.NavigationGroup];
+            item.Header = FeaturePresentation.Header(feature with { Name = feature.NavigationGroup });
+            if (_pages.TryGetValue("History", out var history)) { _main.Items.Remove(item); _main.Items.Insert(_main.Items.IndexOf(history), item); }
+        }
+        Add(group, feature.Name, FeaturePresentation.Card(feature, content));
+        _features.Add(feature.Id, feature); return true;
     }
 
     public string CurrentPage => (_main.SelectedItem as TabItem)?.Tag as string ?? "Dashboard";

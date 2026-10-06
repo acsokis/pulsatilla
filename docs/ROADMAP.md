@@ -1,5 +1,15 @@
 # Pulsatilla Community roadmap
 
+## M2026-10-EDITION-SPLIT — 6 October 2026
+
+Community beta.2 removes VPN management while retaining all passive tunnel/network
+inspection. Core composes private management/security modules over the shared MIT UI.
+Edition capability checks, static gold styling and separate synthetic UI tests are
+implemented. Local previews are being packaged; real VPN/OS/DPI acceptance is separate.
+Published beta.1 history and MIT rights remain unchanged. See the
+[edition report](architecture/PULSATILLA-EDITION-REPORT.md).
+
+
 ## M2026-10-NETWORK-FIRST — Network Path to Inspect Traffic
 
 Opened **6 October 2026**. Latest owner-requested product milestone, shared with the

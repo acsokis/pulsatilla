@@ -17,7 +17,6 @@ public partial class MainWindow
     private EmailAttachmentsPanel? _attachmentsPanel;
     private FileInspectionPanel? _samplePanel;
     private HexViewer? _packetHex;
-    private VpnPanel? _vpnPanel;
     private ServiceBannerPanel? _servicePanel;
     private readonly TextBox _applicationFilter = new() { Width = 120, MaxLength = 256 };
     private readonly TextBox _hostFilter = new() { Width = 140, MaxLength = 256 };
@@ -27,7 +26,7 @@ public partial class MainWindow
     private readonly Dictionary<string, string> _passiveHostnames = new(StringComparer.OrdinalIgnoreCase);
     private void InitializeWorkflow()
     {
-        _workflow = new WorkflowNavigation(this, MainTabs);
+        _workflow = new WorkflowNavigation(this, MainTabs, _editionCapabilities);
         _workflow.InspectButton.Click += StartCaptureButton_Click;
         _workflow.StopButton.Click += StopCaptureButton_Click;
         _networkPath = new NetworkPathPanel();
@@ -57,9 +56,6 @@ public partial class MainWindow
         _servicePanel = new ServiceBannerPanel();
         _workflow.ServiceHost.Content = _servicePanel;
         TargetInput.TextChanged += (_, _) => _servicePanel.SetTarget(TargetInput.Text.Trim());
-        _vpnPanel = new VpnPanel();
-        _workflow.VpnHost.Content = _vpnPanel;
-        _vpnPanel.OpenRoutesRequested += (_, _) => _workflow.Select("Routes");
         _packetHex = new HexViewer { MinHeight = 150, MaxHeight = 280 };
         if (HexInspector.Parent is Panel packetPanel)
         {
@@ -68,7 +64,6 @@ public partial class MainWindow
         }
         ConfigureLiveTrafficDetails();
         ResponsiveWorkflowShell.Apply(this, MainTabs);
-        InitializeWorkflowPreferences();
         InitializeEmailWorkflow();
     }
 
@@ -183,7 +178,7 @@ public partial class MainWindow
     private void InitializeWorkflowPreferences()
     {
         if (_workflow is null) return;
-        var store = new WorkflowStateStore();
+        var store = new WorkflowStateStore(registeredPages: _workflow.TopLevelPageNames);
         _workflow.Select(store.LoadPage());
         _workflow.NavigationChanged += (_, _) => store.SavePage(_workflow.CurrentPage);
     }

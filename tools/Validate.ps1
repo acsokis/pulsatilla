@@ -6,7 +6,7 @@ try {
     $projects = @('Pulsatilla.Wpf/Pulsatilla.Wpf.csproj',
         'tools/Protection.Checks/Protection.Checks.csproj', 'tools/Localization.Checks/Localization.Checks.csproj',
         'tools/Network.Checks/Network.Checks.csproj', 'tools/Inspection.Checks/Inspection.Checks.csproj',
-        'tools/Analysis.Checks/Analysis.Checks.csproj', 'tools/Email.Checks/Email.Checks.csproj', 'tools/Vpn.Checks/Vpn.Checks.csproj',
+        'tools/Analysis.Checks/Analysis.Checks.csproj', 'tools/Email.Checks/Email.Checks.csproj',
         'tools/Scanner.Checks/Scanner.Checks.csproj', 'tools/Workflow.Checks/Workflow.Checks.csproj',
         'tools/HostLayout.Checks/HostLayout.Checks.csproj')
     foreach ($project in $projects) {

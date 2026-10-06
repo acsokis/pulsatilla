@@ -78,7 +78,10 @@ public partial class MainWindow : Window
         DataContext = this;
         InitializeProtection();
         InitializePresentation();
+        ConfigureEdition();
         InitializeWorkflow();
+        InitializeEdition();
+        InitializeWorkflowPreferences();
         LiveTrafficView = CollectionViewSource.GetDefaultView(LiveTrafficRows);
         LiveTrafficView.Filter = FilterLiveTraffic;
         LiveTrafficGrid.ItemsSource = LiveTrafficView;
@@ -893,7 +896,7 @@ public partial class MainWindow : Window
         if (_workflowProcessLifetime.IsCancellationRequested || Interlocked.Exchange(ref _ownerRefreshInProgress, 1) != 0) return;
         try
         {
-            await Task.Run(_processOwners.Refresh);
+            await Task.Run(() => { _processOwners.Refresh(); ObserveEditionSockets(); });
             if (_workflowProcessLifetime.IsCancellationRequested || Dispatcher.HasShutdownStarted) return;
             await Dispatcher.InvokeAsync(() => AttributionStatus.Text =
                 $"Windows socket table: {_processOwners.TcpEndpointCount:N0} TCP / {_processOwners.UdpEndpointCount:N0} UDP endpoint entries"
@@ -1147,7 +1150,10 @@ public partial class MainWindow : Window
                     _usageStore.Record(application, executablePath, host, packet.Protocol, outbound, packet.Length, DateTime.UtcNow);
                     UpdateLiveTraffic(packet, application, executablePath, host, outbound, process?.ProcessId ?? 0);
                     if (process is not null && executablePath.Length > 0)
+                    {
                         ObserveApplicationActivity(application, executablePath, host, packet.CapturedAtUtc);
+                        ObserveEditionPacket(packet, process, outbound);
+                    }
                 }
                 foreach (var signal in _threatMonitor.Observe(packet, localIp!)) AddEvent(signal.Level, signal.Message);
             }
@@ -1201,6 +1207,7 @@ public partial class MainWindow : Window
 
     private void AddEvent(string level, string message)
     {
+        ObserveEditionEvent(level, message);
         var normalizedLevel = level.ToUpperInvariant();
         var isAlarm = SecurityEventPolicy.IsAlarm(level);
         var isWarning = normalizedLevel is "WARN" or "FIREWALL";
@@ -1306,7 +1313,7 @@ public partial class MainWindow : Window
         _scanCancellation?.Cancel();
         _inspection.Dispose();
         _networkPath?.Dispose();
-        _vpnPanel?.Dispose();
+        DisposeEdition();
         _servicePanel?.Dispose();
         try { Task.Run(() => _usageStore.SaveAsync()).GetAwaiter().GetResult(); }
         catch (Exception) { }

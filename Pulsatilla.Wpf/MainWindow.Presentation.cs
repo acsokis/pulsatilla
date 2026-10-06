@@ -11,7 +11,7 @@ public partial class MainWindow
     private bool _presentationReady;
     private void InitializePresentation()
     {
-        ThemeSelector.ItemsSource = new[] { new ThemeChoice(ThemeMode.Dark, "Dark"), new ThemeChoice(ThemeMode.Light, "Light"), new ThemeChoice(ThemeMode.System, "Windows") };
+        ThemeSelector.ItemsSource = new[] { new ThemeChoice(Pulsatilla.Wpf.ThemeMode.Dark, "Dark"), new ThemeChoice(Pulsatilla.Wpf.ThemeMode.Light, "Light"), new ThemeChoice(Pulsatilla.Wpf.ThemeMode.System, "Windows") };
         ThemeSelector.SelectedValue = _protection.Settings.ThemeMode;
         ThemeService.Changed += OnPresentationThemeChanged;
         SourceInitialized += (_, _) => ThemeService.ApplyTitleBar(this);

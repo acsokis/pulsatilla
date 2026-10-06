@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.0-beta.2 — local edition preview, 2026-10-06
+
+- Community contains nine workflow groups and no VPN-management implementation.
+- Passive VPN/tunnel adapter detection and traffic inspection remain available.
+- Shared capabilities/module composition supports private Core features inward.
+- Static Core semantic colors and compact accessible tier badges support all themes.
+- Published beta.1 source/releases and MIT notices remain unchanged.
+
+
 ## 1.1.0-beta.1 — 2026-10-06
 
 Community preview for milestone **M2026-10-NETWORK-FIRST**. Free, MIT-licensed;

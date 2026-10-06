@@ -55,15 +55,15 @@ internal static class Program
             apps.Refresh([new LiveTrafficRow("Synthetic browser", "C:\\Synthetic\\browser.exe", "198.51.100.10", "TCP") { ProcessId = 1234, LocalAddress = "192.0.2.5", LocalPort = 50000, RemotePort = 443 }],
                 [new OwnedSocketSnapshot(new(1234, "Synthetic browser", "C:\\Synthetic\\browser.exe"), "TCP", "192.0.2.5", 50000, "198.51.100.10", 443, "Established", true)]);
             var hex = new HexViewer(); var bytes = Enumerable.Range(0, 256).Select(i => (byte)i).ToArray(); hex.SetBytes(bytes, HexPatternEngine.Default.Analyze(bytes, HexPatternContext.File));
-            using var vpn = new VpnPanel(); using var service = new ServiceBannerPanel();
-            foreach (var (name, control) in new (string, FrameworkElement)[] { ("applications", apps), ("hex", hex), ("vpn-initial", vpn), ("service-initial", service) })
+            using var service = new ServiceBannerPanel();
+            foreach (var (name, control) in new (string, FrameworkElement)[] { ("applications", apps), ("hex", hex), ("service-initial", service) })
             {
                 var size = new Size(1080, 580); Layout(control, size); Check(control.ActualHeight <= size.Height, "Host exceeded allocation");
                 Render(control, size, Path.Combine(output, $"{name}-{theme}-{language}.png")); renders++;
             }
         }
         app.Shutdown();
-        Console.WriteLine($"Host layout checks passed: {_checks} assertions, {renders} offscreen renders. Synthetic topology/app/byte fixtures; initial VPN/service controls remain unconnected. No Window shown, native capture, settings changes or external requests. DIP allocation simulation is not real hardware DPI validation.");
+        Console.WriteLine($"Host layout checks passed: {_checks} assertions, {renders} offscreen renders. Synthetic topology/app/byte fixtures; initial service controls remain unconnected. No Window shown, native capture, settings changes or external requests. DIP allocation simulation is not real hardware DPI validation.");
     }
     private static void Check(bool value, string message) { _checks++; if (!value) throw new InvalidOperationException(message); }
     private static void Layout(FrameworkElement control, Size size)
